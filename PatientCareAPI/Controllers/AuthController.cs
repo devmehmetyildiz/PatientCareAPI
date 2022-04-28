@@ -44,7 +44,7 @@ namespace PatientCareAPI.Controllers
         {
             var userExist = unitOfWork.UsersRepository.FindUserByName(model.Username);
             if (userExist != null)
-                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseModel { Status = "Error", Massage = "Geçerli Bir Kullanıcı Adı Giriniz" });
+                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseModel { Status = "Error", Massage = "Bu Kullanıcı Adı Daha Önce Alındı" });
             var userGuid = Guid.NewGuid().ToString();
             var salt = securityutils.CreateSalt(30);
             unitOfWork.UsertoSaltRepository.Add(new UsertoSaltModel { Salt = salt, UserID = userGuid });
@@ -64,6 +64,11 @@ namespace PatientCareAPI.Controllers
             };
             unitOfWork.UsersRepository.Add(user);
             AddRoleToUser(UserRoles.Basic, user);
+            AddRoleToUser(UserRoles.Admin, user);
+            AddRoleToUser(UserRoles.User_Screen, user);
+            AddRoleToUser(UserRoles.User_Add, user);
+            AddRoleToUser(UserRoles.User_Update, user);
+            AddRoleToUser(UserRoles.User_Delete, user);
             unitOfWork.Complate();
             return Ok(new ResponseModel { Status = "Success", Massage = "Kullanıcı Başarı ile Oluşturuldu" });
         }
@@ -73,10 +78,14 @@ namespace PatientCareAPI.Controllers
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
             var user = unitOfWork.UsersRepository.FindUserByName(model.Username);
-            if ((user == null) && !CheckPassword(user, model.Password))
+            if ((user == null))
             {
-                return Unauthorized();
-            }            
+                return NotFound(new ResponseModel { Status = "Error", Massage = "Kullanıcı Bulunamadı" });
+            }
+            if (!CheckPassword(user, model.Password))
+            {
+                return Unauthorized(new ResponseModel { Status = "Error", Massage = "Kullanıcı Adı veya Şifre Hatalı" });
+            }             
             var authClaims = new List<Claim>
                 {
                      new Claim(ClaimTypes.Name,user.Username),
@@ -102,13 +111,14 @@ namespace PatientCareAPI.Controllers
                     expires: DateTime.Now.AddHours(3),
                     claims: authClaims,
                     signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-                );
+                );            
+            Response.Cookies.Append("X-Access-Token", new JwtSecurityTokenHandler().WriteToken(token), new CookieOptions() { HttpOnly = true, SameSite = SameSiteMode.Strict });
+            Response.Cookies.Append("X-Username", user.Username, new CookieOptions() { HttpOnly = true, SameSite = SameSiteMode.Strict });
             return Ok(new
             {
                 token = new JwtSecurityTokenHandler().WriteToken(token),
                 expiration = token.ValidTo,
-                User = user.Username,
-                Roles = JsonSerializer.Serialize(RoleIds)
+                User = user.Username
             });
         }
 
