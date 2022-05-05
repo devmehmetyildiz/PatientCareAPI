@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using PatientCareAPI.Models.Authentication;
+using PatientCareAPI.Models.Settings;
 
 namespace PatientCareAPI.DataAccess
 {
@@ -18,5 +19,7 @@ namespace PatientCareAPI.DataAccess
         public DbSet<UsersModel> Tbl_Users { get; set; }
         public DbSet<UsertoRoleModel> Users_to_Role { get; set; }
         public DbSet<UsertoSaltModel> Users_to_Salt { get; set; }
+        public DbSet<CaseModel> Tbl_Case { get; set; }
+        public DbSet<UnitModel> Tbl_Unit { get; set; }
     }
 }

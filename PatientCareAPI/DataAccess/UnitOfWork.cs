@@ -1,5 +1,7 @@
 ﻿using PatientCareAPI.DataAccess.Repositories.Abstract;
+using PatientCareAPI.DataAccess.Repositories.Abstract.Settings;
 using PatientCareAPI.DataAccess.Repositories.Concrete;
+using PatientCareAPI.DataAccess.Repositories.Concrete.Settings;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,6 +19,8 @@ namespace PatientCareAPI.DataAccess
             UsersRepository = new UsersRepository(_dBContext);
             UsertoRoleRepository = new UsertoRoleRepository(_dBContext);
             UsertoSaltRepository = new UsertoSaltRepository(_dBContext);
+            CaseRepository = new CaseRepository(_dBContext);
+            UnitRepository = new UnitRepository(_dBContext);
         }
 
         public IRolesRepository RolesRepository { get; private set; }
@@ -26,6 +30,10 @@ namespace PatientCareAPI.DataAccess
         public IUsertoRoleRepository UsertoRoleRepository { get; private set; }
 
         public IUsertoSaltRepository UsertoSaltRepository { get; private set; }
+      
+        public ICaseRepository CaseRepository { get; private set; }
+
+        public IUnitRepository UnitRepository { get; private set; }
 
         public int Complate()
         {
