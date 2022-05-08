@@ -43,6 +43,7 @@ namespace PatientCareAPI.Controllers
         [HttpPost]
         public IActionResult Add(CaseModel model)
         {
+            model.NormalizedName = model.Name.ToUpper();
             model.IsActive = true;
             model.CreateTime = DateTime.Now;
             model.ConcurrencyStamp = Guid.NewGuid().ToString();
@@ -55,6 +56,7 @@ namespace PatientCareAPI.Controllers
         [HttpPost]
         public IActionResult Update(CaseModel model)
         {
+            model.NormalizedName = model.Name.ToUpper();
             model.UpdateTime = DateTime.Now;
             unitOfWork.CaseRepository.update(unitOfWork.CaseRepository.Getbyid(model.Id), model);
             unitOfWork.Complate();

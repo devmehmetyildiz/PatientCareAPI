@@ -15,9 +15,11 @@ using System.IdentityModel.Tokens.Jwt;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Text.Json;
+using Microsoft.AspNetCore.Authorization;
 
 namespace PatientCareAPI.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
@@ -39,6 +41,7 @@ namespace PatientCareAPI.Controllers
            
         }
 
+        [AllowAnonymous]
         [HttpPost]
         [Route("Register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
@@ -74,6 +77,7 @@ namespace PatientCareAPI.Controllers
             return Ok(new ResponseModel { Status = "Success", Massage = "Kullanıcı Başarı ile Oluşturuldu" });
         }
 
+        [AllowAnonymous]
         [HttpPost]
         [Route("Login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
@@ -121,6 +125,13 @@ namespace PatientCareAPI.Controllers
                 expiration = token.ValidTo,
                 User = user.Username
             });
+        }
+
+        [HttpGet]
+        [Route("GetActiveUser")]
+        public async Task<IActionResult> GetActiveUser()
+        {          
+            return Ok(ClaimTypes.GivenName);
         }
 
         private bool AddRoleToUser(string role, UsersModel user)
