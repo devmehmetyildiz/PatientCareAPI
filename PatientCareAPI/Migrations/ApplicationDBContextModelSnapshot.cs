@@ -142,13 +142,13 @@ namespace PatientCareAPI.Migrations
                         .HasMaxLength(85)
                         .HasColumnType("varchar(85)");
 
-                    b.Property<DateTime>("CreateTime")
+                    b.Property<DateTime?>("CreateTime")
                         .HasColumnType("datetime");
 
                     b.Property<string>("CreatedUser")
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("DeleteTime")
+                    b.Property<DateTime?>("DeleteTime")
                         .HasColumnType("datetime");
 
                     b.Property<string>("DeleteUser")
@@ -165,7 +165,7 @@ namespace PatientCareAPI.Migrations
                         .HasMaxLength(85)
                         .HasColumnType("varchar(85)");
 
-                    b.Property<DateTime>("UpdateTime")
+                    b.Property<DateTime?>("UpdateTime")
                         .HasColumnType("datetime");
 
                     b.Property<string>("UpdatedUser")
@@ -186,13 +186,13 @@ namespace PatientCareAPI.Migrations
                         .HasMaxLength(85)
                         .HasColumnType("varchar(85)");
 
-                    b.Property<DateTime>("CreateTime")
+                    b.Property<DateTime?>("CreateTime")
                         .HasColumnType("datetime");
 
                     b.Property<string>("CreatedUser")
                         .HasColumnType("text");
 
-                    b.Property<DateTime>("DeleteTime")
+                    b.Property<DateTime?>("DeleteTime")
                         .HasColumnType("datetime");
 
                     b.Property<string>("DeleteUser")
@@ -215,7 +215,7 @@ namespace PatientCareAPI.Migrations
                     b.Property<int>("UnitStatus")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("UpdateTime")
+                    b.Property<DateTime?>("UpdateTime")
                         .HasColumnType("datetime");
 
                     b.Property<string>("UpdatedUser")

@@ -22,12 +22,12 @@ namespace PatientCareAPI.Models
         public string UpdatedUser { get; set; }
 
         public string DeleteUser { get; set; }
+      
+        public DateTime? CreateTime { get; set; }
 
-        public DateTime CreateTime { get; set; }
+        public DateTime? UpdateTime { get; set; }
 
-        public DateTime UpdateTime { get; set; }
-
-        public DateTime DeleteTime { get; set; }
+        public DateTime? DeleteTime { get; set; }
 
         public bool IsActive { get; set; }
     }
