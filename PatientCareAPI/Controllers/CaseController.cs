@@ -39,6 +39,16 @@ namespace PatientCareAPI.Controllers
             return  Ok(items);
         }
 
+        [Route("GetSelectedCase")]
+        [HttpGet]
+        public IActionResult GetSelectedCase(int ID)
+        {
+            var item = unitOfWork.CaseRepository.Getbyid(ID);
+            if (item == null)
+                return NotFound();
+            return Ok(item);
+        }
+
         [Route("Add")]
         [HttpPost]
         public IActionResult Add(CaseModel model)
