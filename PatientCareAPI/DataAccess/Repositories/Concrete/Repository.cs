@@ -21,6 +21,7 @@ namespace PatientCareAPI.DataAccess.Repositories.Concrete
         public void Add(Tentity entity)
         {
             _dbSet.Add(entity);
+            
         }
 
         public void AddRange(List<Tentity> entities)

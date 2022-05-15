@@ -67,12 +67,7 @@ namespace PatientCareAPI.Controllers
                PhoneNumberConfirmed = false               
             };
             unitOfWork.UsersRepository.Add(user);
-            AddRoleToUser(UserRoles.Basic, user);
-            AddRoleToUser(UserRoles.Admin, user);
-            AddRoleToUser(UserRoles.User_Screen, user);
-            AddRoleToUser(UserRoles.User_Add, user);
-            AddRoleToUser(UserRoles.User_Update, user);
-            AddRoleToUser(UserRoles.User_Delete, user);
+            AddBasicAuth(UserRoles.Basic, user);
             unitOfWork.Complate();
             return Ok(new ResponseModel { Status = "Success", Massage = "Kullanıcı Başarı ile Oluşturuldu" });
         }
@@ -96,18 +91,15 @@ namespace PatientCareAPI.Controllers
                      new Claim(ClaimTypes.Name,user.Username),
                      new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString())
                 };
-            List<string> RoleIds = new List<string>();
             List<RolesModel> Roles = unitOfWork.RolesRepository.GetAll();
-            foreach (var item in unitOfWork.UsertoRoleRepository.GetRolesForUser(user.ConcurrencyStamp))
+            foreach (var item in unitOfWork.UsertoAuthoryRepository.GetAuthsbyUser(user.ConcurrencyStamp))
             {
-                RoleIds.Add(Roles.FirstOrDefault(u => u.ConcurrencyStamp == item).Name);
+                List<string> roles = unitOfWork.AuthorytoRolesRepository.GetRolesByAuth(item);
+                foreach (var role in roles)
+                {
+                    authClaims.Add(new Claim(ClaimTypes.Role, Roles.FirstOrDefault(u=>u.ConcurrencyStamp==role).Name));
+                }
             }
-
-            foreach (var userRole in RoleIds)
-            {
-                authClaims.Add(new Claim(ClaimTypes.Role, userRole));
-            }
-
             var authSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
 
             var token = new JwtSecurityToken(
@@ -134,27 +126,54 @@ namespace PatientCareAPI.Controllers
             return Ok(ClaimTypes.GivenName);
         }
 
-        private bool AddRoleToUser(string role, UsersModel user)
+        private bool AddBasicAuth(string role, UsersModel user)
         {
-            bool isok = false;
-            bool rolenewadded = false;
-            string RoleGuid = "";
-            var dbRole = unitOfWork.RolesRepository.FindRoleByName(role);
-            if (dbRole == null)
+            try
             {
-                RoleGuid = Guid.NewGuid().ToString();
-                unitOfWork.RolesRepository.Add(new RolesModel { Name = role, NormalizedName = role.ToUpper(), ConcurrencyStamp = RoleGuid });
-                rolenewadded = true;
+                bool isok = false;
+                string RoleGuid = "";
+                string AuthGuid = "";
+                bool authnewadded = false;
+                var dbauthory = unitOfWork.AuthoryRepository.FindByName("Basic");
+                if (dbauthory == null)
+                {
+                    AuthGuid = Guid.NewGuid().ToString();
+                    unitOfWork.AuthoryRepository.Add(new AuthoryModel
+                    {
+                        Id = 0,
+                        Name = "Basic",
+                        NormalizedName = "Basic".ToUpper(),
+                        ConcurrencyStamp = AuthGuid,
+                        CreatedUser = "system",
+                        CreateTime = DateTime.Now,
+                        IsActive = true
+                    });
+                    authnewadded = true;
+                }
+                else
+                {
+                    AuthGuid = dbauthory.ConcurrencyStamp;
+                }
+                var dbRole = unitOfWork.RolesRepository.FindRoleByName(role);
+                if (dbRole == null)
+                {
+                    RoleGuid = Guid.NewGuid().ToString();
+                    unitOfWork.RolesRepository.Add(new RolesModel { Name = role, NormalizedName = role.ToUpper(), ConcurrencyStamp = RoleGuid });
+                }
+                else
+                {
+                    RoleGuid = dbRole.ConcurrencyStamp;
+                }
+                if (authnewadded)
+                    unitOfWork.AuthorytoRolesRepository.AddRoletoAuth(new AuthorytoRoles { AuthoryID = AuthGuid, RoleID = RoleGuid });
+                unitOfWork.UsertoAuthoryRepository.AddAuthtoUser(new UsertoAuthoryModel { AuthoryID = AuthGuid, UserID = user.ConcurrencyStamp });
+                isok = true;
+                return isok;
             }
-
-            if (rolenewadded)
-                unitOfWork.UsertoRoleRepository.Add(new UsertoRoleModel { UserID = user.ConcurrencyStamp, RoleID = RoleGuid });
-            else
+            catch (Exception ex)
             {
-                unitOfWork.UsertoRoleRepository.Add(new UsertoRoleModel { UserID = user.ConcurrencyStamp, RoleID = dbRole.ConcurrencyStamp });
+                throw ex;
             }
-            isok = true;
-            return isok;
         }
 
         private bool CheckPassword(UsersModel user, string password)

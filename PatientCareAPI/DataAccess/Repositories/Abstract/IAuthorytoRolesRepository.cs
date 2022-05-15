@@ -6,8 +6,10 @@ using PatientCareAPI.Models.Authentication;
 
 namespace PatientCareAPI.DataAccess.Repositories.Abstract
 {
-    public interface IUsertoRoleRepository : IRepository<UsertoRoleModel>
+    public interface IAuthorytoRolesRepository : IRepository<AuthorytoRoles>
     {
-        List<string> GetRolesForUser(string UserID);
+        void AddRoletoAuth(AuthorytoRoles model);
+
+        List<string> GetRolesByAuth(string AuthId);
     }
 }

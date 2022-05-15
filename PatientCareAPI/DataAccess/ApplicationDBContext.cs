@@ -17,9 +17,30 @@ namespace PatientCareAPI.DataAccess
 
         public DbSet<RolesModel> Tbl_Roles { get; set; }
         public DbSet<UsersModel> Tbl_Users { get; set; }
-        public DbSet<UsertoRoleModel> Users_to_Role { get; set; }
+        public DbSet<AuthoryModel> Tbl_Authory { get; set; }
+        public DbSet<UsertoAuthoryModel> User_to_Authory { get; set; }
+        public DbSet<AuthorytoRoles> Authory_to_Roles { get; set; }
         public DbSet<UsertoSaltModel> Users_to_Salt { get; set; }
         public DbSet<CaseModel> Tbl_Case { get; set; }
         public DbSet<UnitModel> Tbl_Unit { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder
+                .Entity<UsertoAuthoryModel>(
+                    eb =>
+                    {
+                        eb.HasNoKey();
+                    });
+
+            modelBuilder
+               .Entity<AuthorytoRoles>(
+                   eb =>
+                   {
+                       eb.HasNoKey();
+                   });
+        }
+
     }
+
 }

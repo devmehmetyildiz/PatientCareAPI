@@ -9,8 +9,8 @@ using PatientCareAPI.DataAccess;
 namespace PatientCareAPI.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20220509193117_verbose")]
-    partial class verbose
+    [Migration("20220515204309_Verbose")]
+    partial class Verbose
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -18,6 +18,63 @@ namespace PatientCareAPI.Migrations
             modelBuilder
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
                 .HasAnnotation("ProductVersion", "5.0.5");
+
+            modelBuilder.Entity("PatientCareAPI.Models.Authentication.AuthoryModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .HasMaxLength(85)
+                        .HasColumnType("varchar(85)");
+
+                    b.Property<DateTime?>("CreateTime")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("CreatedUser")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("DeleteTime")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("DeleteUser")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Name")
+                        .HasMaxLength(85)
+                        .HasColumnType("varchar(85)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(85)
+                        .HasColumnType("varchar(85)");
+
+                    b.Property<DateTime?>("UpdateTime")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("UpdatedUser")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Tbl_Authory");
+                });
+
+            modelBuilder.Entity("PatientCareAPI.Models.Authentication.AuthorytoRoles", b =>
+                {
+                    b.Property<string>("AuthoryID")
+                        .HasMaxLength(85)
+                        .HasColumnType("varchar(85)");
+
+                    b.Property<string>("RoleID")
+                        .HasMaxLength(85)
+                        .HasColumnType("varchar(85)");
+
+                    b.ToTable("Authory_to_Roles");
+                });
 
             modelBuilder.Entity("PatientCareAPI.Models.Authentication.RolesModel", b =>
                 {
@@ -90,13 +147,9 @@ namespace PatientCareAPI.Migrations
                     b.ToTable("Tbl_Users");
                 });
 
-            modelBuilder.Entity("PatientCareAPI.Models.Authentication.UsertoRoleModel", b =>
+            modelBuilder.Entity("PatientCareAPI.Models.Authentication.UsertoAuthoryModel", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<string>("RoleID")
+                    b.Property<string>("AuthoryID")
                         .HasMaxLength(85)
                         .HasColumnType("varchar(85)");
 
@@ -104,9 +157,7 @@ namespace PatientCareAPI.Migrations
                         .HasMaxLength(85)
                         .HasColumnType("varchar(85)");
 
-                    b.HasKey("Id");
-
-                    b.ToTable("Users_to_Role");
+                    b.ToTable("User_to_Authory");
                 });
 
             modelBuilder.Entity("PatientCareAPI.Models.Authentication.UsertoSaltModel", b =>

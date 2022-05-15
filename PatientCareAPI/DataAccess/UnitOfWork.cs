@@ -17,7 +17,9 @@ namespace PatientCareAPI.DataAccess
             _dBContext = dBContext;
             RolesRepository = new RolesRepository(_dBContext);
             UsersRepository = new UsersRepository(_dBContext);
-            UsertoRoleRepository = new UsertoRoleRepository(_dBContext);
+            AuthoryRepository = new AuthoryRepository(_dBContext);
+            UsertoAuthoryRepository = new UsertoAuthoryRepository(_dBContext);
+            AuthorytoRolesRepository = new AuthorytoRolesRepository(_dBContext);
             UsertoSaltRepository = new UsertoSaltRepository(_dBContext);
             CaseRepository = new CaseRepository(_dBContext);
             UnitRepository = new UnitRepository(_dBContext);
@@ -27,13 +29,17 @@ namespace PatientCareAPI.DataAccess
 
         public IUsersRepository UsersRepository { get; private set; }
 
-        public IUsertoRoleRepository UsertoRoleRepository { get; private set; }
+        public IUsertoAuthoryRepository UsertoAuthoryRepository { get; private set; }
 
         public IUsertoSaltRepository UsertoSaltRepository { get; private set; }
       
         public ICaseRepository CaseRepository { get; private set; }
 
         public IUnitRepository UnitRepository { get; private set; }
+
+        public IAuthorytoRolesRepository AuthorytoRolesRepository { get; private set; }
+
+        public IAuthoryRepository AuthoryRepository { get; private set; }
 
         public int Complate()
         {

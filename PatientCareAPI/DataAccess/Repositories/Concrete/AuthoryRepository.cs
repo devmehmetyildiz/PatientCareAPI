@@ -8,18 +8,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PatientCareAPI.DataAccess.Repositories.Concrete
 {
-    public class UsertoRoleRepository : Repository<UsertoRoleModel>, IUsertoRoleRepository
+    public class AuthoryRepository : Repository<AuthoryModel>, IAuthoryRepository
     {
         public ApplicationDBContext dbcontext { get { return _context as ApplicationDBContext; } }
-        private DbSet<UsertoRoleModel> _dbSet;
-        public UsertoRoleRepository(ApplicationDBContext context) : base(context)
+        private DbSet<AuthoryModel> _dbSet;
+        public AuthoryRepository(ApplicationDBContext context) : base(context)
         {
-            _dbSet = dbcontext.Set<UsertoRoleModel>();
+            _dbSet = dbcontext.Set<AuthoryModel>();
         }
 
-        public List<string> GetRolesForUser(string UserID)
+        public AuthoryModel FindByName(string name)
         {
-            return _dbSet.Where(u => u.UserID == UserID).Select(u => u.RoleID).ToList();
+            return _dbSet.FirstOrDefault(x => x.Name == name);
         }
     }
 }

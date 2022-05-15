@@ -10,7 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace PatientCareAPI.Controllers
+namespace PatientCareAPI.Controllers.Settings
 {
     [Authorize]
     [Route("api/[controller]")]
