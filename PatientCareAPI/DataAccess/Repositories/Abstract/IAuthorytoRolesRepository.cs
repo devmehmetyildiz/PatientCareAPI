@@ -10,6 +10,8 @@ namespace PatientCareAPI.DataAccess.Repositories.Abstract
     {
         void AddRoletoAuth(AuthorytoRoles model);
 
+        void DeleteRolesbyAuth(string AuthGuid);
+
         List<string> GetRolesByAuth(string AuthId);
     }
 }

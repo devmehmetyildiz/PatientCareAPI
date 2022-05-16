@@ -9,6 +9,7 @@ namespace PatientCareAPI.DataAccess.Repositories.Abstract
     public interface IRolesRepository : IRepository<RolesModel>
     {
         RolesModel FindRoleByName(string RoleName);
-        
+
+        RolesModel FindRoleBuGuid(string Guid);
     }
 }

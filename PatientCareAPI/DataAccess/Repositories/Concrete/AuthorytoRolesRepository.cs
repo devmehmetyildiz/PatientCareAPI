@@ -23,9 +23,17 @@ namespace PatientCareAPI.DataAccess.Repositories.Concrete
             var result = dbcontext.Database.ExecuteSqlRaw(query);
         }
 
+        
+
         public List<string> GetRolesByAuth(string AuthId)
         {
             return _dbSet.Where(u => u.AuthoryID == AuthId).Select(u => u.RoleID).ToList();
+        }
+
+        public void DeleteRolesbyAuth(string AuthGuid)
+        {
+            string query = $"DELETE FROM authory_to_roles WHERE `AuthoryID` = '{AuthGuid}'";
+            var result = dbcontext.Database.ExecuteSqlRaw(query);
         }
     }
 }

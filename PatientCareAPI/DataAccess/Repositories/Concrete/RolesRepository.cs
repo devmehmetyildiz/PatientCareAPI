@@ -21,5 +21,10 @@ namespace PatientCareAPI.DataAccess.Repositories.Concrete
         {
             return _dbSet.FirstOrDefault(u => u.NormalizedName == RoleName.ToUpper());
         }
+
+        public RolesModel FindRoleBuGuid(string Guid)
+        {
+            return _dbSet.FirstOrDefault(u => u.ConcurrencyStamp == Guid);
+        }
     }
 }
