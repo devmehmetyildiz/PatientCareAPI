@@ -49,6 +49,14 @@ namespace PatientCareAPI.Controllers.Auth
         }
 
         [Authorize]
+        [Route("GetAllroles")]
+        [HttpGet]
+        public IActionResult GetAllroles()
+        {
+            return Ok(unitOfWork.RolesRepository.GetAll());
+        }
+
+        [Authorize]
         [Route("Add")]
         [HttpPost]
         public IActionResult Add(AuthoryModel model)
