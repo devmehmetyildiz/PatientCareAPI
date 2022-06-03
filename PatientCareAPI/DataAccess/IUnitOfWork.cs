@@ -9,16 +9,14 @@ namespace PatientCareAPI.DataAccess
 {
     public interface IUnitOfWork : IDisposable
     {
-        IYetkiRepository YetkiRepository { get; }
+        IAuthoryRepository AuthoryRepository { get; }
         IUsersRepository UsersRepository { get; }
-        IRoleRepository AuthoryRepository { get; }
-
-        IUsertoRoleRepository UsertoAuthoryRepository { get; }
-        IRoletoYetkiRepository AuthorytoYetkiRepository { get; }
+        IRoleRepository RoleRepository { get; }
+        IUsertoRoleRepository UsertoRoleRepository { get; }
+        IRoletoAuthoryRepository RoletoAuthoryRepository { get; }
         IUsertoSaltRepository UsertoSaltRepository { get; }
         ICaseRepository CaseRepository { get; }
         IUnitRepository UnitRepository { get; }
-
         int Complate();
     }
 }

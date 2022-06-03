@@ -1,20 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace PatientCareAPI.Models.Authentication
 {
-    public class YetkiModel
+    public class RoletoAuthory
     {
-        [Key]      
-        public int Id { get; set; }
         [StringLength(85)]
-        public string Name { get; set; }
+        public string RoleID { get; set; }
         [StringLength(85)]
-        public string NormalizedName { get; set; }
-        [StringLength(85)]
-        public string ConcurrencyStamp { get; set; }
+        public string AuthoryID { get; set; }
     }
 }

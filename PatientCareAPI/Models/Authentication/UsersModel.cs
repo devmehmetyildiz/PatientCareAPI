@@ -28,11 +28,28 @@ namespace PatientCareAPI.Models.Authentication
 
         [StringLength(85)]
         public string ConcurrencyStamp { get; set; }
+       
+        public bool Isactive { get; set; }
+        public int AccessFailedCount { get; set; }
+
+        public string  Name{ get; set; }
+
+        public string Surname { get; set; }
 
         [StringLength(85)]
         public string PhoneNumber { get; set; }
         public bool PhoneNumberConfirmed { get; set; }
-        public bool Isactive { get; set; }
-        public int AccessFailedCount { get; set; }
+        [StringLength(85)]
+        public string Town { get; set; }
+        [StringLength(85)]
+        public string City { get; set; }
+
+        public string Address { get; set; }
+        [StringLength(85)]
+        public string Language { get; set; }
+
+        public int UserID { get; set; }
+
+        
     }
 }

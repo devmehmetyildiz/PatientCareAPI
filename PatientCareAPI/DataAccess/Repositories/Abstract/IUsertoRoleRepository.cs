@@ -8,8 +8,8 @@ namespace PatientCareAPI.DataAccess.Repositories.Abstract
 {
     public interface IUsertoRoleRepository : IRepository<UsertoRoleModel>
     {
-        void AddAuthtoUser(UsertoRoleModel model);
+        void AddRolestoUser(UsertoRoleModel model);
 
-        List<string> GetAuthsbyUser(string UserID);
+        List<string> GetRolesbyUser(string UserID);
     }
 }

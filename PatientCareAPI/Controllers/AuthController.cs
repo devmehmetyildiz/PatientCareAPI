@@ -68,7 +68,7 @@ namespace PatientCareAPI.Controllers
                PhoneNumberConfirmed = false               
             };
             unitOfWork.UsersRepository.Add(user);
-            AddBasicAuth(UserYetki.Basic, user);
+            AddBasicAuth(UserAuthory.Basic, user);
             unitOfWork.Complate();
             return Ok(new ResponseModel { Status = "Success", Massage = "Kullanıcı Başarı ile Oluşturuldu" });
         }
@@ -96,10 +96,10 @@ namespace PatientCareAPI.Controllers
                      new Claim(ClaimTypes.Name,user.Username),
                      new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString())
                 };
-            List<YetkiModel> Yetkiler = unitOfWork.YetkiRepository.GetAll();
-            foreach (var item in unitOfWork.UsertoAuthoryRepository.GetAuthsbyUser(user.ConcurrencyStamp))
+            List<AuthoryModel> Yetkiler = unitOfWork.AuthoryRepository.GetAll();
+            foreach (var item in unitOfWork.UsertoRoleRepository.GetRolesbyUser(user.ConcurrencyStamp))
             {
-                List<string> yetkis = unitOfWork.AuthorytoYetkiRepository.GetYetkisByAuth(item);
+                List<string> yetkis = unitOfWork.RoletoAuthoryRepository.GetAuthoriesByRole(item);
                 foreach (var yetki in yetkis)
                 {
                     authClaims.Add(new Claim(ClaimTypes.Role, Yetkiler.FirstOrDefault(u=>u.ConcurrencyStamp== yetki).Name));
@@ -139,18 +139,18 @@ namespace PatientCareAPI.Controllers
             {
                 bool isok = false;
                 string yetkiGuid = "";
-                string AuthGuid = "";
+                string RoleGuid = "";
                 bool authnewadded = false;
-                var dbauthory = unitOfWork.AuthoryRepository.FindByName("Basic");
-                if (dbauthory == null)
+                var dbrole = unitOfWork.RoleRepository.FindByName("Basic");
+                if (dbrole == null)
                 {
-                    AuthGuid = Guid.NewGuid().ToString();
-                    unitOfWork.AuthoryRepository.Add(new RoleModel
+                    RoleGuid = Guid.NewGuid().ToString();
+                    unitOfWork.RoleRepository.Add(new RoleModel
                     {
                         Id = 0,
                         Name = "Basic",
                         NormalizedName = "Basic".ToUpper(),
-                        ConcurrencyStamp = AuthGuid,
+                        ConcurrencyStamp = RoleGuid,
                         CreatedUser = "system",
                         CreateTime = DateTime.Now,
                         IsActive = true
@@ -159,21 +159,21 @@ namespace PatientCareAPI.Controllers
                 }
                 else
                 {
-                    AuthGuid = dbauthory.ConcurrencyStamp;
+                    RoleGuid = dbrole.ConcurrencyStamp;
                 }
-                var dbRole = unitOfWork.YetkiRepository.FindyetkiByName(role);
+                var dbRole = unitOfWork.AuthoryRepository.FindAuthoryByName(role);
                 if (dbRole == null)
                 {
                     yetkiGuid = Guid.NewGuid().ToString();
-                    unitOfWork.YetkiRepository.Add(new YetkiModel { Name = role, NormalizedName = role.ToUpper(), ConcurrencyStamp = yetkiGuid });
+                    unitOfWork.AuthoryRepository.Add(new AuthoryModel { Name = role, NormalizedName = role.ToUpper(), ConcurrencyStamp = yetkiGuid });
                 }
                 else
                 {
                     yetkiGuid = dbRole.ConcurrencyStamp;
                 }
                 if (authnewadded)
-                    unitOfWork.AuthorytoYetkiRepository.AddYetkitoAuth(new RoletoYetki { AuthoryID = AuthGuid, yetkiID = yetkiGuid });
-                unitOfWork.UsertoAuthoryRepository.AddAuthtoUser(new UsertoRoleModel { AuthoryID = AuthGuid, UserID = user.ConcurrencyStamp });
+                    unitOfWork.RoletoAuthoryRepository.AddAuthorytoRole(new RoletoAuthory { RoleID = RoleGuid, AuthoryID = yetkiGuid });
+                unitOfWork.UsertoRoleRepository.AddRolestoUser(new UsertoRoleModel { RoleID = RoleGuid, UserID = user.ConcurrencyStamp });
                 isok = true;
                 return isok;
             }
@@ -191,21 +191,21 @@ namespace PatientCareAPI.Controllers
         private ResponseModel ConfigureAuthSystem()
         {
             List<string> Roles = new List<string>();
-            List<YetkiModel> newRoles = new List<YetkiModel>();
-            Roles.Add(UserYetki.Basic);
-            Roles.Add(UserYetki.User);
-            Roles.Add(UserYetki.Admin);
-            Roles.Add(UserYetki.User_Screen);
-            Roles.Add(UserYetki.User_Add);
-            Roles.Add(UserYetki.User_Update);
-            Roles.Add(UserYetki.User_Delete);
+            List<AuthoryModel> newRoles = new List<AuthoryModel>();
+            Roles.Add(UserAuthory.Basic);
+            Roles.Add(UserAuthory.User);
+            Roles.Add(UserAuthory.Admin);
+            Roles.Add(UserAuthory.User_Screen);
+            Roles.Add(UserAuthory.User_Add);
+            Roles.Add(UserAuthory.User_Update);
+            Roles.Add(UserAuthory.User_Delete);
             foreach (var role in Roles)
             {
-                var dbRole = unitOfWork.YetkiRepository.FindyetkiByName(role);
+                var dbRole = unitOfWork.AuthoryRepository.FindAuthoryByName(role);
                 if (dbRole == null)
                 {
-                    var model = new YetkiModel { Name = role, NormalizedName = role.ToUpper(), ConcurrencyStamp = Guid.NewGuid().ToString() };
-                    unitOfWork.YetkiRepository.Add(model);
+                    var model = new AuthoryModel { Name = role, NormalizedName = role.ToUpper(), ConcurrencyStamp = Guid.NewGuid().ToString() };
+                    unitOfWork.AuthoryRepository.Add(model);
                     newRoles.Add(model);
                 }
             }

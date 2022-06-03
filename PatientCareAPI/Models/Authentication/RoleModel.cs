@@ -10,9 +10,9 @@ namespace PatientCareAPI.Models.Authentication
     {
         public RoleModel()
         {
-            Yetkis = new List<YetkiModel>();
+            Yetkis = new List<AuthoryModel>();
         }
         [NotMapped]
-        public List<YetkiModel> Yetkis{ get; set; }
+        public List<AuthoryModel> Yetkis { get; set; }
     }
 }

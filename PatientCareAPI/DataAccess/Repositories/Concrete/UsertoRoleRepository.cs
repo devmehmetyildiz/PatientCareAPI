@@ -17,14 +17,14 @@ namespace PatientCareAPI.DataAccess.Repositories.Concrete
             _dbSet = dbcontext.Set<UsertoRoleModel>();
         }
 
-        public List<string> GetAuthsbyUser(string UserID)
+        public List<string> GetRolesbyUser(string UserID)
         {
             return _dbSet.Where(u => u.UserID == UserID).Select(u => u.RoleID).ToList();
         }
 
-        public void AddAuthtoUser(UsertoRoleModel model)
+        public void AddRolestoUser(UsertoRoleModel model)
         {
-            string query = $"INSERT INTO user_to_authory (`UserID`, `RoleID`) VALUES ('{model.UserID}','{model.RoleID}')";
+            string query = $"INSERT INTO usertoroles (`UserID`, `RoleID`) VALUES ('{model.UserID}','{model.RoleID}')";
             var result = dbcontext.Database.ExecuteSqlRaw(query);
         }
     }

@@ -15,12 +15,12 @@ namespace PatientCareAPI.DataAccess
 
         }
 
-        public DbSet<YetkiModel> Tbl_yetkis { get; set; }
+        public DbSet<AuthoryModel> Tbl_Authory { get; set; }
         public DbSet<UsersModel> Tbl_Users { get; set; }
-        public DbSet<RoleModel> Tbl_Authory { get; set; }
-        public DbSet<UsertoRoleModel> User_to_Authory { get; set; }
-        public DbSet<RoletoYetki> Authory_to_yetkis { get; set; }
-        public DbSet<UsertoSaltModel> Users_to_Salt { get; set; }
+        public DbSet<RoleModel> Tbl_Roles { get; set; }
+        public DbSet<UsertoRoleModel> UsertoRoles { get; set; }
+        public DbSet<RoletoAuthory> RoletoAuthories { get; set; }
+        public DbSet<UsertoSaltModel> UsertoSalt { get; set; }
         public DbSet<CaseModel> Tbl_Case { get; set; }
         public DbSet<UnitModel> Tbl_Unit { get; set; }
 
@@ -34,7 +34,7 @@ namespace PatientCareAPI.DataAccess
                     });
 
             modelBuilder
-               .Entity<RoletoYetki>(
+               .Entity<RoletoAuthory>(
                    eb =>
                    {
                        eb.HasNoKey();

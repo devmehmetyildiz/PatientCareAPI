@@ -8,21 +8,21 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PatientCareAPI.DataAccess.Repositories.Concrete
 {
-    public class YetkiRepository : Repository<YetkiModel>, IYetkiRepository
+    public class AuthoryRepository : Repository<AuthoryModel>, IAuthoryRepository
     {
         public ApplicationDBContext dbcontext { get { return _context as ApplicationDBContext; } }
-        private DbSet<YetkiModel> _dbSet;
-        public YetkiRepository(ApplicationDBContext context) : base(context)
+        private DbSet<AuthoryModel> _dbSet;
+        public AuthoryRepository(ApplicationDBContext context) : base(context)
         {
-            _dbSet = dbcontext.Set<YetkiModel>();
+            _dbSet = dbcontext.Set<AuthoryModel>();
         }
 
-        public YetkiModel FindyetkiByName(string yetkiName)
+        public AuthoryModel FindAuthoryByName(string yetkiName)
         {
             return _dbSet.FirstOrDefault(u => u.NormalizedName == yetkiName.ToUpper());
         }
 
-        public YetkiModel FindyetkiBuGuid(string Guid)
+        public AuthoryModel FindAuthoryBuGuid(string Guid)
         {
             return _dbSet.FirstOrDefault(u => u.ConcurrencyStamp == Guid);
         }

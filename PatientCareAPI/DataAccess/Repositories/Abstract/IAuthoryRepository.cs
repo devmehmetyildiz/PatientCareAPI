@@ -6,10 +6,10 @@ using PatientCareAPI.Models.Authentication;
 
 namespace PatientCareAPI.DataAccess.Repositories.Abstract
 {
-    public interface IYetkiRepository : IRepository<YetkiModel>
+    public interface IAuthoryRepository : IRepository<AuthoryModel>
     {
-        YetkiModel FindyetkiByName(string yetkiName);
+        AuthoryModel FindAuthoryByName(string yetkiName);
 
-        YetkiModel FindyetkiBuGuid(string Guid);
+        AuthoryModel FindAuthoryBuGuid(string Guid);
     }
 }
