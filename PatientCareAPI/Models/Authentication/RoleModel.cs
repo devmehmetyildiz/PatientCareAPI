@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace PatientCareAPI.Models.Authentication
 {
-    public class AuthoryModel : BaseModel
+    public class RoleModel : BaseModel
     {
-        public AuthoryModel()
+        public RoleModel()
         {
-            Roles = new List<RolesModel>();
+            Yetkis = new List<YetkiModel>();
         }
         [NotMapped]
-        public List<RolesModel> Roles{ get; set; }
+        public List<YetkiModel> Yetkis{ get; set; }
     }
 }

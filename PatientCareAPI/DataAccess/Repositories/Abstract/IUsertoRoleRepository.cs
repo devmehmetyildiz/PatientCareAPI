@@ -6,9 +6,9 @@ using PatientCareAPI.Models.Authentication;
 
 namespace PatientCareAPI.DataAccess.Repositories.Abstract
 {
-    public interface IUsertoAuthoryRepository : IRepository<UsertoAuthoryModel>
+    public interface IUsertoRoleRepository : IRepository<UsertoRoleModel>
     {
-        void AddAuthtoUser(UsertoAuthoryModel model);
+        void AddAuthtoUser(UsertoRoleModel model);
 
         List<string> GetAuthsbyUser(string UserID);
     }

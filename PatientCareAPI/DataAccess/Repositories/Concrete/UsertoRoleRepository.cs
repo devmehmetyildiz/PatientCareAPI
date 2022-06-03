@@ -8,23 +8,23 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PatientCareAPI.DataAccess.Repositories.Concrete
 {
-    public class UsertoAuthoryRepository : Repository<UsertoAuthoryModel>, IUsertoAuthoryRepository
+    public class UsertoRoleRepository : Repository<UsertoRoleModel>, IUsertoRoleRepository
     {
         public ApplicationDBContext dbcontext { get { return _context as ApplicationDBContext; } }
-        private DbSet<UsertoAuthoryModel> _dbSet;
-        public UsertoAuthoryRepository(ApplicationDBContext context) : base(context)
+        private DbSet<UsertoRoleModel> _dbSet;
+        public UsertoRoleRepository(ApplicationDBContext context) : base(context)
         {
-            _dbSet = dbcontext.Set<UsertoAuthoryModel>();
+            _dbSet = dbcontext.Set<UsertoRoleModel>();
         }
 
         public List<string> GetAuthsbyUser(string UserID)
         {
-            return _dbSet.Where(u => u.UserID == UserID).Select(u => u.AuthoryID).ToList();
+            return _dbSet.Where(u => u.UserID == UserID).Select(u => u.RoleID).ToList();
         }
 
-        public void AddAuthtoUser(UsertoAuthoryModel model)
+        public void AddAuthtoUser(UsertoRoleModel model)
         {
-            string query = $"INSERT INTO user_to_authory (`UserID`, `AuthoryID`) VALUES ('{model.UserID}','{model.AuthoryID}')";
+            string query = $"INSERT INTO user_to_authory (`UserID`, `RoleID`) VALUES ('{model.UserID}','{model.RoleID}')";
             var result = dbcontext.Database.ExecuteSqlRaw(query);
         }
     }

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace PatientCareAPI.Models.Authentication
 {
-    public class UserRoles
+    public class UserYetki
     {
         public const string Basic = "Basic";
         public const string User = "User";

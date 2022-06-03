@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace PatientCareAPI.Models.Authentication
 {
-    public class RolesModel
+    public class YetkiModel
     {
         [Key]      
         public int Id { get; set; }

@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace PatientCareAPI.DataAccess.Repositories.Abstract
 {
-    public interface IAuthoryRepository : IRepository<AuthoryModel>
+    public interface IRoleRepository : IRepository<RoleModel>
     {
-        AuthoryModel FindByName(string name);
+        RoleModel FindByName(string name);
     }
 }

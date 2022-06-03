@@ -15,21 +15,21 @@ namespace PatientCareAPI.DataAccess
         public UnitOfWork(ApplicationDBContext dBContext)
         {
             _dBContext = dBContext;
-            RolesRepository = new RolesRepository(_dBContext);
+            YetkiRepository = new YetkiRepository(_dBContext);
             UsersRepository = new UsersRepository(_dBContext);
-            AuthoryRepository = new AuthoryRepository(_dBContext);
-            UsertoAuthoryRepository = new UsertoAuthoryRepository(_dBContext);
-            AuthorytoRolesRepository = new AuthorytoRolesRepository(_dBContext);
+            AuthoryRepository = new RoleRepository(_dBContext);
+            UsertoAuthoryRepository = new UsertoRoleRepository(_dBContext);
+            AuthorytoYetkiRepository = new RoletoYetkiRepository(_dBContext);
             UsertoSaltRepository = new UsertoSaltRepository(_dBContext);
             CaseRepository = new CaseRepository(_dBContext);
             UnitRepository = new UnitRepository(_dBContext);
         }
 
-        public IRolesRepository RolesRepository { get; private set; }
+        public IYetkiRepository YetkiRepository { get; private set; }
 
         public IUsersRepository UsersRepository { get; private set; }
 
-        public IUsertoAuthoryRepository UsertoAuthoryRepository { get; private set; }
+        public IUsertoRoleRepository UsertoAuthoryRepository { get; private set; }
 
         public IUsertoSaltRepository UsertoSaltRepository { get; private set; }
       
@@ -37,9 +37,9 @@ namespace PatientCareAPI.DataAccess
 
         public IUnitRepository UnitRepository { get; private set; }
 
-        public IAuthorytoRolesRepository AuthorytoRolesRepository { get; private set; }
+        public IRoletoYetkiRepository AuthorytoYetkiRepository { get; private set; }
 
-        public IAuthoryRepository AuthoryRepository { get; private set; }
+        public IRoleRepository AuthoryRepository { get; private set; }
 
         public int Complate()
         {

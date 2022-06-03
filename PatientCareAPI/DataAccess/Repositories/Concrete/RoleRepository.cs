@@ -8,16 +8,16 @@ using Microsoft.EntityFrameworkCore;
 
 namespace PatientCareAPI.DataAccess.Repositories.Concrete
 {
-    public class AuthoryRepository : Repository<AuthoryModel>, IAuthoryRepository
+    public class RoleRepository : Repository<RoleModel>, IRoleRepository
     {
         public ApplicationDBContext dbcontext { get { return _context as ApplicationDBContext; } }
-        private DbSet<AuthoryModel> _dbSet;
-        public AuthoryRepository(ApplicationDBContext context) : base(context)
+        private DbSet<RoleModel> _dbSet;
+        public RoleRepository(ApplicationDBContext context) : base(context)
         {
-            _dbSet = dbcontext.Set<AuthoryModel>();
+            _dbSet = dbcontext.Set<RoleModel>();
         }
 
-        public AuthoryModel FindByName(string name)
+        public RoleModel FindByName(string name)
         {
             return _dbSet.FirstOrDefault(x => x.Name == name);
         }
