@@ -23,7 +23,12 @@ namespace PatientCareAPI.DataAccess
         public DbSet<UsertoSaltModel> UsertoSalt { get; set; }
         public DbSet<CaseModel> Tbl_Case { get; set; }
         public DbSet<UnitModel> Tbl_Unit { get; set; }
+        public DbSet<StationsModel> Tbl_Stations { get; set; }
+        public DbSet<DepartmentModel> Tbl_Department { get; set; }
+        public DbSet<UsertoDepartmentModel> UsertoDepartment { get; set; }
+        public DbSet<UsertoStationsModel> UsertoStations { get; set; }
 
+        public DbSet<DepartmenttoStationModel>  DepartmenttoStation { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder
@@ -39,6 +44,18 @@ namespace PatientCareAPI.DataAccess
                    {
                        eb.HasNoKey();
                    });
+            modelBuilder
+              .Entity<UsertoDepartmentModel>(
+                  eb =>
+                  {
+                      eb.HasNoKey();
+                  });
+            modelBuilder
+            .Entity<UsertoStationsModel>(
+                eb =>
+                {
+                    eb.HasNoKey();
+                });
         }
 
     }

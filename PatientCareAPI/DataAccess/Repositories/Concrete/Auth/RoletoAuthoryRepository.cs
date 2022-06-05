@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using PatientCareAPI.Models.Authentication;
-using PatientCareAPI.DataAccess.Repositories.Abstract;
+using PatientCareAPI.DataAccess.Repositories.Abstract.Auth;
 using Microsoft.EntityFrameworkCore;
 
-namespace PatientCareAPI.DataAccess.Repositories.Concrete
+namespace PatientCareAPI.DataAccess.Repositories.Concrete.Auth
 {
     public class RoletoAuthoryRepository : Repository<RoletoAuthory>, IRoletoAuthoryRepository
     {
@@ -19,7 +19,7 @@ namespace PatientCareAPI.DataAccess.Repositories.Concrete
 
         public void AddAuthorytoRole(RoletoAuthory model)
         {
-            string query = $"INSERT INTO roletoauthories (`RoleID`, `AuthoryID`) VALUES ('{model.RoleID}','{model.RoleID}')";
+            string query = $"INSERT INTO roletoauthories (`RoleID`, `AuthoryID`) VALUES ('{model.RoleID}','{model.AuthoryID}')";
             var result = dbcontext.Database.ExecuteSqlRaw(query);
         }
 
@@ -27,7 +27,7 @@ namespace PatientCareAPI.DataAccess.Repositories.Concrete
 
         public List<string> GetAuthoriesByRole(string RoleId)
         {
-            return _dbSet.Where(u => u.RoleID == RoleId).Select(u => u.RoleID).ToList();
+            return _dbSet.Where(u => u.RoleID == RoleId).Select(u => u.AuthoryID).ToList();
         }
 
         public void DeleteAuthoriesbyRole(string RoleGuid)

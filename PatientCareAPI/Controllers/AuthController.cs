@@ -97,9 +97,9 @@ namespace PatientCareAPI.Controllers
                      new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString())
                 };
             List<AuthoryModel> Yetkiler = unitOfWork.AuthoryRepository.GetAll();
-            foreach (var item in unitOfWork.UsertoRoleRepository.GetRolesbyUser(user.ConcurrencyStamp))
+            foreach (var userrole in unitOfWork.UsertoRoleRepository.GetRolesbyUser(user.ConcurrencyStamp))
             {
-                List<string> yetkis = unitOfWork.RoletoAuthoryRepository.GetAuthoriesByRole(item);
+                List<string> yetkis = unitOfWork.RoletoAuthoryRepository.GetAuthoriesByRole(userrole);
                 foreach (var yetki in yetkis)
                 {
                     authClaims.Add(new Claim(ClaimTypes.Role, Yetkiler.FirstOrDefault(u=>u.ConcurrencyStamp== yetki).Name));

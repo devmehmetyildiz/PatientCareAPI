@@ -4,7 +4,7 @@ using MySql.EntityFrameworkCore.Metadata;
 
 namespace PatientCareAPI.Migrations
 {
-    public partial class Verbose : Migration
+    public partial class ver : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -59,6 +59,28 @@ namespace PatientCareAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Tbl_Department",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "varchar(85)", maxLength: 85, nullable: true),
+                    NormalizedName = table.Column<string>(type: "varchar(85)", maxLength: 85, nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "varchar(85)", maxLength: 85, nullable: true),
+                    CreatedUser = table.Column<string>(type: "text", nullable: true),
+                    UpdatedUser = table.Column<string>(type: "text", nullable: true),
+                    DeleteUser = table.Column<string>(type: "text", nullable: true),
+                    CreateTime = table.Column<DateTime>(type: "datetime", nullable: true),
+                    UpdateTime = table.Column<DateTime>(type: "datetime", nullable: true),
+                    DeleteTime = table.Column<DateTime>(type: "datetime", nullable: true),
+                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tbl_Department", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Tbl_Roles",
                 columns: table => new
                 {
@@ -78,6 +100,28 @@ namespace PatientCareAPI.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Tbl_Roles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Tbl_Stations",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "varchar(85)", maxLength: 85, nullable: true),
+                    NormalizedName = table.Column<string>(type: "varchar(85)", maxLength: 85, nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "varchar(85)", maxLength: 85, nullable: true),
+                    CreatedUser = table.Column<string>(type: "text", nullable: true),
+                    UpdatedUser = table.Column<string>(type: "text", nullable: true),
+                    DeleteUser = table.Column<string>(type: "text", nullable: true),
+                    CreateTime = table.Column<DateTime>(type: "datetime", nullable: true),
+                    UpdateTime = table.Column<DateTime>(type: "datetime", nullable: true),
+                    DeleteTime = table.Column<DateTime>(type: "datetime", nullable: true),
+                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tbl_Stations", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -171,7 +215,13 @@ namespace PatientCareAPI.Migrations
                 name: "Tbl_Case");
 
             migrationBuilder.DropTable(
+                name: "Tbl_Department");
+
+            migrationBuilder.DropTable(
                 name: "Tbl_Roles");
+
+            migrationBuilder.DropTable(
+                name: "Tbl_Stations");
 
             migrationBuilder.DropTable(
                 name: "Tbl_Unit");

@@ -43,14 +43,14 @@ namespace PatientCareAPI.Controllers.Auth
                 var yetkis = unitOfWork.RoletoAuthoryRepository.GetAuthoriesByRole(role.ConcurrencyStamp);
                 foreach (var item in yetkis)
                 {
-                    role.Yetkis.Add(unitOfWork.AuthoryRepository.FindAuthoryBuGuid(item));
+                    role.Authories.Add(unitOfWork.AuthoryRepository.FindAuthoryBuGuid(item));
                 }
             }
             return Ok(roles);
         }
 
         [Authorize]
-        [Route("GetSelectedAuthory")]
+        [Route("GetSelectedRole")]
         [HttpGet]
         public IActionResult GetSelectedAuthory(int ID)
         {
@@ -59,13 +59,13 @@ namespace PatientCareAPI.Controllers.Auth
             var authories = unitOfWork.RoletoAuthoryRepository.GetAuthoriesByRole(role.ConcurrencyStamp);
             foreach (var item in authories)
             {
-                role.Yetkis.Add(unitOfWork.AuthoryRepository.FindAuthoryBuGuid(item));
+                role.Authories.Add(unitOfWork.AuthoryRepository.FindAuthoryBuGuid(item));
             }
             return Ok(role);
         }
 
         [Authorize]
-        [Route("GetAllroles")]
+        [Route("GetAllAuthories")]
         [HttpGet]
         public IActionResult GetAllroles()
         {
@@ -85,7 +85,7 @@ namespace PatientCareAPI.Controllers.Auth
             model.CreateTime = DateTime.Now;
             model.ConcurrencyStamp = Guid.NewGuid().ToString();
             unitOfWork.RoleRepository.Add(model);
-            foreach (var yetki in model.Yetkis)
+            foreach (var yetki in model.Authories)
             {
                 unitOfWork.RoletoAuthoryRepository.AddAuthorytoRole(new RoletoAuthory { RoleID = model.ConcurrencyStamp, AuthoryID = yetki.ConcurrencyStamp });
             }
@@ -105,7 +105,7 @@ namespace PatientCareAPI.Controllers.Auth
             model.UpdateTime = DateTime.Now;
             unitOfWork.RoleRepository.update(unitOfWork.RoleRepository.Getbyid(model.Id), model);
             unitOfWork.RoletoAuthoryRepository.DeleteAuthoriesbyRole(model.ConcurrencyStamp);
-            foreach (var yetki in model.Yetkis)
+            foreach (var yetki in model.Authories)
             {
                 unitOfWork.RoletoAuthoryRepository.AddAuthorytoRole(new RoletoAuthory { RoleID = model.ConcurrencyStamp, AuthoryID = yetki.ConcurrencyStamp });
             }
@@ -115,7 +115,7 @@ namespace PatientCareAPI.Controllers.Auth
 
         [Authorize]
         [Route("Delete")]
-        [HttpPost]
+        [HttpDelete]
         public IActionResult Delete(RoleModel model)
         {
             var claimsIdentity = this.User.Identity as ClaimsIdentity;
@@ -123,6 +123,16 @@ namespace PatientCareAPI.Controllers.Auth
             model.DeleteUser = username;
             model.IsActive = false;
             model.DeleteTime = DateTime.Now;
+            unitOfWork.RoleRepository.update(unitOfWork.RoleRepository.Getbyid(model.Id), model);
+            unitOfWork.Complate();
+            return Ok();
+        }
+
+        [Authorize]
+        [Route("DeleteFromDB")]
+        [HttpDelete]
+        public IActionResult DeleteFromDB(RoleModel model)
+        {
             unitOfWork.RoleRepository.Remove(model.Id);
             unitOfWork.RoletoAuthoryRepository.DeleteAuthoriesbyRole(model.ConcurrencyStamp);
             unitOfWork.Complate();

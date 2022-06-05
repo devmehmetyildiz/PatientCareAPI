@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using PatientCareAPI.DataAccess.Repositories.Abstract;
+using PatientCareAPI.DataAccess.Repositories.Abstract.Auth;
 using PatientCareAPI.DataAccess.Repositories.Abstract.Settings;
 
 namespace PatientCareAPI.DataAccess
@@ -17,6 +17,11 @@ namespace PatientCareAPI.DataAccess
         IUsertoSaltRepository UsertoSaltRepository { get; }
         ICaseRepository CaseRepository { get; }
         IUnitRepository UnitRepository { get; }
+        IDepartmentRepository DepartmentRepository { get; }
+        IStationsRepository StationsRepository { get; }
+        IUsertoStationRepository UsertoStationRepository { get; }
+        IUsertoDepartmentRepository UsertoDepartmentRepository { get; }
+        IDepartmenttoStationRepository DepartmenttoStationRepository { get; }
         int Complate();
     }
 }

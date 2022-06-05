@@ -1,6 +1,6 @@
-﻿using PatientCareAPI.DataAccess.Repositories.Abstract;
+﻿using PatientCareAPI.DataAccess.Repositories.Abstract.Auth;
 using PatientCareAPI.DataAccess.Repositories.Abstract.Settings;
-using PatientCareAPI.DataAccess.Repositories.Concrete;
+using PatientCareAPI.DataAccess.Repositories.Concrete.Auth;
 using PatientCareAPI.DataAccess.Repositories.Concrete.Settings;
 using System;
 using System.Collections.Generic;
@@ -23,6 +23,11 @@ namespace PatientCareAPI.DataAccess
             UsertoSaltRepository = new UsertoSaltRepository(_dBContext);
             CaseRepository = new CaseRepository(_dBContext);
             UnitRepository = new UnitRepository(_dBContext);
+            DepartmentRepository = new DepartmentRepository(_dBContext);
+            StationsRepository = new StationsRepository(_dBContext);
+            UsertoStationRepository = new UsertoStationRepository(_dBContext);
+            UsertoDepartmentRepository = new UsertoDepartmentRepository(_dBContext);
+            DepartmenttoStationRepository = new DepartmenttoStationRepository(_dBContext);
         }
 
         public IAuthoryRepository AuthoryRepository { get; private set; }
@@ -40,6 +45,16 @@ namespace PatientCareAPI.DataAccess
         public IRoletoAuthoryRepository RoletoAuthoryRepository { get; private set; }
 
         public IRoleRepository RoleRepository { get; private set; }
+
+        public IDepartmentRepository DepartmentRepository { get; private set; }
+
+        public IStationsRepository StationsRepository { get; private set; }
+
+        public IUsertoStationRepository UsertoStationRepository { get; private set; }
+
+        public IUsertoDepartmentRepository UsertoDepartmentRepository { get; private set; }
+
+        public IDepartmenttoStationRepository DepartmenttoStationRepository { get; private set; }
 
         public int Complate()
         {

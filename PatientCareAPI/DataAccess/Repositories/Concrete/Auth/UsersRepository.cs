@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using PatientCareAPI.Models.Authentication;
-using PatientCareAPI.DataAccess.Repositories.Abstract;
+using PatientCareAPI.DataAccess.Repositories.Abstract.Auth;
 using PatientCareAPI.Utils;
 using Microsoft.EntityFrameworkCore;
 
-namespace PatientCareAPI.DataAccess.Repositories.Concrete
+namespace PatientCareAPI.DataAccess.Repositories.Concrete.Auth
 {
     public class UsersRepository : Repository<UsersModel>, IUsersRepository
     {
