@@ -8,6 +8,10 @@ namespace PatientCareAPI.Models.Settings
 {
     public class DepartmentModel : BaseModel
     {
+        public DepartmentModel()
+        {
+            Stations = new List<StationsModel>();
+        }
         [NotMapped]
         public List<StationsModel> Stations { get; set; }
     }

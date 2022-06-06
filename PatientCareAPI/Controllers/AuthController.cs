@@ -43,6 +43,14 @@ namespace PatientCareAPI.Controllers
         }
 
         [AllowAnonymous]
+        [HttpGet]
+        [Route("Test")]
+        public IActionResult Test()
+        {
+            return Ok("OK");
+        }
+
+        [AllowAnonymous]
         [HttpPost]
         [Route("Register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
