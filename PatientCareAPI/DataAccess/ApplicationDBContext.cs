@@ -15,16 +15,16 @@ namespace PatientCareAPI.DataAccess
 
         }
 
-        public DbSet<AuthoryModel> Tbl_Authory { get; set; }
-        public DbSet<UsersModel> Tbl_Users { get; set; }
-        public DbSet<RoleModel> Tbl_Roles { get; set; }
+        public DbSet<AuthoryModel> Authories { get; set; }
+        public DbSet<UsersModel> Users { get; set; }
+        public DbSet<RoleModel> Roles { get; set; }
         public DbSet<UsertoRoleModel> UsertoRoles { get; set; }
         public DbSet<RoletoAuthory> RoletoAuthories { get; set; }
         public DbSet<UsertoSaltModel> UsertoSalt { get; set; }
-        public DbSet<CaseModel> Tbl_Case { get; set; }
-        public DbSet<UnitModel> Tbl_Unit { get; set; }
-        public DbSet<StationsModel> Tbl_Stations { get; set; }
-        public DbSet<DepartmentModel> Tbl_Department { get; set; }
+        public DbSet<CaseModel> Cases { get; set; }
+        public DbSet<UnitModel> Units { get; set; }
+        public DbSet<StationsModel> Stations { get; set; }
+        public DbSet<DepartmentModel> Departments { get; set; }
         public DbSet<UsertoDepartmentModel> UsertoDepartment { get; set; }
         public DbSet<UsertoStationsModel> UsertoStations { get; set; }
 
@@ -56,6 +56,12 @@ namespace PatientCareAPI.DataAccess
                 {
                     eb.HasNoKey();
                 });
+            modelBuilder
+           .Entity<DepartmenttoStationModel>(
+               eb =>
+               {
+                   eb.HasNoKey();
+               });
         }
 
     }

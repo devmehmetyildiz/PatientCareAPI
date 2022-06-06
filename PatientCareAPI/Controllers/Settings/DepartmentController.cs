@@ -32,6 +32,15 @@ namespace PatientCareAPI.Controllers.Settings
         public IActionResult GetAll()
         {
             var items = unitOfWork.DepartmentRepository.GetAll().Where(u => u.IsActive).ToList();
+            var stations = unitOfWork.StationsRepository.GetAll().Where(u => u.IsActive).ToList();
+            foreach (var item in items)
+            {
+                var departmentstations = unitOfWork.DepartmenttoStationRepository.GetStationsbyDepartment(item.ConcurrencyStamp).ToList();
+                foreach (var realstation in departmentstations)
+                {
+                    item.Stations.Add(stations.FirstOrDefault(u => u.ConcurrencyStamp == realstation));
+                }
+            }
             if (items.Count == 0)
                 return NotFound();
             return Ok(items);
@@ -42,6 +51,12 @@ namespace PatientCareAPI.Controllers.Settings
         public IActionResult GetSelectedCase(int ID)
         {
             var item = unitOfWork.DepartmentRepository.Getbyid(ID);
+            var stations = unitOfWork.StationsRepository.GetAll().Where(u => u.IsActive).ToList();
+            var departmentstations = unitOfWork.DepartmenttoStationRepository.GetStationsbyDepartment(item.ConcurrencyStamp).ToList();
+            foreach (var realstation in departmentstations)
+            {
+                item.Stations.Add(stations.FirstOrDefault(u => u.ConcurrencyStamp == realstation));
+            }
             if (item == null)
                 return NotFound();
             return Ok(item);
@@ -59,6 +74,10 @@ namespace PatientCareAPI.Controllers.Settings
             model.CreateTime = DateTime.Now;
             model.ConcurrencyStamp = Guid.NewGuid().ToString();
             unitOfWork.DepartmentRepository.Add(model);
+            foreach (var item in model.Stations)
+            {
+                unitOfWork.DepartmenttoStationRepository.AddStationstoDepartment(new DepartmenttoStationModel { DepartmentID = model.ConcurrencyStamp, StationID = item.ConcurrencyStamp });
+            }
             unitOfWork.Complate();
             return Ok();
         }
@@ -73,6 +92,11 @@ namespace PatientCareAPI.Controllers.Settings
             model.NormalizedName = model.Name.ToUpper();
             model.UpdateTime = DateTime.Now;
             unitOfWork.DepartmentRepository.update(unitOfWork.DepartmentRepository.Getbyid(model.Id), model);
+            unitOfWork.DepartmenttoStationRepository.RemoveStationsfromDepartment(model.ConcurrencyStamp);
+            foreach (var item in model.Stations)
+            {
+                unitOfWork.DepartmenttoStationRepository.AddStationstoDepartment(new DepartmenttoStationModel { DepartmentID = model.ConcurrencyStamp, StationID = item.ConcurrencyStamp });
+            }
             unitOfWork.Complate();
             return Ok();
         }
@@ -96,6 +120,7 @@ namespace PatientCareAPI.Controllers.Settings
         public IActionResult DeleteFromDB(DepartmentModel model)
         {
             unitOfWork.DepartmentRepository.Remove(model.Id);
+            unitOfWork.DepartmenttoStationRepository.RemoveStationsfromDepartment(model.ConcurrencyStamp);
             unitOfWork.Complate();
             return Ok();
         }
