@@ -27,5 +27,11 @@ namespace PatientCareAPI.DataAccess.Repositories.Concrete.Auth
             string query = $"INSERT INTO usertoroles (`UserID`, `RoleID`) VALUES ('{model.UserID}','{model.RoleID}')";
             var result = dbcontext.Database.ExecuteSqlRaw(query);
         }
+
+        public void RemoveRolefromUser(string UserID)
+        {
+            string query = $"DELETE FROM `usertoroles` WHERE `UserID` = '{UserID}'";
+            var result = dbcontext.Database.ExecuteSqlRaw(query);
+        }
     }
 }

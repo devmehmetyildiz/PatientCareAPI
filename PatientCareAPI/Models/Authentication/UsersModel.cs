@@ -8,10 +8,15 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace PatientCareAPI.Models.Authentication
 {
-    public class UsersModel
+    public class UsersModel : BaseModel
     {
-        [Key]
-        public int Id { get; set; }
+        public UsersModel()
+        {
+            Stations = new List<StationsModel>();
+            Departments = new List<DepartmentModel>();
+            Roles = new List<RoleModel>();
+        }
+      
         [StringLength(85)]
         public string Username { get; set; }
         [StringLength(85)]
@@ -22,11 +27,10 @@ namespace PatientCareAPI.Models.Authentication
         public bool EmailConfirmed { get; set; }
         [StringLength(85)]
         public string PasswordHash { get; set; }
-        [StringLength(85)]
-        public string ConcurrencyStamp { get; set; }
-        public bool Isactive { get; set; }
+      
+      
         public int AccessFailedCount { get; set; }
-        public string  Name{ get; set; }
+     
         public string Surname { get; set; }
         [StringLength(85)]
         public string PhoneNumber { get; set; }
