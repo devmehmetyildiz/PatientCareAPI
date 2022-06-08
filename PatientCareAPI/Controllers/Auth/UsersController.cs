@@ -11,7 +11,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace PatientCareAPI.Controllers.Settings
+namespace PatientCareAPI.Controllers.Auth
 {
     [Authorize]
     [Route("api/[controller]")]

@@ -4,23 +4,12 @@ using MySql.EntityFrameworkCore.Metadata;
 
 namespace PatientCareAPI.Migrations
 {
-    public partial class ver : Migration
+    public partial class Start : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "RoletoAuthories",
-                columns: table => new
-                {
-                    RoleID = table.Column<string>(type: "varchar(85)", maxLength: 85, nullable: true),
-                    AuthoryID = table.Column<string>(type: "varchar(85)", maxLength: 85, nullable: true)
-                },
-                constraints: table =>
-                {
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Tbl_Authory",
+                name: "Authories",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -31,11 +20,11 @@ namespace PatientCareAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Tbl_Authory", x => x.Id);
+                    table.PrimaryKey("PK_Authories", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Tbl_Case",
+                name: "Cases",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -55,11 +44,11 @@ namespace PatientCareAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Tbl_Case", x => x.Id);
+                    table.PrimaryKey("PK_Cases", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Tbl_Department",
+                name: "Departments",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -77,11 +66,22 @@ namespace PatientCareAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Tbl_Department", x => x.Id);
+                    table.PrimaryKey("PK_Departments", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Tbl_Roles",
+                name: "DepartmenttoStation",
+                columns: table => new
+                {
+                    DepartmentID = table.Column<string>(type: "text", nullable: true),
+                    StationID = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Roles",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -99,11 +99,22 @@ namespace PatientCareAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Tbl_Roles", x => x.Id);
+                    table.PrimaryKey("PK_Roles", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Tbl_Stations",
+                name: "RoletoAuthories",
+                columns: table => new
+                {
+                    RoleID = table.Column<string>(type: "varchar(85)", maxLength: 85, nullable: true),
+                    AuthoryID = table.Column<string>(type: "varchar(85)", maxLength: 85, nullable: true)
+                },
+                constraints: table =>
+                {
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Stations",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -121,11 +132,11 @@ namespace PatientCareAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Tbl_Stations", x => x.Id);
+                    table.PrimaryKey("PK_Stations", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Tbl_Unit",
+                name: "Units",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -145,11 +156,11 @@ namespace PatientCareAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Tbl_Unit", x => x.Id);
+                    table.PrimaryKey("PK_Units", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Tbl_Users",
+                name: "Users",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -159,10 +170,7 @@ namespace PatientCareAPI.Migrations
                     Email = table.Column<string>(type: "varchar(85)", maxLength: 85, nullable: true),
                     EmailConfirmed = table.Column<bool>(type: "tinyint(85)", maxLength: 85, nullable: false),
                     PasswordHash = table.Column<string>(type: "varchar(85)", maxLength: 85, nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "varchar(85)", maxLength: 85, nullable: true),
-                    Isactive = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     AccessFailedCount = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "text", nullable: true),
                     Surname = table.Column<string>(type: "text", nullable: true),
                     PhoneNumber = table.Column<string>(type: "varchar(85)", maxLength: 85, nullable: true),
                     PhoneNumberConfirmed = table.Column<bool>(type: "tinyint(1)", nullable: false),
@@ -170,11 +178,32 @@ namespace PatientCareAPI.Migrations
                     City = table.Column<string>(type: "varchar(85)", maxLength: 85, nullable: true),
                     Address = table.Column<string>(type: "text", nullable: true),
                     Language = table.Column<string>(type: "varchar(85)", maxLength: 85, nullable: true),
-                    UserID = table.Column<int>(type: "int", nullable: false)
+                    UserID = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "varchar(85)", maxLength: 85, nullable: true),
+                    NormalizedName = table.Column<string>(type: "varchar(85)", maxLength: 85, nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "varchar(85)", maxLength: 85, nullable: true),
+                    CreatedUser = table.Column<string>(type: "text", nullable: true),
+                    UpdatedUser = table.Column<string>(type: "text", nullable: true),
+                    DeleteUser = table.Column<string>(type: "text", nullable: true),
+                    CreateTime = table.Column<DateTime>(type: "datetime", nullable: true),
+                    UpdateTime = table.Column<DateTime>(type: "datetime", nullable: true),
+                    DeleteTime = table.Column<DateTime>(type: "datetime", nullable: true),
+                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Tbl_Users", x => x.Id);
+                    table.PrimaryKey("PK_Users", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "UsertoDepartment",
+                columns: table => new
+                {
+                    UserID = table.Column<string>(type: "text", nullable: true),
+                    DepartmanID = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
                 });
 
             migrationBuilder.CreateTable(
@@ -201,39 +230,59 @@ namespace PatientCareAPI.Migrations
                 {
                     table.PrimaryKey("PK_UsertoSalt", x => x.Id);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "UsertoStations",
+                columns: table => new
+                {
+                    UserID = table.Column<string>(type: "text", nullable: true),
+                    StationID = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                });
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
+                name: "Authories");
+
+            migrationBuilder.DropTable(
+                name: "Cases");
+
+            migrationBuilder.DropTable(
+                name: "Departments");
+
+            migrationBuilder.DropTable(
+                name: "DepartmenttoStation");
+
+            migrationBuilder.DropTable(
+                name: "Roles");
+
+            migrationBuilder.DropTable(
                 name: "RoletoAuthories");
 
             migrationBuilder.DropTable(
-                name: "Tbl_Authory");
+                name: "Stations");
 
             migrationBuilder.DropTable(
-                name: "Tbl_Case");
+                name: "Units");
 
             migrationBuilder.DropTable(
-                name: "Tbl_Department");
+                name: "Users");
 
             migrationBuilder.DropTable(
-                name: "Tbl_Roles");
-
-            migrationBuilder.DropTable(
-                name: "Tbl_Stations");
-
-            migrationBuilder.DropTable(
-                name: "Tbl_Unit");
-
-            migrationBuilder.DropTable(
-                name: "Tbl_Users");
+                name: "UsertoDepartment");
 
             migrationBuilder.DropTable(
                 name: "UsertoRoles");
 
             migrationBuilder.DropTable(
                 name: "UsertoSalt");
+
+            migrationBuilder.DropTable(
+                name: "UsertoStations");
         }
     }
 }

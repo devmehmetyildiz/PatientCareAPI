@@ -16,5 +16,19 @@ namespace PatientCareAPI.DataAccess.Repositories.Concrete.Settings
         {
             _dbSet = dbcontext.Set<StationsModel>();
         }
+
+        public List<StationsModel> GetStationsbyDepartments(List<string> stations)
+        {
+            string query = "";
+            query+= "select * from stations  where ConcurrencyStamp IN (";
+            for (int i = 0; i < stations.Count; i++)
+            {
+                query += $"'{stations[i]}'";
+                if(i!=stations.Count-1)
+                query += ",";
+            }
+            query += ")";
+            return _dbSet.FromSqlRaw(query).ToList(); ;
+        }
     }
 }

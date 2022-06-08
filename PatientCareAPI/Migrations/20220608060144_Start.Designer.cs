@@ -9,8 +9,8 @@ using PatientCareAPI.DataAccess;
 namespace PatientCareAPI.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20220605151054_ver")]
-    partial class ver
+    [Migration("20220608060144_Start")]
+    partial class Start
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -39,7 +39,7 @@ namespace PatientCareAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tbl_Authory");
+                    b.ToTable("Authories");
                 });
 
             modelBuilder.Entity("PatientCareAPI.Models.Authentication.RoleModel", b =>
@@ -83,7 +83,7 @@ namespace PatientCareAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tbl_Roles");
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("PatientCareAPI.Models.Authentication.RoletoAuthory", b =>
@@ -119,6 +119,18 @@ namespace PatientCareAPI.Migrations
                         .HasMaxLength(85)
                         .HasColumnType("varchar(85)");
 
+                    b.Property<DateTime?>("CreateTime")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("CreatedUser")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("DeleteTime")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("DeleteUser")
+                        .HasColumnType("text");
+
                     b.Property<string>("Email")
                         .HasMaxLength(85)
                         .HasColumnType("varchar(85)");
@@ -127,7 +139,7 @@ namespace PatientCareAPI.Migrations
                         .HasMaxLength(85)
                         .HasColumnType("tinyint(85)");
 
-                    b.Property<bool>("Isactive")
+                    b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Language")
@@ -135,7 +147,12 @@ namespace PatientCareAPI.Migrations
                         .HasColumnType("varchar(85)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("text");
+                        .HasMaxLength(85)
+                        .HasColumnType("varchar(85)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(85)
+                        .HasColumnType("varchar(85)");
 
                     b.Property<string>("NormalizedUsername")
                         .HasMaxLength(85)
@@ -159,6 +176,12 @@ namespace PatientCareAPI.Migrations
                         .HasMaxLength(85)
                         .HasColumnType("varchar(85)");
 
+                    b.Property<DateTime?>("UpdateTime")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("UpdatedUser")
+                        .HasColumnType("text");
+
                     b.Property<int>("UserID")
                         .HasColumnType("int");
 
@@ -168,7 +191,7 @@ namespace PatientCareAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tbl_Users");
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("PatientCareAPI.Models.Authentication.UsertoRoleModel", b =>
@@ -250,7 +273,7 @@ namespace PatientCareAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tbl_Case");
+                    b.ToTable("Cases");
                 });
 
             modelBuilder.Entity("PatientCareAPI.Models.Settings.DepartmentModel", b =>
@@ -294,7 +317,18 @@ namespace PatientCareAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tbl_Department");
+                    b.ToTable("Departments");
+                });
+
+            modelBuilder.Entity("PatientCareAPI.Models.Settings.DepartmenttoStationModel", b =>
+                {
+                    b.Property<string>("DepartmentID")
+                        .HasColumnType("text");
+
+                    b.Property<string>("StationID")
+                        .HasColumnType("text");
+
+                    b.ToTable("DepartmenttoStation");
                 });
 
             modelBuilder.Entity("PatientCareAPI.Models.Settings.StationsModel", b =>
@@ -338,7 +372,7 @@ namespace PatientCareAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tbl_Stations");
+                    b.ToTable("Stations");
                 });
 
             modelBuilder.Entity("PatientCareAPI.Models.Settings.UnitModel", b =>
@@ -388,7 +422,29 @@ namespace PatientCareAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Tbl_Unit");
+                    b.ToTable("Units");
+                });
+
+            modelBuilder.Entity("PatientCareAPI.Models.Settings.UsertoDepartmentModel", b =>
+                {
+                    b.Property<string>("DepartmanID")
+                        .HasColumnType("text");
+
+                    b.Property<string>("UserID")
+                        .HasColumnType("text");
+
+                    b.ToTable("UsertoDepartment");
+                });
+
+            modelBuilder.Entity("PatientCareAPI.Models.Settings.UsertoStationsModel", b =>
+                {
+                    b.Property<string>("StationID")
+                        .HasColumnType("text");
+
+                    b.Property<string>("UserID")
+                        .HasColumnType("text");
+
+                    b.ToTable("UsertoStations");
                 });
 #pragma warning restore 612, 618
         }

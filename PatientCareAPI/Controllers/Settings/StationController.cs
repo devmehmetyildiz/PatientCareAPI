@@ -47,6 +47,33 @@ namespace PatientCareAPI.Controllers.Settings
             return Ok(item);
         }
 
+        [Route("GetStationsByDepartments")]
+        [HttpPost]
+        public IActionResult GetStationsByDepartments(List<string> Departments)
+        {
+            List<StationsModel> stationsList = new List<StationsModel>();
+            List<string> stations = new List<string>();
+            foreach (var department in Departments)
+            {
+                stations.AddRange(unitOfWork.DepartmenttoStationRepository.GetStationsbyDepartment(department));
+            }
+            return Ok(unitOfWork.StationsRepository.GetStationsbyDepartments(stations));
+        }
+
+        [Route("GetStationsByUser")]
+        [HttpPost]
+        public IActionResult GetStationsByUser(int ID)
+        {
+            var Departments = unitOfWork.UsertoDepartmentRepository.GetDepartmentsbyUser(unitOfWork.UsersRepository.Getbyid(ID).ConcurrencyStamp);
+            List<StationsModel> stationsList = new List<StationsModel>();
+            List<string> stations = new List<string>();
+            foreach (var department in Departments)
+            {
+                stations.AddRange(unitOfWork.DepartmenttoStationRepository.GetStationsbyDepartment(department));
+            }
+            return Ok(unitOfWork.StationsRepository.GetStationsbyDepartments(stations));
+        }
+
         [Route("Add")]
         [HttpPost]
         public IActionResult Add(StationsModel model)

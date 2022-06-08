@@ -117,6 +117,18 @@ namespace PatientCareAPI.Migrations
                         .HasMaxLength(85)
                         .HasColumnType("varchar(85)");
 
+                    b.Property<DateTime?>("CreateTime")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("CreatedUser")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("DeleteTime")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("DeleteUser")
+                        .HasColumnType("text");
+
                     b.Property<string>("Email")
                         .HasMaxLength(85)
                         .HasColumnType("varchar(85)");
@@ -125,7 +137,7 @@ namespace PatientCareAPI.Migrations
                         .HasMaxLength(85)
                         .HasColumnType("tinyint(85)");
 
-                    b.Property<bool>("Isactive")
+                    b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Language")
@@ -133,7 +145,12 @@ namespace PatientCareAPI.Migrations
                         .HasColumnType("varchar(85)");
 
                     b.Property<string>("Name")
-                        .HasColumnType("text");
+                        .HasMaxLength(85)
+                        .HasColumnType("varchar(85)");
+
+                    b.Property<string>("NormalizedName")
+                        .HasMaxLength(85)
+                        .HasColumnType("varchar(85)");
 
                     b.Property<string>("NormalizedUsername")
                         .HasMaxLength(85)
@@ -156,6 +173,12 @@ namespace PatientCareAPI.Migrations
                     b.Property<string>("Town")
                         .HasMaxLength(85)
                         .HasColumnType("varchar(85)");
+
+                    b.Property<DateTime?>("UpdateTime")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("UpdatedUser")
+                        .HasColumnType("text");
 
                     b.Property<int>("UserID")
                         .HasColumnType("int");
