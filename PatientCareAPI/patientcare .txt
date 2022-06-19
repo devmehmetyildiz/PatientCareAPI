@@ -1,0 +1,73 @@
+hasta bakım yardım 
+
+departmanlar - > yönetim, mutfak , temizlik , sağlıkcı 
+
+yönetim ////
+
+1 görev atayacak ( kullanıcı oluşturma yetkisi)
+2 full access
+3 analiz rapor 
+
+mutfak ////
+
+1 stok girişi , gelen ürün girecek 
+2 girilen stokların sktsi son kullanma tarihi
+3 kullanılan ürünler stoktan düşecek 
+3.1 skti yaklaşan ürünlere uyarı verilecek 
+
+temizlik ////
+
+1 stok girişi yapacak 
+2 skt kullanacak girişi yapacak 
+3 kullandıklarını stoktan düşecek 
+3.1 skti yaklaşan ürünler uyarı verilecek 
+
+revir sağlık  ////
+
+1 stok girişi yapacak  ürün tanımlarken 2 tablo olacak (ruhsal -> hastaların kayıtları olacak, bedensel -> hastaarın kaydı olacak  ) 
+2 skt kullanacak girişi yapacak 
+3 kullandıklarını stoktan düşecek 
+3.1 skti yaklaşan ürünler uyarı verilecek 
+4 ürün girişinde ilaç girişi, medikal ürün girişi bunların sktsi uyarı verecek 
+5 hastaya ait hasta rapor takibi 
+6 dosya yükleme rapor girişi olacak ftb dosya takibi 
+
+
+bütün departmanlarda 
+
+
+mutfak temizlik sağlık departmanları ürün tanımı tanımlayacak, 
+example : mutfak için paketli ürün, manav ürünü, mutfakta kullanılan temizlik ürünleri, sağlık için ilaç medikal ürün (dallanabilir), temizlik için normal temizlik ürünler 
+
+aktif ürün tablosu olacak 
+
+departmanlar
+kullanıcı birimleri ( roller ) 
+sktsi ürünadı giriş tarihi, 
+update create delete user 
+
+
+
+ileriki kısımlarda aktif ürünlere pdf ve foto eklenmesi olacak 
+
+hastalar için ayrı takip ekranı olacak 
+
+
+
+
+
+
+
+
+uygulamaya giriş yaptığı anda uyarı verecek ---> dün hiç ürün çıkışı yapmadınız
+
+
+
+
+
+Stok tablosu 
+
+
+
+
+
