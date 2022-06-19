@@ -20,10 +20,10 @@ namespace PatientCareAPI.Controllers.Settings
     public class CaseController : ControllerBase
     {
         private IConfiguration _configuration;
-        private readonly ILogger<AuthController> _logger;
+        private readonly ILogger<CaseController> _logger;
         private readonly ApplicationDBContext _context;
         UnitOfWork unitOfWork;
-        public CaseController(IConfiguration configuration, ILogger<AuthController> logger, ApplicationDBContext context)
+        public CaseController(IConfiguration configuration, ILogger<CaseController> logger, ApplicationDBContext context)
         {
             _configuration = configuration;
             _logger = logger;

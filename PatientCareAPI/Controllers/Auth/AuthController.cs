@@ -17,7 +17,7 @@ using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 
-namespace PatientCareAPI.Controllers
+namespace PatientCareAPI.Controllers.Auth
 {
     [Authorize]
     [Route("api/[controller]")]
@@ -39,7 +39,6 @@ namespace PatientCareAPI.Controllers
             unitOfWork = new UnitOfWork(context);          
             securityutils = new CryptographyProcessor();
            
-           
         }
 
         [AllowAnonymous]
@@ -50,11 +49,17 @@ namespace PatientCareAPI.Controllers
             return Ok("OK");
         }
 
+
+        //Admin Kullanıcının Oluşturulması
         [AllowAnonymous]
         [HttpPost]
         [Route("Register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
+            if (unitOfWork.UsersRepository.GetAll().Count>0)
+            {
+                return BadRequest(new ResponseModel { Status = "ERROR", Massage = "Admin Kullanıcı Oluşturuldu. Bu fonksiyon geçersiz" });
+            } 
             var userExist = unitOfWork.UsersRepository.FindUserByName(model.Username);
             if (userExist != null)
                 return StatusCode(StatusCodes.Status500InternalServerError, new ResponseModel { Status = "Error", Massage = "Bu Kullanıcı Adı Daha Önce Alındı" });
@@ -63,20 +68,22 @@ namespace PatientCareAPI.Controllers
             unitOfWork.UsertoSaltRepository.Add(new UsertoSaltModel { Salt = salt, UserID = userGuid });
             UsersModel user = new UsersModel()
             {
-               Id=0,
-               Username =  model.Username,
-               NormalizedUsername = model.Username.ToUpper(),
-               ConcurrencyStamp =userGuid,
-               Email = model.Email,
-               AccessFailedCount = 0,
-               EmailConfirmed = false,
-               Isactive = false,
-               PasswordHash = securityutils.GenerateHash(model.Password,salt),
-               PhoneNumber = "",
-               PhoneNumberConfirmed = false               
+                Id = 0,
+                Username = model.Username,
+                NormalizedUsername = model.Username.ToUpper(),
+                ConcurrencyStamp = userGuid,
+                Email = model.Email,
+                AccessFailedCount = 0,
+                EmailConfirmed = false,
+                IsActive = false,
+                CreatedUser = "System",
+                CreateTime = DateTime.Now,
+                PasswordHash = securityutils.GenerateHash(model.Password, salt),
+                PhoneNumber = "",
+                PhoneNumberConfirmed = false
             };
             unitOfWork.UsersRepository.Add(user);
-            AddBasicAuth(UserAuthory.Basic, user);
+            AddBasicAuth(UserAuthory.Admin, user);
             unitOfWork.Complate();
             return Ok(new ResponseModel { Status = "Success", Massage = "Kullanıcı Başarı ile Oluşturuldu" });
         }
