@@ -12,6 +12,7 @@ namespace PatientCareAPI.Models.Settings
         {
             Stations = new List<StationsModel>();
         }
+
         [NotMapped]
         public List<StationsModel> Stations { get; set; }
     }

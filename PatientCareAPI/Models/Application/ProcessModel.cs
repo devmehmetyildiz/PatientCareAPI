@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace PatientCareAPI.Models.Application
 {
-    public class PatientModel : BaseModel
+    public class ProcessModel
     {
     }
 }
