@@ -13,10 +13,14 @@ namespace PatientCareAPI.Models.Application
     {
         [Key]
         public int Id { get; set; }
-
+        public string Stockuid { get; set; }
+        [NotMapped]
         public StockModel Stock { get; set; }
-        public double amount { get; set; }
-        public string UnitID { get; set; }
-        public int MyProperty { get; set; }
+        public double Amount { get; set; }
+        public double Purchaseprice { get; set; }
+        public DateTime? Purchasedate { get; set; }
+
+        public string Info { get; set; }
+
     }
 }

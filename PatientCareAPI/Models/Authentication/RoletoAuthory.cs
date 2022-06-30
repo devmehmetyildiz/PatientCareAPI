@@ -9,6 +9,8 @@ namespace PatientCareAPI.Models.Authentication
 {
     public class RoletoAuthory
     {
+        [Key]
+        public int Id { get; set; }
         [StringLength(85)]
         public string RoleID { get; set; }
         [StringLength(85)]

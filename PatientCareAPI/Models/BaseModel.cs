@@ -11,16 +11,12 @@ namespace PatientCareAPI.Models
         [Key]
         public int Id { get; set; }
         [StringLength(85)]
-        public string Name { get; set; }
-        [StringLength(85)]
-        public string NormalizedName { get; set; }
-        [StringLength(85)]
         public string ConcurrencyStamp { get; set; }
-
+        [StringLength(30)]
         public string CreatedUser { get; set; }
-
+        [StringLength(30)]
         public string UpdatedUser { get; set; }
-
+        [StringLength(30)]
         public string DeleteUser { get; set; }
       
         public DateTime? CreateTime { get; set; }
