@@ -9,27 +9,16 @@ using System.Threading.Tasks;
 
 namespace PatientCareAPI.Models.Application
 {
-    public class ActivepatientModel
+    public class ActivepatientModel : BaseModel
     {
-        public ActivepatientModel()
-        {
-            Activestocks = new List<ActivestockModel>();
-            Users = new List<UsersModel>();
-            Files = new List<FileModel>();
-        }
-        [Key]
-        public int Id { get; set; }
         [StringLength(85)]
         public string PatientID { get; set; }
         [NotMapped]
         public PatientModel Patient { get; set; }
         public DateTime? Registerdate { get; set; }
         public DateTime? Releasedate { get; set; }
+        public string Processid { get; set; }
         [NotMapped]
-        public List<ActivestockModel> Activestocks { get; set; }
-        [NotMapped]
-        public List<UsersModel> Users { get; set; }
-        [NotMapped]
-        public List<FileModel> Files { get; set; }
+        public ProcessModel Process { get; set; }
     }
 }

@@ -5,7 +5,8 @@ using System.Threading.Tasks;
 
 namespace PatientCareAPI.Models.Settings
 {
-    public class StocktypeModel
+    public class PatienttypeModel : BaseModel
     {
+        public string Name { get; set; }
     }
 }

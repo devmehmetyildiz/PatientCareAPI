@@ -12,6 +12,9 @@ namespace PatientCareAPI.Models.Authentication
         {
             Authories = new List<AuthoryModel>();
         }
+
+        public string Name { get; set; }
+
         [NotMapped]
         public List<AuthoryModel> Authories { get; set; }
     }

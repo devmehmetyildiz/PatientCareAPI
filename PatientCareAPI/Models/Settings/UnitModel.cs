@@ -16,7 +16,6 @@ namespace PatientCareAPI.Models.Settings
         [StringLength(30)]
         public string Name { get; set; }
         public int Unittype { get; set; }
-
         [NotMapped]
         public List<DepartmentModel> Departments { get; set; }
         

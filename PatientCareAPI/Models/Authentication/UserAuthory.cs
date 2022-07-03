@@ -34,9 +34,9 @@ namespace PatientCareAPI.Models.Authentication
         public const string Patients_Update = "Patients_Update";
         public const string Patients_Delete = "Patients_Delete";
         public const string Patients_ManageAll = "Patients_ManageAll";
-        public const string Patient_UploadFile = "Patient_UploadFile";
-        public const string Patient_DownloadFile = "Patient_DownloadFile";
-        public const string Patient_ViewFile = "Patient_ViewFile";
+        public const string Patients_UploadFile = "Patient_UploadFile";
+        public const string Patients_DownloadFile = "Patient_DownloadFile";
+        public const string Patients_ViewFile = "Patient_ViewFile";
 
         public const string Patienttype_Screen = "Patienttype_Screen";
         public const string Patienttype_Add = "Patienttype_Add";
@@ -64,12 +64,6 @@ namespace PatientCareAPI.Models.Authentication
 
         public const string Dashboard_AllScreen = "Dashboard_AllScreen";
         public const string Dashboard_DepartmentScreen = "Dashboard_DepartmentScreen";
-
-        public const string Unittype_Screen = "Unittype_Screen";
-        public const string Unittype_Add = "Unittype_Add";
-        public const string Unittype_Update = "Unittype_Update";
-        public const string Unittype_Delete = "Unittype_Delete";
-        public const string Unittype_ManageAll = "Unittype_ManageAll";
 
         public const string Reminding_Screen = "Reminding_Screen";
         public const string Reminding_Add = "Reminding_Add";

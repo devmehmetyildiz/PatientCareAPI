@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace PatientCareAPI.Models.Application
 {
-    public class ActivepatienttoUsersModel
+    public class ProcesstoActiveStocksModel
     {
         [Key]
         public int Id { get; set; }
         [StringLength(85)]
-        public string ActivepatientID { get; set; }
+        public string ProcessID { get; set; }
         [StringLength(85)]
-        public string UserID { get; set; }
+        public string ActivestocksID { get; set; }
     }
 }

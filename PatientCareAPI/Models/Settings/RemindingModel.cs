@@ -7,5 +7,6 @@ namespace PatientCareAPI.Models.Settings
 {
     public class RemindingModel : BaseModel
     {
+        public string Name { get; set; }
     }
 }

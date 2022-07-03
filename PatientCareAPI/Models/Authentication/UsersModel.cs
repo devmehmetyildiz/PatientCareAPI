@@ -30,7 +30,9 @@ namespace PatientCareAPI.Models.Authentication
       
       
         public int AccessFailedCount { get; set; }
-     
+
+        public string Name { get; set; }
+
         public string Surname { get; set; }
         [StringLength(85)]
         public string PhoneNumber { get; set; }

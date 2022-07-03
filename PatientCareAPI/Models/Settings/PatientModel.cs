@@ -11,8 +11,8 @@ namespace PatientCareAPI.Models.Settings
 {
     public class PatientModel : BaseModel
     {
+        public string Name { get; set; }
         public string Surname { get; set; }
-
         [StringLength(maximumLength:11)]
         public string CountryID { get; set; }
  

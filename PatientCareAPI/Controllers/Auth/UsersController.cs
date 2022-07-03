@@ -97,7 +97,6 @@ namespace PatientCareAPI.Controllers.Auth
             var claimsIdentity = this.User.Identity as ClaimsIdentity;
             var username = claimsIdentity.FindFirst(ClaimTypes.Name)?.Value;
             model.CreatedUser = username;
-            model.NormalizedName = model.Name.ToUpper();
             model.IsActive = true;
             model.CreateTime = DateTime.Now;
             model.ConcurrencyStamp = Guid.NewGuid().ToString();
@@ -126,7 +125,6 @@ namespace PatientCareAPI.Controllers.Auth
             var claimsIdentity = this.User.Identity as ClaimsIdentity;
             var username = claimsIdentity.FindFirst(ClaimTypes.Name)?.Value;
             model.UpdatedUser = username;
-            model.NormalizedName = model.Name.ToUpper();
             model.UpdateTime = DateTime.Now;
             unitOfWork.UsersRepository.update(unitOfWork.UsersRepository.Getbyid(model.Id), model);
             unitOfWork.UsertoRoleRepository.RemoveRolefromUser(model.ConcurrencyStamp);

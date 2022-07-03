@@ -1,4 +1,6 @@
-﻿using PatientCareAPI.DataAccess.Repositories.Abstract.Auth;
+﻿using PatientCareAPI.DataAccess.Repositories.Abstract.Application;
+using PatientCareAPI.DataAccess.Repositories.Concrete.Application;
+using PatientCareAPI.DataAccess.Repositories.Abstract.Auth;
 using PatientCareAPI.DataAccess.Repositories.Abstract.Settings;
 using PatientCareAPI.DataAccess.Repositories.Concrete.Auth;
 using PatientCareAPI.DataAccess.Repositories.Concrete.Settings;
@@ -15,19 +17,35 @@ namespace PatientCareAPI.DataAccess
         public UnitOfWork(ApplicationDBContext dBContext)
         {
             _dBContext = dBContext;
+            //Application
+            ActivepatientRepository = new ActivepatientRepository(_dBContext);
+            ProcesstoActivestocksRepostiyory = new ProcesstoActivestockRepository(_dBContext);
+            ProcesstoFilesRepostiyory = new ProcesstoFilesRepository(_dBContext);
+            ProcesstoUsersRepository = new ProcesstoUsersRepository(_dBContext);
+            ActivestockRepository = new ActivestockRepository(_dBContext);
+            ProcessRepository = new ProcessRepository(_dBContext);
+            //Auth
             AuthoryRepository = new AuthoryRepository(_dBContext);
             UsersRepository = new UsersRepository(_dBContext);
             RoleRepository = new RoleRepository(_dBContext);
             UsertoRoleRepository = new UsertoRoleRepository(_dBContext);
             RoletoAuthoryRepository = new RoletoAuthoryRepository(_dBContext);
             UsertoSaltRepository = new UsertoSaltRepository(_dBContext);
+            //Settings
             CaseRepository = new CaseRepository(_dBContext);
+            CasetodepartmentRepository = new CasetodepartmentRepository(dBContext);
             UnitRepository = new UnitRepository(_dBContext);
             DepartmentRepository = new DepartmentRepository(_dBContext);
             StationsRepository = new StationsRepository(_dBContext);
             UsertoStationRepository = new UsertoStationRepository(_dBContext);
             UsertoDepartmentRepository = new UsertoDepartmentRepository(_dBContext);
             DepartmenttoStationRepository = new DepartmenttoStationRepository(_dBContext);
+            FileRepository = new FileRepository(_dBContext);
+            PatientRepository = new PatientRepository(_dBContext);
+            RemindingRepository = new RemindingRepository(_dBContext);
+            StockRepository = new StockRepository(_dBContext);
+            UnittodepartmentRepository = new UnittodepartmentRepository(_dBContext);
+            PatienttypeRepository = new PatienttypeRepository(_dBContext);
         }
 
         public IAuthoryRepository AuthoryRepository { get; private set; }
@@ -55,6 +73,32 @@ namespace PatientCareAPI.DataAccess
         public IUsertoDepartmentRepository UsertoDepartmentRepository { get; private set; }
 
         public IDepartmenttoStationRepository DepartmenttoStationRepository { get; private set; }
+
+        public IActivepatientRepository ActivepatientRepository { get; private set; }
+
+        public IProcesstoActivestocksRepostiyory ProcesstoActivestocksRepostiyory { get; private set; }
+
+        public IProcesstoFilesRepostiyory ProcesstoFilesRepostiyory { get; private set; }
+
+        public IProcesstoUsersRepository ProcesstoUsersRepository { get; private set; }
+
+        public IActivestockRepository ActivestockRepository { get; private set; }
+
+        public IProcessRepository ProcessRepository { get; private set; }
+
+        public ICasetodepartmentRepository CasetodepartmentRepository { get; private set; }
+
+        public IFileRepository FileRepository { get; private set; }
+
+        public IPatientRepository PatientRepository { get; private set; }
+
+        public IRemindingRepository RemindingRepository { get; private set; }
+
+        public IStockRepository StockRepository { get; private set; }
+
+        public IUnittodepartmentRepository UnittodepartmentRepository { get; private set; }
+
+        public IPatienttypeRepository PatienttypeRepository { get; private set; }
 
         public int Complate()
         {
