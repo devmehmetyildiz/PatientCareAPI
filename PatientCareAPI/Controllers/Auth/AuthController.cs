@@ -244,6 +244,11 @@ namespace PatientCareAPI.Controllers.Auth
             Roles.Add(UserAuthory.Roles_Update);
             Roles.Add(UserAuthory.Roles_Delete);
             Roles.Add(UserAuthory.Roles_ManageAll);
+            Roles.Add(UserAuthory.File_Screen);
+            Roles.Add(UserAuthory.File_Add);
+            Roles.Add(UserAuthory.File_Update);
+            Roles.Add(UserAuthory.File_Delete);
+            Roles.Add(UserAuthory.File_ManageAll);
             Roles.Add(UserAuthory.Dashboard_AllScreen);
             Roles.Add(UserAuthory.Dashboard_DepartmentScreen);
             Roles.Add(UserAuthory.Reminding_Screen);

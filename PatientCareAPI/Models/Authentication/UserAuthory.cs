@@ -62,6 +62,12 @@ namespace PatientCareAPI.Models.Authentication
         public const string Roles_Delete = "Roles_Delete";
         public const string Roles_ManageAll = "Roles_ManageAll";
 
+        public const string File_Screen = "File_Screen";
+        public const string File_Add = "File_Add";
+        public const string File_Update = "File_Update";
+        public const string File_Delete = "File_Delete";
+        public const string File_ManageAll = "File_ManageAll";
+
         public const string Dashboard_AllScreen = "Dashboard_AllScreen";
         public const string Dashboard_DepartmentScreen = "Dashboard_DepartmentScreen";
 

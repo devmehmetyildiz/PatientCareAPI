@@ -8,5 +8,8 @@ namespace PatientCareAPI.DataAccess.Repositories.Abstract.Settings
 {
     public interface ICasetodepartmentRepository : IRepository<CasetoDepartmentModel>
     {
+        void AddDepartments(List<DepartmentModel> List, string CaseGuid);
+
+        void DeleteDepartmentsByCase(string CaseGuid);
     }
 }

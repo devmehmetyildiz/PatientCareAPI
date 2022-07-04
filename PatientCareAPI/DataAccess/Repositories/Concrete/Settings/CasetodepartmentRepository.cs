@@ -16,5 +16,20 @@ namespace PatientCareAPI.DataAccess.Repositories.Concrete.Settings
         {
             _dbSet = dbcontext.Set<CasetoDepartmentModel>();
         }
+
+        public void AddDepartments(List<DepartmentModel> List, string CaseGuid)
+        {
+            List<CasetoDepartmentModel> Data = new List<CasetoDepartmentModel>();
+            foreach (var item in List)
+            {
+                Data.Add(new CasetoDepartmentModel { Id = 0, CaseID = CaseGuid, DepartmentID = item.ConcurrencyStamp });
+            }
+            _dbSet.AddRange(Data);
+        }
+
+        public void DeleteDepartmentsByCase(string CaseGuid)
+        {
+            _dbSet.RemoveRange(_dbSet.Where(u => u.CaseID == CaseGuid));
+        }
     }
 }

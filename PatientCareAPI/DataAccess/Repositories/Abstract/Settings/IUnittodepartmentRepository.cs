@@ -8,5 +8,8 @@ namespace PatientCareAPI.DataAccess.Repositories.Abstract.Settings
 {
     public interface IUnittodepartmentRepository : IRepository<UnittoDepartmentModel>
     {
+        void AddDepartments(List<DepartmentModel> List, string UnitGuid);
+
+        void DeleteDepartmentsByUnit(string UnitGuid);
     }
 }
