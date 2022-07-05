@@ -15,6 +15,8 @@ namespace PatientCareAPI.Models.Settings
         public string Surname { get; set; }
         [StringLength(maximumLength:11)]
         public string CountryID { get; set; }
- 
+        public string Patienttypeid { get; set; }
+        [NotMapped]
+        public PatienttypeModel Patienttype { get; set; }
     }
 }

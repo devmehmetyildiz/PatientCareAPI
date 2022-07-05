@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using PatientCareAPI.DataAccess;
+using PatientCareAPI.Models.Authentication;
 using PatientCareAPI.Models.Settings;
+using PatientCareAPI.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +15,7 @@ using System.Threading.Tasks;
 
 namespace PatientCareAPI.Controllers.Settings
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class DepartmentController : ControllerBase
@@ -19,20 +23,35 @@ namespace PatientCareAPI.Controllers.Settings
         private IConfiguration _configuration;
         private readonly ILogger<DepartmentController> _logger;
         private readonly ApplicationDBContext _context;
+        Utilities Utilities;
         UnitOfWork unitOfWork;
         public DepartmentController(IConfiguration configuration, ILogger<DepartmentController> logger, ApplicationDBContext context)
         {
             _configuration = configuration;
             _logger = logger;
             _context = context;
+            Utilities = new Utilities();
             unitOfWork = new UnitOfWork(context);
         }
+
         [Route("GetAll")]
+        [Authorize(Roles = UserAuthory.Department_Screen)]
         [HttpGet]
         public IActionResult GetAll()
         {
-            var items = unitOfWork.DepartmentRepository.GetAll().Where(u => u.IsActive).ToList();
-            var stations = unitOfWork.StationsRepository.GetAll().Where(u => u.IsActive).ToList();
+            List<DepartmentModel> Data = new List<DepartmentModel>();
+            if (Utilities.CheckAuth(UserAuthory.Case_ManageAll, this.User.Identity))
+            {
+                Data = unitOfWork.DepartmentRepository.GetAll().Where(u => u.IsActive).ToList();
+                foreach (var item in Data)
+                {
+                    List<string> stations = unitOfWork.DepartmenttoStationRepository.GetAll().Where(u => u.DepartmentID == item.ConcurrencyStamp).Select(u => u.StationID).ToList();
+                    foreach (var station in stations)
+                    {
+                        item.Stations.Add(unitOfWork.StationsRepository.GetStationsbyDepartments()
+                    }
+                }
+            }
             foreach (var item in items)
             {
                 var departmentstations = unitOfWork.DepartmenttoStationRepository.GetStationsbyDepartment(item.ConcurrencyStamp).ToList();
@@ -46,6 +65,8 @@ namespace PatientCareAPI.Controllers.Settings
             return Ok(items);
         }
 
+        [Authorize]
+        [Authorize(Roles = (UserAuthory.Department_Screen + "," + UserAuthory.Department_Update))]
         [Route("GetSelectedDepartment")]
         [HttpGet]
         public IActionResult GetSelectedCase(int ID)
@@ -62,7 +83,10 @@ namespace PatientCareAPI.Controllers.Settings
             return Ok(item);
         }
 
+
+
         [Route("Add")]
+        [Authorize(Roles = UserAuthory.Department_Add)]
         [HttpPost]
         public IActionResult Add(DepartmentModel model)
         {
@@ -82,6 +106,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("Update")]
+        [Authorize(Roles = UserAuthory.Department_Update)]
         [HttpPost]
         public IActionResult Update(DepartmentModel model)
         {
@@ -100,6 +125,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("Delete")]
+        [Authorize(Roles = UserAuthory.Department_Delete)]
         [HttpDelete]
         public IActionResult Delete(DepartmentModel model)
         {
@@ -114,6 +140,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("DeleteFromDB")]
+        [Authorize(Roles = UserAuthory.Admin)]
         [HttpDelete]
         public IActionResult DeleteFromDB(DepartmentModel model)
         {
