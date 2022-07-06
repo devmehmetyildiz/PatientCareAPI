@@ -40,7 +40,7 @@ namespace PatientCareAPI.Controllers.Settings
         public IActionResult GetAll()
         {
             List<DepartmentModel> Data = new List<DepartmentModel>();
-            if (Utilities.CheckAuth(UserAuthory.Case_ManageAll, this.User.Identity))
+            if (Utilities.CheckAuth(UserAuthory.Department_ManageAll, this.User.Identity))
             {
                 Data = unitOfWork.DepartmentRepository.GetAll().Where(u => u.IsActive).ToList();
                 foreach (var item in Data)
@@ -71,7 +71,7 @@ namespace PatientCareAPI.Controllers.Settings
             var Data = unitOfWork.DepartmentRepository.Getbyid(ID);
             List<string> stations = unitOfWork.DepartmenttoStationRepository.GetAll().Where(u => u.DepartmentID == Data.ConcurrencyStamp).Select(u => u.StationID).ToList();
             Data.Stations.AddRange(unitOfWork.StationsRepository.GetStationsbyGuids(stations));
-            if (Utilities.CheckAuth(UserAuthory.Department_Screen, this.User.Identity))
+            if (Utilities.CheckAuth(UserAuthory.Department_ManageAll, this.User.Identity))
             {
                 if (Data.CreatedUser == this.User.Identity.Name)
                 {

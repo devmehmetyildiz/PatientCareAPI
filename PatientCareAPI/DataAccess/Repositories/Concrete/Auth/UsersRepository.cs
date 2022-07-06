@@ -23,9 +23,9 @@ namespace PatientCareAPI.DataAccess.Repositories.Concrete.Auth
             return _dbSet.FirstOrDefault(u => u.NormalizedUsername == name.ToUpper());
         }
 
-        //public UsersModel FindUserByPassword(string password)
-        //{
-        //   return _dbSet.FirstOrDefault(u=>u.)
-        //}
+        public UsersModel GetUsertByGuid(string guid)
+        {
+            return _dbSet.FirstOrDefault(u => u.ConcurrencyStamp == guid);
+        }
     }
 }

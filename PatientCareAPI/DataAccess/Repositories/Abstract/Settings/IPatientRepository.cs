@@ -8,5 +8,6 @@ namespace PatientCareAPI.DataAccess.Repositories.Abstract.Settings
 {
     public interface IPatientRepository : IRepository<PatientModel>
     {
+        PatientModel GetPatientByGuid(string guid);
     }
 }

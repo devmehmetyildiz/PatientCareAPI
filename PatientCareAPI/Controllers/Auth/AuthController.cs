@@ -49,6 +49,13 @@ namespace PatientCareAPI.Controllers.Auth
             return Ok("OK");
         }
 
+        [AllowAnonymous]
+        [HttpGet]
+        [Route("DBTest")]
+        public IActionResult DBTest()
+        {
+            return Ok($"Aktif Kullanıcı Sayısı = {unitOfWork.UsersRepository.GetAll().Count}");
+        }
 
         //Admin Kullanıcının Oluşturulması
         [AllowAnonymous]
@@ -135,6 +142,7 @@ namespace PatientCareAPI.Controllers.Auth
             });
         }
 
+        [Authorize]
         [HttpGet]
         [Route("GetActiveUser")]
         public async Task<IActionResult> GetActiveUser()
@@ -216,6 +224,11 @@ namespace PatientCareAPI.Controllers.Auth
             Roles.Add(UserAuthory.Stock_Update);
             Roles.Add(UserAuthory.Stock_Delete);
             Roles.Add(UserAuthory.Stock_ManageAll);
+            Roles.Add(UserAuthory.Process_Screen);
+            Roles.Add(UserAuthory.Process_Add);
+            Roles.Add(UserAuthory.Process_Update);
+            Roles.Add(UserAuthory.Process_Delete);
+            Roles.Add(UserAuthory.Process_ManageAll);
             Roles.Add(UserAuthory.Patients_Screen);
             Roles.Add(UserAuthory.Patients_Add);
             Roles.Add(UserAuthory.Patients_Update);

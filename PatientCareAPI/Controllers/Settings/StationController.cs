@@ -35,29 +35,46 @@ namespace PatientCareAPI.Controllers.Settings
             unitOfWork = new UnitOfWork(context);
         }
         [Route("GetAll")]
-        [Authorize(Roles = UserAuthory.Admin)]
+        [Authorize(Roles = UserAuthory.Stations_Screen)]
         [HttpGet]
         public IActionResult GetAll()
         {
-            var items = unitOfWork.StationsRepository.GetAll().Where(u => u.IsActive).ToList();
-            if (items.Count == 0)
+            List<StationsModel> Data = new List<StationsModel>();
+            if (Utilities.CheckAuth(UserAuthory.Stations_ManageAll, this.User.Identity))
+            {
+                Data = unitOfWork.StationsRepository.GetAll().Where(u => u.IsActive).ToList();
+            }
+            else
+            {
+                Data = unitOfWork.StationsRepository.GetAll().Where(u => u.IsActive && u.CreatedUser == this.User.Identity.Name).ToList();
+            }
+            if (Data.Count == 0)
+            {
                 return NotFound();
-            return Ok(items);
+            }
+            return Ok(Data);
         }
 
         [Route("GetSelectedStation")]
-        [Authorize(Roles = UserAuthory.Admin)]
+        [Authorize(Roles = UserAuthory.Stations_Screen)]
         [HttpGet]
         public IActionResult GetSelectedStation(int ID)
         {
-            var item = unitOfWork.StationsRepository.Getbyid(ID);
-            if (item == null)
+            StationsModel Data = unitOfWork.StationsRepository.Getbyid(ID);
+            if (!Utilities.CheckAuth(UserAuthory.Stations_ManageAll, this.User.Identity))
+            {
+                if (Data.CreatedUser == this.User.Identity.Name)
+                {
+                    return StatusCode(403);
+                }
+            }
+            if (Data == null)
                 return NotFound();
-            return Ok(item);
+            return Ok(Data);
         }
 
         [Route("GetStationsByDepartments")]
-        [Authorize(Roles = UserAuthory.Admin)]
+        [Authorize(Roles = UserAuthory.Stations_Screen)]
         [HttpPost]
         public IActionResult GetStationsByDepartments(List<string> Departments)
         {
@@ -67,11 +84,11 @@ namespace PatientCareAPI.Controllers.Settings
             {
                 stations.AddRange(unitOfWork.DepartmenttoStationRepository.GetStationsbyDepartment(department));
             }
-            return Ok(unitOfWork.StationsRepository.GetStationsbyDepartments(stations));
+            return Ok(unitOfWork.StationsRepository.GetStationsbyGuids(stations));
         }
 
         [Route("GetStationsByUser")]
-        [Authorize(Roles = UserAuthory.Admin)]
+        [Authorize(Roles = UserAuthory.Stations_Screen)]
         [HttpPost]
         public IActionResult GetStationsByUser(int ID)
         {
@@ -82,11 +99,11 @@ namespace PatientCareAPI.Controllers.Settings
             {
                 stations.AddRange(unitOfWork.DepartmenttoStationRepository.GetStationsbyDepartment(department));
             }
-            return Ok(unitOfWork.StationsRepository.GetStationsbyDepartments(stations));
+            return Ok(unitOfWork.StationsRepository.GetStationsbyGuids(stations));
         }
 
         [Route("Add")]
-        [Authorize(Roles = UserAuthory.Admin)]
+        [Authorize(Roles = UserAuthory.Stations_Add)]
         [HttpPost]
         public IActionResult Add(StationsModel model)
         {
@@ -102,7 +119,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("Update")]
-        [Authorize(Roles = (UserAuthory. + "," + UserAuthory.Patients_Update))]
+        [Authorize(Roles = (UserAuthory.Stations_Update + "," + UserAuthory.Stations_Screen))]
         [HttpPost]
         public IActionResult Update(StationsModel model)
         {
@@ -116,7 +133,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("Delete")]
-        [Authorize(Roles = UserAuthory.Admin)]
+        [Authorize(Roles = UserAuthory.Stations_Delete)]
         [HttpDelete]
         public IActionResult Delete(StationsModel model)
         {

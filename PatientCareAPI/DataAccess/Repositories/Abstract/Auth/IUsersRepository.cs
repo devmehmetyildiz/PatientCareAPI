@@ -10,6 +10,8 @@ namespace PatientCareAPI.DataAccess.Repositories.Abstract.Auth
     {
         UsersModel FindUserByName(string name);
 
+        UsersModel GetUsertByGuid(string guid);
+
         //UsersModel FindUserByPassword(string password);
     }
 }

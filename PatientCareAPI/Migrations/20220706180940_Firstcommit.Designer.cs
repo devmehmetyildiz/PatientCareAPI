@@ -9,8 +9,8 @@ using PatientCareAPI.DataAccess;
 namespace PatientCareAPI.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20220702224423_F")]
-    partial class F
+    [Migration("20220706180940_Firstcommit")]
+    partial class Firstcommit
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -559,6 +559,9 @@ namespace PatientCareAPI.Migrations
                     b.Property<int>("Downloadedcount")
                         .HasColumnType("int");
 
+                    b.Property<string>("Filefolder")
+                        .HasColumnType("text");
+
                     b.Property<string>("Filepath")
                         .HasColumnType("text");
 
@@ -623,6 +626,9 @@ namespace PatientCareAPI.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
+                    b.Property<string>("Patienttypeid")
+                        .HasColumnType("text");
+
                     b.Property<string>("Surname")
                         .HasColumnType("text");
 
@@ -636,6 +642,48 @@ namespace PatientCareAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Patients");
+                });
+
+            modelBuilder.Entity("PatientCareAPI.Models.Settings.PatienttypeModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .HasMaxLength(85)
+                        .HasColumnType("varchar(85)");
+
+                    b.Property<DateTime?>("CreateTime")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("CreatedUser")
+                        .HasMaxLength(30)
+                        .HasColumnType("varchar(30)");
+
+                    b.Property<DateTime?>("DeleteTime")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("DeleteUser")
+                        .HasMaxLength(30)
+                        .HasColumnType("varchar(30)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdateTime")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("UpdatedUser")
+                        .HasMaxLength(30)
+                        .HasColumnType("varchar(30)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Patienttypes");
                 });
 
             modelBuilder.Entity("PatientCareAPI.Models.Settings.RemindingModel", b =>

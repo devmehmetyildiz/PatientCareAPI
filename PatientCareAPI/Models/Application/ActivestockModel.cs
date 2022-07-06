@@ -13,6 +13,8 @@ namespace PatientCareAPI.Models.Application
     {
         [Key]
         public int Id { get; set; }
+        [StringLength(85)]
+        public string ConcurrencyStamp { get; set; }
         public string Stockid { get; set; }
         [NotMapped]
         public StockModel Stock { get; set; }

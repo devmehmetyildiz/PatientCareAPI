@@ -16,5 +16,10 @@ namespace PatientCareAPI.DataAccess.Repositories.Concrete.Application
         {
             _dbSet = dbcontext.Set<ActivestockModel>();
         }
+
+        public ActivestockModel GetStockByGuid(string guid)
+        {
+            return _dbSet.FirstOrDefault(u => u.ConcurrencyStamp == guid);
+        }
     }
 }

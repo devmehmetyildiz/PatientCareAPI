@@ -4,7 +4,7 @@ using MySql.EntityFrameworkCore.Metadata;
 
 namespace PatientCareAPI.Migrations
 {
-    public partial class F : Migration
+    public partial class Firstcommit : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -142,6 +142,7 @@ namespace PatientCareAPI.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "text", nullable: true),
+                    Filefolder = table.Column<string>(type: "text", nullable: true),
                     Filepath = table.Column<string>(type: "text", nullable: true),
                     Filetype = table.Column<string>(type: "text", nullable: true),
                     Downloadedcount = table.Column<int>(type: "int", nullable: false),
@@ -170,6 +171,7 @@ namespace PatientCareAPI.Migrations
                     Name = table.Column<string>(type: "text", nullable: true),
                     Surname = table.Column<string>(type: "text", nullable: true),
                     CountryID = table.Column<string>(type: "varchar(11)", maxLength: 11, nullable: true),
+                    Patienttypeid = table.Column<string>(type: "text", nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "varchar(85)", maxLength: 85, nullable: true),
                     CreatedUser = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true),
                     UpdatedUser = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true),
@@ -182,6 +184,27 @@ namespace PatientCareAPI.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Patients", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Patienttypes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "text", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "varchar(85)", maxLength: 85, nullable: true),
+                    CreatedUser = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true),
+                    UpdatedUser = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true),
+                    DeleteUser = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true),
+                    CreateTime = table.Column<DateTime>(type: "datetime", nullable: true),
+                    UpdateTime = table.Column<DateTime>(type: "datetime", nullable: true),
+                    DeleteTime = table.Column<DateTime>(type: "datetime", nullable: true),
+                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Patienttypes", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -505,6 +528,9 @@ namespace PatientCareAPI.Migrations
 
             migrationBuilder.DropTable(
                 name: "Patients");
+
+            migrationBuilder.DropTable(
+                name: "Patienttypes");
 
             migrationBuilder.DropTable(
                 name: "Process");

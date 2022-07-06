@@ -8,5 +8,6 @@ namespace PatientCareAPI.DataAccess.Repositories.Abstract.Settings
 {
     public interface IStockRepository : IRepository<StockModel>
     {
+        StockModel GetStockByGuid(string guid);
     }
 }

@@ -29,6 +29,12 @@ namespace PatientCareAPI.Models.Authentication
         public const string Stock_Delete = "Stock_Delete";
         public const string Stock_ManageAll = "Stock_ManageAll";
 
+        public const string Process_Screen = "Process_Screen";
+        public const string Process_Add = "Process_Add";
+        public const string Process_Update = "Process_Update";
+        public const string Process_Delete = "Process_Delete";
+        public const string Process_ManageAll = "Process_ManageAll";
+
         public const string Patients_Screen = "Patients_Screen";
         public const string Patients_Add = "Patients_Add";
         public const string Patients_Update = "Patients_Update";
@@ -61,6 +67,12 @@ namespace PatientCareAPI.Models.Authentication
         public const string Roles_Update = "Roles_Update";
         public const string Roles_Delete = "Roles_Delete";
         public const string Roles_ManageAll = "Roles_ManageAll";
+
+        public const string Stations_Screen = "Stations_Screen";
+        public const string Stations_Add = "Stations_Add";
+        public const string Stations_Update = "Stations_Update";
+        public const string Stations_Delete = "Stations_Delete";
+        public const string Stations_ManageAll = "Stations_ManageAll";
 
         public const string File_Screen = "File_Screen";
         public const string File_Add = "File_Add";

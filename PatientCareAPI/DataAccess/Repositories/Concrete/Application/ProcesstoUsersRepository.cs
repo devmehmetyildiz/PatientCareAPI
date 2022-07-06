@@ -16,5 +16,10 @@ namespace PatientCareAPI.DataAccess.Repositories.Concrete.Application
         {
             _dbSet = dbcontext.Set<ProcesstoUsersModel>();
         }
+
+        public void DeleteUserByProcess(string ProcessGuid)
+        {
+            _dbSet.RemoveRange(_dbSet.Where(u => u.ProcessID == ProcessGuid));
+        }
     }
 }

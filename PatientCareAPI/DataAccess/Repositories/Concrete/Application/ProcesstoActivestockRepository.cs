@@ -16,5 +16,10 @@ namespace PatientCareAPI.DataAccess.Repositories.Concrete.Application
         {
             _dbSet = dbcontext.Set<ProcesstoActiveStocksModel>();
         }
+
+        public void DeleteActiveStocksByProcess(string ProcessGuid)
+        {
+            _dbSet.RemoveRange(_dbSet.Where(u => u.ProcessID == ProcessGuid));
+        }
     }
 }

@@ -16,5 +16,11 @@ namespace PatientCareAPI.DataAccess.Repositories.Concrete.Settings
         {
             _dbSet = dbcontext.Set<FileModel>();
         }
+
+        public FileModel GetFilebyGuid(string guid)
+        {
+            return _dbSet.FirstOrDefault(u => u.ConcurrencyStamp == guid);
+
+        }
     }
 }

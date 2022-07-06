@@ -31,7 +31,7 @@ namespace PatientCareAPI.Controllers.Auth
             unitOfWork = new UnitOfWork(context);
         }
 
-        [Authorize]
+        [Authorize(Roles = UserAuthory.User_Screen)]
         [Route("GetAll")]
         [HttpGet]
         public IActionResult GetAll()
@@ -61,7 +61,7 @@ namespace PatientCareAPI.Controllers.Auth
             return Ok(Users);
         }
 
-        [Authorize]
+        [Authorize(Roles = UserAuthory.User_Screen)]
         [Route("GetSelectedUser")]
         [HttpGet]
         public IActionResult GetSelectedUser(int ID)
@@ -89,7 +89,7 @@ namespace PatientCareAPI.Controllers.Auth
         }
 
 
-        [Authorize]
+        [Authorize(Roles = UserAuthory.User_Add)]
         [Route("Add")]
         [HttpPost]
         public IActionResult Add(UsersModel model)
@@ -117,7 +117,7 @@ namespace PatientCareAPI.Controllers.Auth
             return Ok();
         }
 
-        [Authorize]
+        [Authorize(Roles = (UserAuthory.User_Screen + "," + UserAuthory.User_Update))]
         [Route("Update")]
         [HttpPost]
         public IActionResult Update(UsersModel model)
@@ -146,7 +146,7 @@ namespace PatientCareAPI.Controllers.Auth
             return Ok();
         }
 
-        [Authorize]
+        [Authorize(Roles = UserAuthory.User_Delete)]
         [Route("Delete")]
         [HttpDelete]
         public IActionResult Delete(UsersModel model)
@@ -161,7 +161,7 @@ namespace PatientCareAPI.Controllers.Auth
             return Ok();
         }
 
-        [Authorize]
+        [Authorize(Roles = UserAuthory.Admin)]
         [Route("DeleteFromDB")]
         [HttpDelete]
         public IActionResult DeleteFromDB(RoleModel model)
