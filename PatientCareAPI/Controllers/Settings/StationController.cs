@@ -1,9 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using PatientCareAPI.DataAccess;
+using PatientCareAPI.Models.Authentication;
 using PatientCareAPI.Models.Settings;
+using PatientCareAPI.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +15,7 @@ using System.Threading.Tasks;
 
 namespace PatientCareAPI.Controllers.Settings
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class StationController : ControllerBase
@@ -20,14 +24,18 @@ namespace PatientCareAPI.Controllers.Settings
         private readonly ILogger<StationController> _logger;
         private readonly ApplicationDBContext _context;
         UnitOfWork unitOfWork;
+        Utilities Utilities;
+
         public StationController(IConfiguration configuration, ILogger<StationController> logger, ApplicationDBContext context)
         {
             _configuration = configuration;
             _logger = logger;
             _context = context;
+            Utilities = new Utilities(context);
             unitOfWork = new UnitOfWork(context);
         }
         [Route("GetAll")]
+        [Authorize(Roles = UserAuthory.Admin)]
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -38,6 +46,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("GetSelectedStation")]
+        [Authorize(Roles = UserAuthory.Admin)]
         [HttpGet]
         public IActionResult GetSelectedStation(int ID)
         {
@@ -48,6 +57,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("GetStationsByDepartments")]
+        [Authorize(Roles = UserAuthory.Admin)]
         [HttpPost]
         public IActionResult GetStationsByDepartments(List<string> Departments)
         {
@@ -61,6 +71,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("GetStationsByUser")]
+        [Authorize(Roles = UserAuthory.Admin)]
         [HttpPost]
         public IActionResult GetStationsByUser(int ID)
         {
@@ -75,6 +86,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("Add")]
+        [Authorize(Roles = UserAuthory.Admin)]
         [HttpPost]
         public IActionResult Add(StationsModel model)
         {
@@ -90,6 +102,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("Update")]
+        [Authorize(Roles = (UserAuthory. + "," + UserAuthory.Patients_Update))]
         [HttpPost]
         public IActionResult Update(StationsModel model)
         {
@@ -103,6 +116,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("Delete")]
+        [Authorize(Roles = UserAuthory.Admin)]
         [HttpDelete]
         public IActionResult Delete(StationsModel model)
         {
@@ -117,6 +131,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("DeleteFromDB")]
+        [Authorize(Roles=UserAuthory.Admin)]
         [HttpDelete]
         public IActionResult DeleteFromDB(DepartmentModel model)
         {

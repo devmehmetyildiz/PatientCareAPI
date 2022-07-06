@@ -17,7 +17,7 @@ namespace PatientCareAPI.DataAccess.Repositories.Concrete.Settings
             _dbSet = dbcontext.Set<StationsModel>();
         }
 
-        public List<StationsModel> GetStationsbyDepartments(List<string> stations)
+        public List<StationsModel> GetStationsbyGuids(List<string> stations)
         {
             string query = "";
             query+= "select * from stations  where ConcurrencyStamp IN (";
