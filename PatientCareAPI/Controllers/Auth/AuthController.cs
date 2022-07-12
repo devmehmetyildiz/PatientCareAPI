@@ -71,6 +71,7 @@ namespace PatientCareAPI.Controllers.Auth
             if (userExist != null)
                 return StatusCode(StatusCodes.Status500InternalServerError, new ResponseModel { Status = "Error", Massage = "Bu Kullanıcı Adı Daha Önce Alındı" });
             var userGuid = Guid.NewGuid().ToString();
+            var RoleGuid = Guid.NewGuid().ToString();
             var salt = securityutils.CreateSalt(30);
             unitOfWork.UsertoSaltRepository.Add(new UsertoSaltModel { Salt = salt, UserID = userGuid });
             UsersModel user = new UsersModel()
@@ -82,7 +83,7 @@ namespace PatientCareAPI.Controllers.Auth
                 Email = model.Email,
                 AccessFailedCount = 0,
                 EmailConfirmed = false,
-                IsActive = false,
+                IsActive = true,
                 CreatedUser = "System",
                 CreateTime = DateTime.Now,
                 PasswordHash = securityutils.GenerateHash(model.Password, salt),
@@ -90,7 +91,21 @@ namespace PatientCareAPI.Controllers.Auth
                 PhoneNumberConfirmed = false
             };
             unitOfWork.UsersRepository.Add(user);
-            AddBasicAuth(UserAuthory.Admin, user);
+            ConfigureRoles();
+            unitOfWork.RoleRepository.Add(new RoleModel { Id = 0, ConcurrencyStamp = RoleGuid, CreatedUser = "System", CreateTime = DateTime.Now, IsActive = true, Name = "Admin" });
+            unitOfWork.RoletoAuthoryRepository.AddAuthorytoRole(new RoletoAuthory { Id = 0, RoleID = RoleGuid, AuthoryID = unitOfWork.AuthoryRepository.FindAuthoryByName(UserAuthory.Admin).ConcurrencyStamp });
+            unitOfWork.RoletoAuthoryRepository.AddAuthorytoRole(new RoletoAuthory { Id = 0, RoleID = RoleGuid, AuthoryID = unitOfWork.AuthoryRepository.FindAuthoryByName(UserAuthory.User_Screen).ConcurrencyStamp });
+            unitOfWork.RoletoAuthoryRepository.AddAuthorytoRole(new RoletoAuthory { Id = 0, RoleID = RoleGuid, AuthoryID = unitOfWork.AuthoryRepository.FindAuthoryByName(UserAuthory.User_Add).ConcurrencyStamp });
+            unitOfWork.RoletoAuthoryRepository.AddAuthorytoRole(new RoletoAuthory { Id = 0, RoleID = RoleGuid, AuthoryID = unitOfWork.AuthoryRepository.FindAuthoryByName(UserAuthory.User_Update).ConcurrencyStamp });
+            unitOfWork.RoletoAuthoryRepository.AddAuthorytoRole(new RoletoAuthory { Id = 0, RoleID = RoleGuid, AuthoryID = unitOfWork.AuthoryRepository.FindAuthoryByName(UserAuthory.User_Delete).ConcurrencyStamp });
+            unitOfWork.RoletoAuthoryRepository.AddAuthorytoRole(new RoletoAuthory { Id = 0, RoleID = RoleGuid, AuthoryID = unitOfWork.AuthoryRepository.FindAuthoryByName(UserAuthory.User_ManageAll).ConcurrencyStamp });
+            unitOfWork.RoletoAuthoryRepository.AddAuthorytoRole(new RoletoAuthory { Id = 0, RoleID = RoleGuid, AuthoryID = unitOfWork.AuthoryRepository.FindAuthoryByName(UserAuthory.Roles_Screen).ConcurrencyStamp });
+            unitOfWork.RoletoAuthoryRepository.AddAuthorytoRole(new RoletoAuthory { Id = 0, RoleID = RoleGuid, AuthoryID = unitOfWork.AuthoryRepository.FindAuthoryByName(UserAuthory.Roles_Add).ConcurrencyStamp });
+            unitOfWork.RoletoAuthoryRepository.AddAuthorytoRole(new RoletoAuthory { Id = 0, RoleID = RoleGuid, AuthoryID = unitOfWork.AuthoryRepository.FindAuthoryByName(UserAuthory.Roles_Update).ConcurrencyStamp });
+            unitOfWork.RoletoAuthoryRepository.AddAuthorytoRole(new RoletoAuthory { Id = 0, RoleID = RoleGuid, AuthoryID = unitOfWork.AuthoryRepository.FindAuthoryByName(UserAuthory.Roles_Delete).ConcurrencyStamp });
+            unitOfWork.RoletoAuthoryRepository.AddAuthorytoRole(new RoletoAuthory { Id = 0, RoleID = RoleGuid, AuthoryID = unitOfWork.AuthoryRepository.FindAuthoryByName(UserAuthory.Roles_ManageAll).ConcurrencyStamp });
+            unitOfWork.RoletoAuthoryRepository.AddAuthorytoRole(new RoletoAuthory { Id = 0, RoleID = RoleGuid, AuthoryID = unitOfWork.AuthoryRepository.FindAuthoryByName(UserAuthory.Admin).ConcurrencyStamp });
+            unitOfWork.UsertoRoleRepository.AddRolestoUser(new UsertoRoleModel { Id = 0, RoleID = RoleGuid, UserID = userGuid });
             unitOfWork.Complate();
             return Ok(new ResponseModel { Status = "Success", Massage = "Kullanıcı Başarı ile Oluşturuldu" });
         }
@@ -152,131 +167,91 @@ namespace PatientCareAPI.Controllers.Auth
             return Ok(userId);
         }
 
-        private bool AddBasicAuth(string role, UsersModel user)
-        {
-            bool isok = false;
-            string yetkiGuid = "";
-            string RoleGuid = "";
-            bool authnewadded = false;
-            var dbrole = unitOfWork.RoleRepository.FindByName("Basic");
-            if (dbrole == null)
-            {
-                RoleGuid = Guid.NewGuid().ToString();
-                unitOfWork.RoleRepository.Add(new RoleModel
-                {
-                    Id = 0,
-                    Name = "Basic",
-                    ConcurrencyStamp = RoleGuid,
-                    CreatedUser = "system",
-                    CreateTime = DateTime.Now,
-                    IsActive = true
-                });
-                authnewadded = true;
-            }
-            else
-            {
-                RoleGuid = dbrole.ConcurrencyStamp;
-            }
-            var dbRole = unitOfWork.AuthoryRepository.FindAuthoryByName(role);
-            if (dbRole == null)
-            {
-                yetkiGuid = Guid.NewGuid().ToString();
-                unitOfWork.AuthoryRepository.Add(new AuthoryModel { Name = role, NormalizedName = role.ToUpper(), ConcurrencyStamp = yetkiGuid });
-            }
-            else
-            {
-                yetkiGuid = dbRole.ConcurrencyStamp;
-            }
-            if (authnewadded)
-                unitOfWork.RoletoAuthoryRepository.AddAuthorytoRole(new RoletoAuthory { RoleID = RoleGuid, AuthoryID = yetkiGuid });
-            unitOfWork.UsertoRoleRepository.AddRolestoUser(new UsertoRoleModel { RoleID = RoleGuid, UserID = user.ConcurrencyStamp });
-            isok = true;
-            return isok;
-        }
-
         private bool CheckPassword(UsersModel user, string password)
         {
             return securityutils.AreEqual(password, user.PasswordHash, unitOfWork.UsertoSaltRepository.GetSaltByGuid(user.ConcurrencyStamp));
         }
 
-        [HttpGet]
-        [Authorize(Roles ="Admin")]
-        [Route("ConfigureRoles")]
-        private async Task<IActionResult> ConfigureRoles()
+        private async void ConfigureRoles()
         {
-            List<string> Roles = new List<string>();
+            List<AuthoryModel> Roles = new List<AuthoryModel>();
             List<AuthoryModel> newRoles = new List<AuthoryModel>();
-            Roles.Add(UserAuthory.Basic);
-            Roles.Add(UserAuthory.User);
-            Roles.Add(UserAuthory.Admin);
-            Roles.Add(UserAuthory.User_Screen);
-            Roles.Add(UserAuthory.User_Add);
-            Roles.Add(UserAuthory.User_Update);
-            Roles.Add(UserAuthory.User_Delete);
-            Roles.Add(UserAuthory.User_ManageAll);
-            Roles.Add(UserAuthory.Department_Screen);
-            Roles.Add(UserAuthory.Department_Add);
-            Roles.Add(UserAuthory.Department_Update);
-            Roles.Add(UserAuthory.Department_Delete);
-            Roles.Add(UserAuthory.Department_ManageAll);
-            Roles.Add(UserAuthory.Stock_Screen);
-            Roles.Add(UserAuthory.Stock_Add);
-            Roles.Add(UserAuthory.Stock_Update);
-            Roles.Add(UserAuthory.Stock_Delete);
-            Roles.Add(UserAuthory.Stock_ManageAll);
-            Roles.Add(UserAuthory.Process_Screen);
-            Roles.Add(UserAuthory.Process_Add);
-            Roles.Add(UserAuthory.Process_Update);
-            Roles.Add(UserAuthory.Process_Delete);
-            Roles.Add(UserAuthory.Process_ManageAll);
-            Roles.Add(UserAuthory.Patients_Screen);
-            Roles.Add(UserAuthory.Patients_Add);
-            Roles.Add(UserAuthory.Patients_Update);
-            Roles.Add(UserAuthory.Patients_Delete);
-            Roles.Add(UserAuthory.Patients_ManageAll);
-            Roles.Add(UserAuthory.Patients_UploadFile);
-            Roles.Add(UserAuthory.Patients_DownloadFile);
-            Roles.Add(UserAuthory.Patients_ViewFile);
-            Roles.Add(UserAuthory.Patienttype_Screen);
-            Roles.Add(UserAuthory.Patienttype_Add);
-            Roles.Add(UserAuthory.Patienttype_Update);
-            Roles.Add(UserAuthory.Patienttype_Delete);
-            Roles.Add(UserAuthory.Patienttype_ManageAll);
-            Roles.Add(UserAuthory.Unit_Screen);
-            Roles.Add(UserAuthory.Unit_Add);
-            Roles.Add(UserAuthory.Unit_Update);
-            Roles.Add(UserAuthory.Unit_Delete);
-            Roles.Add(UserAuthory.Unit_ManageAll);
-            Roles.Add(UserAuthory.Case_Screen);
-            Roles.Add(UserAuthory.Case_Add);
-            Roles.Add(UserAuthory.Case_Update);
-            Roles.Add(UserAuthory.Case_Delete);
-            Roles.Add(UserAuthory.Case_ManageAll);
-            Roles.Add(UserAuthory.Roles_Screen);
-            Roles.Add(UserAuthory.Roles_Add);
-            Roles.Add(UserAuthory.Roles_Update);
-            Roles.Add(UserAuthory.Roles_Delete);
-            Roles.Add(UserAuthory.Roles_ManageAll);
-            Roles.Add(UserAuthory.File_Screen);
-            Roles.Add(UserAuthory.File_Add);
-            Roles.Add(UserAuthory.File_Update);
-            Roles.Add(UserAuthory.File_Delete);
-            Roles.Add(UserAuthory.File_ManageAll);
-            Roles.Add(UserAuthory.Dashboard_AllScreen);
-            Roles.Add(UserAuthory.Dashboard_DepartmentScreen);
-            Roles.Add(UserAuthory.Reminding_Screen);
-            Roles.Add(UserAuthory.Reminding_Add);
-            Roles.Add(UserAuthory.Reminding_Update);
-            Roles.Add(UserAuthory.Reminding_Delete);
-            Roles.Add(UserAuthory.Reminding_ManageAll);
-            Roles.Add(UserAuthory.Reminding_DefineforAll);
-            Roles.Add(UserAuthory.Reminding_Define);
+       
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.BaseGroup,Name=UserAuthory.Basic });
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.BaseGroup,Name=UserAuthory.Admin });
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.User,Name=UserAuthory.User_Screen });
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.User,Name=UserAuthory.User_Add });
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.User,Name=UserAuthory.User_Update });
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.User,Name=UserAuthory.User_Delete });
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.User,Name=UserAuthory.User_ManageAll});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Department,Name=UserAuthory.Department_Screen});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Department,Name=UserAuthory.Department_Add});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Department,Name=UserAuthory.Department_Update});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Department,Name=UserAuthory.Department_Delete});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Department,Name=UserAuthory.Department_ManageAll});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Stock,Name=UserAuthory.Stock_Screen});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Stock,Name=UserAuthory.Stock_Add});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Stock,Name=UserAuthory.Stock_Update});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Stock,Name=UserAuthory.Stock_Delete});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Stock,Name=UserAuthory.Stock_ManageAll});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Process,Name=UserAuthory.Process_Screen});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Process,Name=UserAuthory.Process_Add});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Process,Name=UserAuthory.Process_Update});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Process,Name=UserAuthory.Process_Delete});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Process,Name=UserAuthory.Process_ManageAll});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Patients,Name=UserAuthory.Patients_Screen});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Patients,Name=UserAuthory.Patients_Add});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Patients,Name=UserAuthory.Patients_Update});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Patients,Name=UserAuthory.Patients_Delete});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Patients,Name=UserAuthory.Patients_ManageAll});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Patients,Name=UserAuthory.Patients_UploadFile});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Patients,Name=UserAuthory.Patients_DownloadFile});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Patients,Name=UserAuthory.Patients_ViewFile});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Patienttype,Name=UserAuthory.Patienttype_Screen});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Patienttype,Name=UserAuthory.Patienttype_Add});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Patienttype,Name=UserAuthory.Patienttype_Update});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Patienttype,Name=UserAuthory.Patienttype_Delete});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Patienttype,Name=UserAuthory.Patienttype_ManageAll});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Unit,Name=UserAuthory.Unit_Screen});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Unit,Name=UserAuthory.Unit_Add});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Unit,Name=UserAuthory.Unit_Update});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Unit,Name=UserAuthory.Unit_Delete});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Unit,Name=UserAuthory.Unit_ManageAll});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Stations,Name=UserAuthory.Stations_Screen});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Stations,Name=UserAuthory.Stations_Add});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Stations,Name=UserAuthory.Stations_Update});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Stations,Name=UserAuthory.Stations_Delete});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Stations,Name=UserAuthory.Stations_ManageAll});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Case,Name=UserAuthory.Case_Screen});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Case,Name=UserAuthory.Case_Add});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Case,Name=UserAuthory.Case_Update});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Case,Name=UserAuthory.Case_Delete});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Case,Name=UserAuthory.Case_ManageAll});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Roles,Name=UserAuthory.Roles_Screen});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Roles,Name=UserAuthory.Roles_Add});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Roles,Name=UserAuthory.Roles_Update});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Roles,Name=UserAuthory.Roles_Delete});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Roles,Name=UserAuthory.Roles_ManageAll});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.File,Name=UserAuthory.File_Screen});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.File,Name=UserAuthory.File_Add});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.File,Name=UserAuthory.File_Update});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.File,Name=UserAuthory.File_Delete});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.File,Name=UserAuthory.File_ManageAll});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Dashboard,Name=UserAuthory.Dashboard_AllScreen});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Dashboard,Name=UserAuthory.Dashboard_DepartmentScreen});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Reminding,Name=UserAuthory.Reminding_Screen});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Reminding,Name=UserAuthory.Reminding_Add});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Reminding,Name=UserAuthory.Reminding_Update});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Reminding,Name=UserAuthory.Reminding_Delete});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Reminding,Name=UserAuthory.Reminding_ManageAll});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Reminding,Name=UserAuthory.Reminding_DefineforAll});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Reminding,Name=UserAuthory.Reminding_Define});
             foreach (var role in Roles)
             {
-                var dbRole = unitOfWork.AuthoryRepository.FindAuthoryByName(role);
+                var dbRole = unitOfWork.AuthoryRepository.FindAuthoryByName(role.Name);
                 if (dbRole == null)
                 {
-                    var model = new AuthoryModel { Name = role, NormalizedName = role.ToUpper(), ConcurrencyStamp = Guid.NewGuid().ToString() };
+                    var model = new AuthoryModel { Name = role.Name, Group = role.Group, ConcurrencyStamp = Guid.NewGuid().ToString() };
                     unitOfWork.AuthoryRepository.Add(model);
                     newRoles.Add(model);
                 }
@@ -284,11 +259,7 @@ namespace PatientCareAPI.Controllers.Auth
             if (newRoles.Count > 0)
             {
                 unitOfWork.Complate();
-                return Ok(new ResponseModel { Status = "Success", Massage = $"Roller Tanımlandı  = {JsonSerializer.Serialize(newRoles)}" });
             }
-            else
-                return Ok(new ResponseModel { Status = "Success", Massage = "yeni Role bulunamadı" });
-
         }
 
     }

@@ -4,7 +4,7 @@ using MySql.EntityFrameworkCore.Metadata;
 
 namespace PatientCareAPI.Migrations
 {
-    public partial class Firstcommit : Migration
+    public partial class firststart : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -38,6 +38,7 @@ namespace PatientCareAPI.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    ConcurrencyStamp = table.Column<string>(type: "varchar(85)", maxLength: 85, nullable: true),
                     Stockid = table.Column<string>(type: "text", nullable: true),
                     Amount = table.Column<double>(type: "double", nullable: false),
                     Purchaseprice = table.Column<double>(type: "double", nullable: false),
@@ -56,7 +57,7 @@ namespace PatientCareAPI.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "varchar(85)", maxLength: 85, nullable: true),
-                    NormalizedName = table.Column<string>(type: "varchar(85)", maxLength: 85, nullable: true),
+                    Group = table.Column<string>(type: "varchar(85)", maxLength: 85, nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "varchar(85)", maxLength: 85, nullable: true)
                 },
                 constraints: table =>

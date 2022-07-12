@@ -9,8 +9,8 @@ using PatientCareAPI.DataAccess;
 namespace PatientCareAPI.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20220706180940_Firstcommit")]
-    partial class Firstcommit
+    [Migration("20220710112320_firststart")]
+    partial class firststart
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -79,6 +79,10 @@ namespace PatientCareAPI.Migrations
 
                     b.Property<double>("Amount")
                         .HasColumnType("double");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .HasMaxLength(85)
+                        .HasColumnType("varchar(85)");
 
                     b.Property<string>("Info")
                         .HasColumnType("text");
@@ -206,11 +210,11 @@ namespace PatientCareAPI.Migrations
                         .HasMaxLength(85)
                         .HasColumnType("varchar(85)");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("Group")
                         .HasMaxLength(85)
                         .HasColumnType("varchar(85)");
 
-                    b.Property<string>("NormalizedName")
+                    b.Property<string>("Name")
                         .HasMaxLength(85)
                         .HasColumnType("varchar(85)");
 

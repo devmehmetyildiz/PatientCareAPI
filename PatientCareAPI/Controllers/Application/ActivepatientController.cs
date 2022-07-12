@@ -69,9 +69,9 @@ namespace PatientCareAPI.Controllers.Application
         {
             ActivepatientModel Data = unitOfWork.ActivepatientRepository.Getbyid(ID);
             Data.Patient = unitOfWork.PatientRepository.GetPatientByGuid(Data.PatientID);
-            if (Utilities.CheckAuth(UserAuthory.Patients_ManageAll, this.User.Identity))
+            if (!Utilities.CheckAuth(UserAuthory.Patients_ManageAll, this.User.Identity))
             {
-                if (Data.CreatedUser == this.User.Identity.Name)
+                if (Data.CreatedUser != this.User.Identity.Name)
                 {
                     return StatusCode(403);
                 }

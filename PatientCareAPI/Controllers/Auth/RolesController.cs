@@ -37,14 +37,10 @@ namespace PatientCareAPI.Controllers.Auth
         public IActionResult GetAll()
         {
             var roles = unitOfWork.RoleRepository.GetAll().Where(u => u.IsActive).ToList();
-            var authorylist = unitOfWork.AuthoryRepository.GetAll();  //TODO unitofworkten cekiyor
             foreach (var role in roles)
             {
-                var yetkis = unitOfWork.RoletoAuthoryRepository.GetAuthoriesByRole(role.ConcurrencyStamp);
-                foreach (var item in yetkis)
-                {
-                    role.Authories.Add(unitOfWork.AuthoryRepository.FindAuthoryBuGuid(item));
-                }
+                List<string> authories = unitOfWork.RoletoAuthoryRepository.GetAll().Where(u => u.RoleID== role.ConcurrencyStamp).Select(u => u.AuthoryID).ToList();
+                role.Authories.AddRange(unitOfWork.AuthoryRepository.GetAuthoriesbyGuids(authories));
             }
             return Ok(roles);
         }
@@ -52,15 +48,11 @@ namespace PatientCareAPI.Controllers.Auth
         [Authorize(Roles = UserAuthory.Roles_Screen)]
         [Route("GetSelectedRole")]
         [HttpGet]
-        public IActionResult GetSelectedAuthory(int ID)
+        public IActionResult GetSelectedRole(int ID)
         {
             var role = unitOfWork.RoleRepository.Getbyid(ID);
-            var authorylist = unitOfWork.AuthoryRepository.GetAll();  //TODO  unitofworkten cekiyor
-            var authories = unitOfWork.RoletoAuthoryRepository.GetAuthoriesByRole(role.ConcurrencyStamp);
-            foreach (var item in authories)
-            {
-                role.Authories.Add(unitOfWork.AuthoryRepository.FindAuthoryBuGuid(item));
-            }
+            List<string> authories = unitOfWork.RoletoAuthoryRepository.GetAll().Where(u => u.RoleID == role.ConcurrencyStamp).Select(u => u.AuthoryID).ToList();
+            role.Authories.AddRange(unitOfWork.AuthoryRepository.GetAuthoriesbyGuids(authories));
             return Ok(role);
         }
 
@@ -69,7 +61,7 @@ namespace PatientCareAPI.Controllers.Auth
         [HttpGet]
         public IActionResult GetAllroles()
         {
-            return Ok(unitOfWork.AuthoryRepository.GetAll());
+            return Ok(unitOfWork.AuthoryRepository.GetAll().Where(U=>U.Name!=UserAuthory.Admin).ToList().OrderBy(u=>u.Group));
         }
 
         [Authorize(Roles = UserAuthory.Roles_Add)]

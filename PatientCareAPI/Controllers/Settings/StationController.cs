@@ -63,7 +63,7 @@ namespace PatientCareAPI.Controllers.Settings
             StationsModel Data = unitOfWork.StationsRepository.Getbyid(ID);
             if (!Utilities.CheckAuth(UserAuthory.Stations_ManageAll, this.User.Identity))
             {
-                if (Data.CreatedUser == this.User.Identity.Name)
+                if (Data.CreatedUser != this.User.Identity.Name)
                 {
                     return StatusCode(403);
                 }

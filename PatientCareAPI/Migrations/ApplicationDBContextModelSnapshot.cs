@@ -78,6 +78,10 @@ namespace PatientCareAPI.Migrations
                     b.Property<double>("Amount")
                         .HasColumnType("double");
 
+                    b.Property<string>("ConcurrencyStamp")
+                        .HasMaxLength(85)
+                        .HasColumnType("varchar(85)");
+
                     b.Property<string>("Info")
                         .HasColumnType("text");
 
@@ -204,11 +208,11 @@ namespace PatientCareAPI.Migrations
                         .HasMaxLength(85)
                         .HasColumnType("varchar(85)");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("Group")
                         .HasMaxLength(85)
                         .HasColumnType("varchar(85)");
 
-                    b.Property<string>("NormalizedName")
+                    b.Property<string>("Name")
                         .HasMaxLength(85)
                         .HasColumnType("varchar(85)");
 

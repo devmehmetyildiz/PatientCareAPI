@@ -83,7 +83,7 @@ namespace PatientCareAPI.Controllers.Settings
             }
             if (!Utilities.CheckAuth(UserAuthory.Unit_ManageAll, this.User.Identity))
             {
-                if (Data.CreatedUser == this.User.Identity.Name)
+                if (Data.CreatedUser != this.User.Identity.Name)
                 {
                     return StatusCode(403);
                 }

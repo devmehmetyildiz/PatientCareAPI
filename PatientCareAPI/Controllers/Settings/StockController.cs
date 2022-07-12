@@ -75,7 +75,7 @@ namespace PatientCareAPI.Controllers.Settings
             Data.Unit = unitOfWork.UnitRepository.GetUnitByGuid(Data.Unitid);
             if (!Utilities.CheckAuth(UserAuthory.Stock_ManageAll, this.User.Identity))
             {
-                if (Data.CreatedUser == this.User.Identity.Name)
+                if (Data.CreatedUser != this.User.Identity.Name)
                 {
                     return StatusCode(403);
                 }

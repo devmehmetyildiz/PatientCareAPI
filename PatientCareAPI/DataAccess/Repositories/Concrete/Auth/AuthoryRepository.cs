@@ -19,12 +19,30 @@ namespace PatientCareAPI.DataAccess.Repositories.Concrete.Auth
 
         public AuthoryModel FindAuthoryByName(string yetkiName)
         {
-            return _dbSet.FirstOrDefault(u => u.NormalizedName == yetkiName.ToUpper());
+            return _dbSet.FirstOrDefault(u => u.Name== yetkiName);
         }
 
         public AuthoryModel FindAuthoryBuGuid(string Guid)
         {
             return _dbSet.FirstOrDefault(u => u.ConcurrencyStamp == Guid);
+        }
+
+        public List<AuthoryModel> GetAuthoriesbyGuids(List<string> authoryguids)
+        {
+            if (authoryguids.Count == 0)
+            {
+                return new List<AuthoryModel>();
+            }
+            string query = "";
+            query += "select * from authories  where ConcurrencyStamp IN (";
+            for (int i = 0; i < authoryguids.Count; i++)
+            {
+                query += $"'{authoryguids[i]}'";
+                if (i != authoryguids.Count - 1)
+                    query += ",";
+            }
+            query += ")";
+            return _dbSet.FromSqlRaw(query).ToList(); ;
         }
     }
 }

@@ -72,7 +72,7 @@ namespace PatientCareAPI.Controllers.Settings
             Data.Patienttype = unitOfWork.PatienttypeRepository.GetPatienttypeByGuid(Data.Patienttypeid);
             if (!Utilities.CheckAuth(UserAuthory.Patients_ManageAll, this.User.Identity))
             {
-                if (Data.CreatedUser == this.User.Identity.Name)
+                if (Data.CreatedUser != this.User.Identity.Name)
                 {
                     return StatusCode(403);
                 }

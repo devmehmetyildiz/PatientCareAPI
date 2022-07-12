@@ -63,7 +63,7 @@ namespace PatientCareAPI.Controllers.Settings
             FileModel Data = unitOfWork.FileRepository.Getbyid(ID);
             if (!Utilities.CheckAuth(UserAuthory.File_ManageAll, this.User.Identity))
             {
-                if (Data.CreatedUser == this.User.Identity.Name)
+                if (Data.CreatedUser != this.User.Identity.Name)
                 {
                     return StatusCode(403);
                 }

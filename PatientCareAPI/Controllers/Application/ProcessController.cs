@@ -110,9 +110,9 @@ namespace PatientCareAPI.Controllers.Application
             {
                 Data.Files.Add(unitOfWork.FileRepository.GetFilebyGuid(file));
             }
-            if (Utilities.CheckAuth(UserAuthory.Process_ManageAll, this.User.Identity))
+            if (!Utilities.CheckAuth(UserAuthory.Process_ManageAll, this.User.Identity))
             {
-                if (Data.CreatedUser == this.User.Identity.Name)
+                if (Data.CreatedUser != this.User.Identity.Name)
                 {
                     return StatusCode(403);
                 }

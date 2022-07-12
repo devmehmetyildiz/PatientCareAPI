@@ -11,5 +11,7 @@ namespace PatientCareAPI.DataAccess.Repositories.Abstract.Auth
         AuthoryModel FindAuthoryByName(string yetkiName);
 
         AuthoryModel FindAuthoryBuGuid(string Guid);
+
+        List<AuthoryModel> GetAuthoriesbyGuids(List<string> authoryguids);
     }
 }

@@ -71,9 +71,9 @@ namespace PatientCareAPI.Controllers.Settings
             var Data = unitOfWork.DepartmentRepository.Getbyid(ID);
             List<string> stations = unitOfWork.DepartmenttoStationRepository.GetAll().Where(u => u.DepartmentID == Data.ConcurrencyStamp).Select(u => u.StationID).ToList();
             Data.Stations.AddRange(unitOfWork.StationsRepository.GetStationsbyGuids(stations));
-            if (Utilities.CheckAuth(UserAuthory.Department_ManageAll, this.User.Identity))
+            if (!Utilities.CheckAuth(UserAuthory.Department_ManageAll, this.User.Identity))
             {
-                if (Data.CreatedUser == this.User.Identity.Name)
+                if (Data.CreatedUser != this.User.Identity.Name)
                 {
                     return StatusCode(403);
                 }
@@ -118,7 +118,7 @@ namespace PatientCareAPI.Controllers.Settings
             model.UpdateTime = DateTime.Now;
             if (!Utilities.CheckAuth(UserAuthory.Department_ManageAll, this.User.Identity))
             {
-                if (model.CreatedUser == this.User.Identity.Name)
+                if (model.CreatedUser != this.User.Identity.Name)
                 {
                     return StatusCode(403);
                 }
