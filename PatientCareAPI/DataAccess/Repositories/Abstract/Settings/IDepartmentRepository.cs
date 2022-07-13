@@ -9,5 +9,6 @@ namespace PatientCareAPI.DataAccess.Repositories.Abstract.Settings
     public interface IDepartmentRepository : IRepository<DepartmentModel>
     {
         DepartmentModel GetDepartmentByGuid(string guid);
+        List<DepartmentModel> GetDepartmentsbyGuids(List<string> departments);
     }
 }

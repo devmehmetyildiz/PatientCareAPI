@@ -19,6 +19,10 @@ namespace PatientCareAPI.DataAccess.Repositories.Concrete.Settings
 
         public List<StationsModel> GetStationsbyGuids(List<string> stations)
         {
+            if (stations.Count == 0)
+            {
+                return new List<StationsModel>();
+            }
             string query = "";
             query+= "select * from stations  where ConcurrencyStamp IN (";
             for (int i = 0; i < stations.Count; i++)

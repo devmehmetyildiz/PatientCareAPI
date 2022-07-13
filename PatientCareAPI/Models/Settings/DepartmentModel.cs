@@ -19,6 +19,9 @@ namespace PatientCareAPI.Models.Settings
         public bool isAdded { get; set; }
 
         [NotMapped]
+        public string Stationstxt { get; set; }
+
+        [NotMapped]
         public List<StationsModel> Stations { get; set; }
     }
 }

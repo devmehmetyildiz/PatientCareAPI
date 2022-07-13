@@ -21,5 +21,23 @@ namespace PatientCareAPI.DataAccess.Repositories.Concrete.Settings
         {
             return _dbSet.FirstOrDefault(u => u.ConcurrencyStamp == guid);
         }
+
+        public List<DepartmentModel> GetDepartmentsbyGuids(List<string> departments)
+        {
+            if (departments.Count == 0)
+            {
+                return new List<DepartmentModel>();
+            }
+            string query = "";
+            query += "select * from departments  where ConcurrencyStamp IN (";
+            for (int i = 0; i < departments.Count; i++)
+            {
+                query += $"'{departments[i]}'";
+                if (i != departments.Count - 1)
+                    query += ",";
+            }
+            query += ")";
+            return _dbSet.FromSqlRaw(query).ToList();
+        }
     }
 }

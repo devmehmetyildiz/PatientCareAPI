@@ -21,5 +21,23 @@ namespace PatientCareAPI.DataAccess.Repositories.Concrete.Auth
         {
             return _dbSet.FirstOrDefault(x => x.Name == name);
         }
+
+        public List<RoleModel> GetRolesbyGuids(List<string> roles)
+        {
+            if (roles.Count == 0)
+            {
+                return new List<RoleModel>();
+            }
+            string query = "";
+            query += "select * from roles  where ConcurrencyStamp IN (";
+            for (int i = 0; i < roles.Count; i++)
+            {
+                query += $"'{roles[i]}'";
+                if (i != roles.Count - 1)
+                    query += ",";
+            }
+            query += ")";
+            return _dbSet.FromSqlRaw(query).ToList();
+        }
     }
 }
