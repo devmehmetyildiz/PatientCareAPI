@@ -23,16 +23,11 @@ namespace PatientCareAPI.Models.Authentication
         public string NormalizedUsername { get; set; }
         [StringLength(85)]
         public string Email { get; set; }
-        [StringLength(85)]
         public bool EmailConfirmed { get; set; }
         [StringLength(85)]
         public string PasswordHash { get; set; }
-      
-      
         public int AccessFailedCount { get; set; }
-
         public string Name { get; set; }
-
         public string Surname { get; set; }
         [StringLength(85)]
         public string PhoneNumber { get; set; }

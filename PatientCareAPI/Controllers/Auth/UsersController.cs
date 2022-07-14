@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using PatientCareAPI.DataAccess;
 using PatientCareAPI.Models.Authentication;
+using PatientCareAPI.Models.Settings;
 using PatientCareAPI.Utils;
 using System;
 using System.Collections.Generic;

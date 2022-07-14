@@ -18,6 +18,6 @@ namespace PatientCareAPI.Models.Authentication
         [StringLength(85)]
         public string ConcurrencyStamp { get; set; }
         [NotMapped]
-        public bool isAdded { get; set; }
+        public bool IsAdded { get; set; }
     }
 }

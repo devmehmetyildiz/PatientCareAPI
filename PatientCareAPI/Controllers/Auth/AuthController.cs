@@ -82,13 +82,11 @@ namespace PatientCareAPI.Controllers.Auth
                 ConcurrencyStamp = userGuid,
                 Email = model.Email,
                 AccessFailedCount = 0,
-                EmailConfirmed = false,
                 IsActive = true,
                 CreatedUser = "System",
                 CreateTime = DateTime.Now,
                 PasswordHash = securityutils.GenerateHash(model.Password, salt),
                 PhoneNumber = "",
-                PhoneNumberConfirmed = false
             };
             unitOfWork.UsersRepository.Add(user);
             ConfigureRoles();
