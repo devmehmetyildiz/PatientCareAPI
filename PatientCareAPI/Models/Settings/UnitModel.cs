@@ -17,6 +17,8 @@ namespace PatientCareAPI.Models.Settings
         public string Name { get; set; }
         public int Unittype { get; set; }
         [NotMapped]
+        public string Departmentstxt { get; set; }
+        [NotMapped]
         public List<DepartmentModel> Departments { get; set; }
         
     }

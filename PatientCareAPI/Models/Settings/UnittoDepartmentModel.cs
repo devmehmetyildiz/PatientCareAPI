@@ -10,9 +10,7 @@ namespace PatientCareAPI.Models.Settings
     {
         [Key]
         public int Id { get; set; }
-        [StringLength(30)]
         public string UnitId { get; set; }
-        [StringLength(30)]
         public string DepartmentId { get; set; }
     }
 }

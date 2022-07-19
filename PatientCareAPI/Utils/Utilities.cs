@@ -37,11 +37,13 @@ namespace PatientCareAPI.Utils
 
         public bool CheckAuth(string Role,object userid)
         {
-            bool isOk = false;
-            if (GetUserRoles(userid).Contains(Role))
-            {
-                isOk = true;
-            }
+            var claimsIdentity = userid as ClaimsIdentity;
+            var user = claimsIdentity.FindFirst(ClaimTypes.Name)?.Value;
+            bool isOk = unitOfWork.AuthoryRepository.CheckAuthByUsername(user, Role);
+            //if (GetUserRoles(userid).Contains(Role))
+            //{
+            //    isOk = true;
+            //}
             return isOk;
         }
     }

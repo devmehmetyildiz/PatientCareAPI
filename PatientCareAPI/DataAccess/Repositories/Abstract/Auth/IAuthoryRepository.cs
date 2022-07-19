@@ -13,5 +13,6 @@ namespace PatientCareAPI.DataAccess.Repositories.Abstract.Auth
         AuthoryModel FindAuthoryBuGuid(string Guid);
 
         List<AuthoryModel> GetAuthoriesbyGuids(List<string> authoryguids);
+        bool CheckAuthByUsername(string username, string authoryname);
     }
 }

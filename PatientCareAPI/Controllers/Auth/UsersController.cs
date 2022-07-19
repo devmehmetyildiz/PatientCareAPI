@@ -82,6 +82,7 @@ namespace PatientCareAPI.Controllers.Auth
             model.CreatedUser = username;
             model.IsActive = true;
             model.CreateTime = DateTime.Now;
+            model.NormalizedUsername = model.Username.ToUpper();
             var userExist = unitOfWork.UsersRepository.FindUserByName(model.Username);
             if (userExist != null)
                 return StatusCode(StatusCodes.Status500InternalServerError, new ResponseModel { Status = "Error", Massage = "Bu Kullanıcı Adı Daha Önce Alındı" });

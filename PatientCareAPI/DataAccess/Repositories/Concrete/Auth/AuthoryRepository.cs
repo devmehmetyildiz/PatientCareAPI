@@ -44,5 +44,22 @@ namespace PatientCareAPI.DataAccess.Repositories.Concrete.Auth
             query += ")";
             return _dbSet.FromSqlRaw(query).ToList(); ;
         }
+
+        public bool CheckAuthByUsername(string username, string authoryname)
+        {
+            string query = "";
+            query += "select authories.* from authories ";
+            query += "left join roletoauthories on authories.ConcurrencyStamp = roletoauthories.AuthoryID ";
+            query += "left join roles on roles.ConcurrencyStamp = roletoauthories.RoleID ";
+            query += "left join usertoroles on usertoroles.RoleID  = roles.ConcurrencyStamp ";
+            query += "left join users on users.ConcurrencyStamp = usertoroles.UserID ";
+            query += $"where users.Username = '{username}' and authories.Name = '{authoryname}'";
+           
+            var Response = dbcontext.Authories.FromSqlRaw(query).ToList();
+            if (Response.Count == 0)
+                return false;
+            else
+                return true;
+        }
     }
 }

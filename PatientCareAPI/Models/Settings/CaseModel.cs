@@ -13,7 +13,10 @@ namespace PatientCareAPI.Models.Settings
             Departments = new List<DepartmentModel>();
         }
         public int CaseStatus { get; set; }
-        public string  Name { get; set; } 
+        public string  Name { get; set; }
+        [NotMapped]
+        public string Departmentstxt { get; set; }
+
         [NotMapped]
         public List<DepartmentModel> Departments { get; set; }
     }
