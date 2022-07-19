@@ -9,8 +9,8 @@ using PatientCareAPI.DataAccess;
 namespace PatientCareAPI.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20220710112320_firststart")]
-    partial class firststart
+    [Migration("20220719091411_v1")]
+    partial class v1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -92,6 +92,9 @@ namespace PatientCareAPI.Migrations
 
                     b.Property<double>("Purchaseprice")
                         .HasColumnType("double");
+
+                    b.Property<string>("Skt")
+                        .HasColumnType("text");
 
                     b.Property<string>("Stockid")
                         .HasColumnType("text");
@@ -323,8 +326,7 @@ namespace PatientCareAPI.Migrations
                         .HasColumnType("varchar(85)");
 
                     b.Property<bool>("EmailConfirmed")
-                        .HasMaxLength(85)
-                        .HasColumnType("tinyint(85)");
+                        .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
@@ -780,6 +782,9 @@ namespace PatientCareAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<string>("Barcodeno")
+                        .HasColumnType("text");
+
                     b.Property<string>("ConcurrencyStamp")
                         .HasMaxLength(85)
                         .HasColumnType("varchar(85)");
@@ -811,7 +816,7 @@ namespace PatientCareAPI.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Skt")
+                    b.Property<string>("Stationtid")
                         .HasColumnType("text");
 
                     b.Property<string>("Unitid")
@@ -882,12 +887,10 @@ namespace PatientCareAPI.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("DepartmentId")
-                        .HasMaxLength(30)
-                        .HasColumnType("varchar(30)");
+                        .HasColumnType("text");
 
                     b.Property<string>("UnitId")
-                        .HasMaxLength(30)
-                        .HasColumnType("varchar(30)");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 

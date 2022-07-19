@@ -9,5 +9,6 @@ namespace PatientCareAPI.DataAccess.Repositories.Abstract.Settings
     public interface IStationsRepository : IRepository<StationsModel>
     {
         List<StationsModel> GetStationsbyGuids(List<string> stations);
+        StationsModel GetStationbyGuid(string guid);
     }
 }

@@ -18,6 +18,8 @@ namespace PatientCareAPI.Models.Application
         public string Stockid { get; set; }
         [NotMapped]
         public StockModel Stock { get; set; }
+        public string Skt { get; set; }
+        public string Barcodeno { get; set; }
         public double Amount { get; set; }
         public double Purchaseprice { get; set; }
         public DateTime? Purchasedate { get; set; }

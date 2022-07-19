@@ -9,8 +9,8 @@ using PatientCareAPI.DataAccess;
 namespace PatientCareAPI.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20220718205651_v2")]
-    partial class v2
+    [Migration("20220719090929_start")]
+    partial class start
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -92,6 +92,9 @@ namespace PatientCareAPI.Migrations
 
                     b.Property<double>("Purchaseprice")
                         .HasColumnType("double");
+
+                    b.Property<string>("Skt")
+                        .HasColumnType("text");
 
                     b.Property<string>("Stockid")
                         .HasColumnType("text");
@@ -779,6 +782,9 @@ namespace PatientCareAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<string>("Barcodeno")
+                        .HasColumnType("text");
+
                     b.Property<string>("ConcurrencyStamp")
                         .HasMaxLength(85)
                         .HasColumnType("varchar(85)");
@@ -808,9 +814,6 @@ namespace PatientCareAPI.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Skt")
                         .HasColumnType("text");
 
                     b.Property<string>("Unitid")

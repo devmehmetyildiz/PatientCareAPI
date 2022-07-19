@@ -34,5 +34,10 @@ namespace PatientCareAPI.DataAccess.Repositories.Concrete.Settings
             query += ")";
             return _dbSet.FromSqlRaw(query).ToList(); ;
         }
+
+        public StationsModel GetStationbyGuid(string guid)
+        {
+            return _dbSet.FirstOrDefault(u => u.ConcurrencyStamp == guid);
+        }
     }
 }

@@ -46,7 +46,11 @@ namespace PatientCareAPI.Controllers.Settings
                 foreach (var item in Data)
                 {
                     item.Department = unitOfWork.DepartmentRepository.GetDepartmentByGuid(item.Departmentid);
+                    item.Station = unitOfWork.StationsRepository.GetStationbyGuid(item.Stationtid);
                     item.Unit = unitOfWork.UnitRepository.GetUnitByGuid(item.Unitid);
+                    item.Departmenttxt = item.Department.Name;
+                    item.Stationtxt= item.Station.Name;
+                    item.Unittxt = item.Unit.Name;
                 }
             }
             else
@@ -55,7 +59,11 @@ namespace PatientCareAPI.Controllers.Settings
                 foreach (var item in Data)
                 {
                     item.Department = unitOfWork.DepartmentRepository.GetDepartmentByGuid(item.Departmentid);
+                    item.Station = unitOfWork.StationsRepository.GetStationbyGuid(item.Stationtid);
                     item.Unit = unitOfWork.UnitRepository.GetUnitByGuid(item.Unitid);
+                    item.Departmenttxt = item.Department.Name;
+                    item.Stationtxt = item.Station.Name;
+                    item.Unittxt = item.Unit.Name;
                 }
             }
             if (Data.Count == 0)
@@ -71,8 +79,12 @@ namespace PatientCareAPI.Controllers.Settings
         public IActionResult GetSelectedStock(int ID)
         {
             StockModel Data = unitOfWork.StockRepository.Getbyid(ID);
-            Data.Department= unitOfWork.DepartmentRepository.GetDepartmentByGuid(Data.Departmentid);
+            Data.Department = unitOfWork.DepartmentRepository.GetDepartmentByGuid(Data.Departmentid);
+            Data.Station = unitOfWork.StationsRepository.GetStationbyGuid(Data.Stationtid);
             Data.Unit = unitOfWork.UnitRepository.GetUnitByGuid(Data.Unitid);
+            Data.Departmenttxt = Data.Department.Name;
+            Data.Stationtxt = Data.Station.Name;
+            Data.Unittxt = Data.Unit.Name;
             if (!Utilities.CheckAuth(UserAuthory.Stock_ManageAll, this.User.Identity))
             {
                 if (Data.CreatedUser != this.User.Identity.Name)
@@ -99,6 +111,7 @@ namespace PatientCareAPI.Controllers.Settings
             model.CreateTime = DateTime.Now;
             model.ConcurrencyStamp = Guid.NewGuid().ToString();
             model.Departmentid = model.Department.ConcurrencyStamp;
+            model.Stationtid = model.Station.ConcurrencyStamp;
             model.Unitid = model.Department.ConcurrencyStamp;
             unitOfWork.StockRepository.Add(model);
             unitOfWork.Complate();
@@ -122,6 +135,7 @@ namespace PatientCareAPI.Controllers.Settings
             model.UpdatedUser = username;
             model.UpdateTime = DateTime.Now;
             model.Departmentid = model.Department.ConcurrencyStamp;
+            model.Stationtid = model.Station.ConcurrencyStamp;
             model.Unitid = model.Department.ConcurrencyStamp;
             unitOfWork.StockRepository.update(unitOfWork.StockRepository.Getbyid(model.Id), model);
             unitOfWork.Complate();

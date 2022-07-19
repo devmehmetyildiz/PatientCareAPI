@@ -4,7 +4,7 @@ using MySql.EntityFrameworkCore.Metadata;
 
 namespace PatientCareAPI.Migrations
 {
-    public partial class firststart : Migration
+    public partial class start : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -40,6 +40,7 @@ namespace PatientCareAPI.Migrations
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     ConcurrencyStamp = table.Column<string>(type: "varchar(85)", maxLength: 85, nullable: true),
                     Stockid = table.Column<string>(type: "text", nullable: true),
+                    Skt = table.Column<string>(type: "text", nullable: true),
                     Amount = table.Column<double>(type: "double", nullable: false),
                     Purchaseprice = table.Column<double>(type: "double", nullable: false),
                     Purchasedate = table.Column<DateTime>(type: "datetime", nullable: true),
@@ -356,7 +357,7 @@ namespace PatientCareAPI.Migrations
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "text", nullable: false),
                     Description = table.Column<string>(type: "text", nullable: true),
-                    Skt = table.Column<string>(type: "text", nullable: true),
+                    Barcodeno = table.Column<string>(type: "text", nullable: true),
                     Unitid = table.Column<string>(type: "text", nullable: true),
                     Departmentid = table.Column<string>(type: "text", nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "varchar(85)", maxLength: 85, nullable: true),
@@ -401,8 +402,8 @@ namespace PatientCareAPI.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    UnitId = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true),
-                    DepartmentId = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true)
+                    UnitId = table.Column<string>(type: "text", nullable: true),
+                    DepartmentId = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -418,7 +419,7 @@ namespace PatientCareAPI.Migrations
                     Username = table.Column<string>(type: "varchar(85)", maxLength: 85, nullable: true),
                     NormalizedUsername = table.Column<string>(type: "varchar(85)", maxLength: 85, nullable: true),
                     Email = table.Column<string>(type: "varchar(85)", maxLength: 85, nullable: true),
-                    EmailConfirmed = table.Column<bool>(type: "tinyint(85)", maxLength: 85, nullable: false),
+                    EmailConfirmed = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     PasswordHash = table.Column<string>(type: "varchar(85)", maxLength: 85, nullable: true),
                     AccessFailedCount = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: true),
