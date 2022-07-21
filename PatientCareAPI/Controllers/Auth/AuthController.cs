@@ -225,6 +225,11 @@ namespace PatientCareAPI.Controllers.Auth
             Roles.Add(new AuthoryModel{ Group=UserAuthory.Case,Name=UserAuthory.Case_Update});
             Roles.Add(new AuthoryModel{ Group=UserAuthory.Case,Name=UserAuthory.Case_Delete});
             Roles.Add(new AuthoryModel{ Group=UserAuthory.Case,Name=UserAuthory.Case_ManageAll});
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Costumertype,Name=UserAuthory.Costumertype_Screen });
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Costumertype,Name=UserAuthory.Costumertype_Add });
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Costumertype,Name=UserAuthory.Costumertype_Update });
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Costumertype,Name=UserAuthory.Costumertype_Delete });
+            Roles.Add(new AuthoryModel{ Group=UserAuthory.Costumertype,Name=UserAuthory.Costumertype_ManageAll });
             Roles.Add(new AuthoryModel{ Group=UserAuthory.Roles,Name=UserAuthory.Roles_Screen});
             Roles.Add(new AuthoryModel{ Group=UserAuthory.Roles,Name=UserAuthory.Roles_Add});
             Roles.Add(new AuthoryModel{ Group=UserAuthory.Roles,Name=UserAuthory.Roles_Update});

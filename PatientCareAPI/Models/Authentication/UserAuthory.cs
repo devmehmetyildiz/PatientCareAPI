@@ -22,6 +22,7 @@ namespace PatientCareAPI.Models.Authentication
         public const string File = "File";
         public const string Dashboard = "Dashboard";
         public const string Reminding = "Reminding";
+        public const string Costumertype = "Costumertype";
 
         public const string Basic = "Basic";
         public const string Admin = "Admin";
@@ -76,6 +77,12 @@ namespace PatientCareAPI.Models.Authentication
         public const string Case_Update = "Case Update";
         public const string Case_Delete = "Case Delete";
         public const string Case_ManageAll = "Case ManageAll";
+
+        public const string Costumertype_Screen = "Costumertype Screen";
+        public const string Costumertype_Add = "Costumertype Add";
+        public const string Costumertype_Update = "Costumertype Update";
+        public const string Costumertype_Delete = "Costumertype Delete";
+        public const string Costumertype_ManageAll = "Costumertype ManageAll";
 
         public const string Roles_Screen = "Roles Screen";
         public const string Roles_Add = "Roles Add";

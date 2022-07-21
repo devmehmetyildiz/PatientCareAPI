@@ -46,6 +46,8 @@ namespace PatientCareAPI.DataAccess
             StockRepository = new StockRepository(_dBContext);
             UnittodepartmentRepository = new UnittodepartmentRepository(_dBContext);
             PatienttypeRepository = new PatienttypeRepository(_dBContext);
+            CostumertypeRepository = new CostumertypeRepository(_dBContext);
+            CostumertypetoDepartmentRepository = new CostumertypetoDepartmentRepository(_dBContext);
         }
 
         public IAuthoryRepository AuthoryRepository { get; private set; }
@@ -99,6 +101,10 @@ namespace PatientCareAPI.DataAccess
         public IUnittodepartmentRepository UnittodepartmentRepository { get; private set; }
 
         public IPatienttypeRepository PatienttypeRepository { get; private set; }
+
+        public ICostumertypeRepository CostumertypeRepository { get; private set; }
+
+        public ICostumertypetoDepartmentRepository CostumertypetoDepartmentRepository { get; private set; }
 
         public int Complate()
         {

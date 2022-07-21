@@ -12,11 +12,7 @@ namespace PatientCareAPI.Models.Settings
         [Required]
         public string Name { get; set; }
         public string Description { get; set; }
-
-        //TOOD
-        [NotMapped]
         public double Amount { get; set; }
-
         public string Unitid { get; set; }
         [NotMapped]
         public string Unittxt { get; set; }

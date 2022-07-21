@@ -40,6 +40,8 @@ namespace PatientCareAPI.DataAccess
         IUsertoDepartmentRepository UsertoDepartmentRepository { get; }
         IDepartmenttoStationRepository DepartmenttoStationRepository { get; }
         IPatienttypeRepository PatienttypeRepository { get; }
+        ICostumertypeRepository CostumertypeRepository { get; }
+        ICostumertypetoDepartmentRepository CostumertypetoDepartmentRepository { get; }
         int Complate();
     }
 }

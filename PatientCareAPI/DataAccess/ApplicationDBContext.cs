@@ -46,6 +46,9 @@ namespace PatientCareAPI.DataAccess
         public DbSet<UsertoStationsModel> UsertoStations { get; set; }
         public DbSet<DepartmenttoStationModel>  DepartmenttoStation { get; set; }
         public DbSet<PatienttypeModel> Patienttypes { get; set; }
+        public DbSet<CostumertypeModel> Costumertypes { get; set; }
+        public DbSet<CostumertypetoDepartmentModel> CostumertypetoDepartments{ get; set; }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
            
