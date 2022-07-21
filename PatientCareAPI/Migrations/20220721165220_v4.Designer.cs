@@ -9,8 +9,8 @@ using PatientCareAPI.DataAccess;
 namespace PatientCareAPI.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20220719090929_start")]
-    partial class start
+    [Migration("20220721165220_v4")]
+    partial class v4
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -43,6 +43,9 @@ namespace PatientCareAPI.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("varchar(30)");
 
+                    b.Property<string>("Floornumber")
+                        .HasColumnType("text");
+
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
 
@@ -58,6 +61,9 @@ namespace PatientCareAPI.Migrations
 
                     b.Property<DateTime?>("Releasedate")
                         .HasColumnType("datetime");
+
+                    b.Property<string>("Roomnumber")
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("UpdateTime")
                         .HasColumnType("datetime");
@@ -79,6 +85,9 @@ namespace PatientCareAPI.Migrations
 
                     b.Property<double>("Amount")
                         .HasColumnType("double");
+
+                    b.Property<string>("Barcodeno")
+                        .HasColumnType("text");
 
                     b.Property<string>("ConcurrencyStamp")
                         .HasMaxLength(85)
@@ -479,6 +488,65 @@ namespace PatientCareAPI.Migrations
                     b.ToTable("CasetoDepartments");
                 });
 
+            modelBuilder.Entity("PatientCareAPI.Models.Settings.CostumertypeModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .HasMaxLength(85)
+                        .HasColumnType("varchar(85)");
+
+                    b.Property<DateTime?>("CreateTime")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("CreatedUser")
+                        .HasMaxLength(30)
+                        .HasColumnType("varchar(30)");
+
+                    b.Property<DateTime?>("DeleteTime")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("DeleteUser")
+                        .HasMaxLength(30)
+                        .HasColumnType("varchar(30)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdateTime")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("UpdatedUser")
+                        .HasMaxLength(30)
+                        .HasColumnType("varchar(30)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Costumertypes");
+                });
+
+            modelBuilder.Entity("PatientCareAPI.Models.Settings.CostumertypetoDepartmentModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("CostumertypeID")
+                        .HasColumnType("text");
+
+                    b.Property<string>("DepartmentID")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CostumertypetoDepartments");
+                });
+
             modelBuilder.Entity("PatientCareAPI.Models.Settings.DepartmentModel", b =>
                 {
                     b.Property<int>("Id")
@@ -604,13 +672,27 @@ namespace PatientCareAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<string>("Address1")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Address2")
+                        .HasColumnType("text");
+
+                    b.Property<string>("City")
+                        .HasColumnType("text");
+
                     b.Property<string>("ConcurrencyStamp")
                         .HasMaxLength(85)
                         .HasColumnType("varchar(85)");
 
+                    b.Property<string>("Costumertypeid")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Country")
+                        .HasColumnType("text");
+
                     b.Property<string>("CountryID")
-                        .HasMaxLength(11)
-                        .HasColumnType("varchar(11)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("CreateTime")
                         .HasColumnType("datetime");
@@ -618,6 +700,12 @@ namespace PatientCareAPI.Migrations
                     b.Property<string>("CreatedUser")
                         .HasMaxLength(30)
                         .HasColumnType("varchar(30)");
+
+                    b.Property<DateTime?>("Dateofbirth")
+                        .HasColumnType("datetime");
+
+                    b.Property<DateTime?>("Dateofdeath")
+                        .HasColumnType("datetime");
 
                     b.Property<DateTime?>("DeleteTime")
                         .HasColumnType("datetime");
@@ -629,13 +717,16 @@ namespace PatientCareAPI.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<string>("Lastname")
+                        .HasColumnType("text");
+
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
                     b.Property<string>("Patienttypeid")
                         .HasColumnType("text");
 
-                    b.Property<string>("Surname")
+                    b.Property<string>("Town")
                         .HasColumnType("text");
 
                     b.Property<DateTime?>("UpdateTime")
@@ -782,8 +873,8 @@ namespace PatientCareAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("Barcodeno")
-                        .HasColumnType("text");
+                    b.Property<double>("Amount")
+                        .HasColumnType("double");
 
                     b.Property<string>("ConcurrencyStamp")
                         .HasMaxLength(85)
@@ -814,6 +905,9 @@ namespace PatientCareAPI.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Stationtid")
                         .HasColumnType("text");
 
                     b.Property<string>("Unitid")

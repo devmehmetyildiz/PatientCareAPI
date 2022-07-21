@@ -136,7 +136,7 @@ namespace PatientCareAPI.Controllers.Settings
             model.UpdateTime = DateTime.Now;
             model.Departmentid = model.Department.ConcurrencyStamp;
             model.Stationtid = model.Station.ConcurrencyStamp;
-            model.Unitid = model.Department.ConcurrencyStamp;
+            model.Unitid = model.Unit.ConcurrencyStamp;
             unitOfWork.StockRepository.update(unitOfWork.StockRepository.Getbyid(model.Id), model);
             unitOfWork.Complate();
             return Ok();

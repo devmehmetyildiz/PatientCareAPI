@@ -871,6 +871,9 @@ namespace PatientCareAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<double>("Amount")
+                        .HasColumnType("double");
+
                     b.Property<string>("ConcurrencyStamp")
                         .HasMaxLength(85)
                         .HasColumnType("varchar(85)");

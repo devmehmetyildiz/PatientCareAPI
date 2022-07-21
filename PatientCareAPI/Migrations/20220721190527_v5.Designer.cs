@@ -9,8 +9,8 @@ using PatientCareAPI.DataAccess;
 namespace PatientCareAPI.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    [Migration("20220721125635_v3")]
-    partial class v3
+    [Migration("20220721190527_v5")]
+    partial class v5
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -872,6 +872,9 @@ namespace PatientCareAPI.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    b.Property<double>("Amount")
+                        .HasColumnType("double");
 
                     b.Property<string>("ConcurrencyStamp")
                         .HasMaxLength(85)

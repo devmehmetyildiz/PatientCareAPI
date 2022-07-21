@@ -165,6 +165,15 @@ namespace PatientCareAPI.Controllers.Auth
             return Ok(userId);
         }
 
+        [Authorize(Roles =UserAuthory.Admin)]
+        [HttpGet]
+        [Route("ConfigureRoles")]
+        public async Task<IActionResult> ConfigureRolesAsAdmin()
+        {
+            ConfigureRoles();
+            return Ok();
+        }
+
         private bool CheckPassword(UsersModel user, string password)
         {
             return securityutils.AreEqual(password, user.PasswordHash, unitOfWork.UsertoSaltRepository.GetSaltByGuid(user.ConcurrencyStamp));
