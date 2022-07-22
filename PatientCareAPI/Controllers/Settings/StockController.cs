@@ -49,8 +49,8 @@ namespace PatientCareAPI.Controllers.Settings
                     item.Station = unitOfWork.StationsRepository.GetStationbyGuid(item.Stationtid);
                     item.Unit = unitOfWork.UnitRepository.GetUnitByGuid(item.Unitid);
                     item.Departmenttxt = item.Department.Name;
-                    item.Stationtxt= item.Station.Name;
                     item.Unittxt = item.Unit.Name;
+                    item.Stationtxt= item.Station.Name;
                 }
             }
             else
@@ -112,7 +112,7 @@ namespace PatientCareAPI.Controllers.Settings
             model.ConcurrencyStamp = Guid.NewGuid().ToString();
             model.Departmentid = model.Department.ConcurrencyStamp;
             model.Stationtid = model.Station.ConcurrencyStamp;
-            model.Unitid = model.Department.ConcurrencyStamp;
+            model.Unitid = model.Unit.ConcurrencyStamp;
             unitOfWork.StockRepository.Add(model);
             unitOfWork.Complate();
             return Ok();
