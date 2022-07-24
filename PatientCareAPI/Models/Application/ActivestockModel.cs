@@ -9,12 +9,10 @@ using System.Threading.Tasks;
 
 namespace PatientCareAPI.Models.Application
 {
-    public class ActivestockModel
+    public class ActivestockModel : BaseModel
     {
-        [Key]
-        public int Id { get; set; }
-        [StringLength(85)]
-        public string ConcurrencyStamp { get; set; }
+        [NotMapped]
+        public string Stockname { get; set; }
         public string Stockid { get; set; }
         [NotMapped]
         public StockModel Stock { get; set; }
