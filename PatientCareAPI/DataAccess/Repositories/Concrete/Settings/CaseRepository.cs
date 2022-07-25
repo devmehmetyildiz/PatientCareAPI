@@ -16,5 +16,17 @@ namespace PatientCareAPI.DataAccess.Repositories.Concrete.Settings
         {
             _dbSet = dbcontext.Set<CaseModel>();
         }
+
+        public List<CaseModel> GetByUserDepartment(string username)
+        {
+            string query = "";
+            query += "select c.* from cases c ";
+            query += "left join casetodepartments c2 on c.ConcurrencyStamp = c2.CaseID ";
+            query += "left join departments d on d.ConcurrencyStamp = c2.DepartmentID ";
+            query += "left join usertodepartment u on d.ConcurrencyStamp =u.DepartmanID ";
+            query += "left join users u2 on u.UserID = u2.ConcurrencyStamp ";
+            query +=  $"where u2.Username ='{username}' ";
+            return _dbSet.FromSqlRaw(query).ToList(); ;
+        }
     }
 }

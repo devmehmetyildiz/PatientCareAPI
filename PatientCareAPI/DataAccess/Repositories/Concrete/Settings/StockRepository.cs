@@ -21,5 +21,15 @@ namespace PatientCareAPI.DataAccess.Repositories.Concrete.Settings
         {
             return _dbSet.FirstOrDefault(u => u.ConcurrencyStamp == guid);
         }
+        public List<StockModel> GetByUserDepartment(string username)
+        {
+            string query = "";
+            query+="select s.* from stocks s ";
+            query +="left join departments d on s.Departmentid = d.ConcurrencyStamp ";
+            query +="left join usertodepartment u on d.ConcurrencyStamp =u.DepartmanID ";
+            query +="left join users u2 on u.UserID  = u2.ConcurrencyStamp ";
+            query +=$"where u2.Username ='{username}' ";
+            return _dbSet.FromSqlRaw(query).ToList(); ;
+        }
     }
 }

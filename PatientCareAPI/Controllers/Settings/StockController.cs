@@ -36,8 +36,8 @@ namespace PatientCareAPI.Controllers.Settings
 
         [HttpGet]
         [Authorize(Roles = UserAuthory.Stock_Screen)]
-        [Route("GetAll")]
-        public IActionResult GetAll()
+        [Route("GetAllSettings")]
+        public IActionResult GetAllSettings()
         {
             List<StockModel> Data = new List<StockModel>();
             if (Utilities.CheckAuth(UserAuthory.Stock_ManageAll, this.User.Identity))
@@ -56,6 +56,46 @@ namespace PatientCareAPI.Controllers.Settings
             else
             {
                 Data = unitOfWork.StockRepository.GetAll().Where(u => u.IsActive && u.CreatedUser == this.User.Identity.Name).ToList();
+                foreach (var item in Data)
+                {
+                    item.Department = unitOfWork.DepartmentRepository.GetDepartmentByGuid(item.Departmentid);
+                    item.Station = unitOfWork.StationsRepository.GetStationbyGuid(item.Stationtid);
+                    item.Unit = unitOfWork.UnitRepository.GetUnitByGuid(item.Unitid);
+                    item.Departmenttxt = item.Department.Name;
+                    item.Stationtxt = item.Station.Name;
+                    item.Unittxt = item.Unit.Name;
+                }
+            }
+            if (Data.Count == 0)
+            {
+                return NotFound();
+            }
+            return Ok(Data);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = UserAuthory.Stock_Screen)]
+        [Route("GetAll")]
+        public IActionResult GetAll()
+        {
+            var username = (this.User.Identity as ClaimsIdentity).FindFirst(ClaimTypes.Name)?.Value;
+            List<StockModel> Data = new List<StockModel>();
+            if (Utilities.CheckAuth(UserAuthory.Stock_ManageAll, this.User.Identity))
+            {
+                Data = unitOfWork.StockRepository.GetByUserDepartment(username).Where(u => u.IsActive).ToList();
+                foreach (var item in Data)
+                {
+                    item.Department = unitOfWork.DepartmentRepository.GetDepartmentByGuid(item.Departmentid);
+                    item.Station = unitOfWork.StationsRepository.GetStationbyGuid(item.Stationtid);
+                    item.Unit = unitOfWork.UnitRepository.GetUnitByGuid(item.Unitid);
+                    item.Departmenttxt = item.Department.Name;
+                    item.Unittxt = item.Unit.Name;
+                    item.Stationtxt = item.Station.Name;
+                }
+            }
+            else
+            {
+                Data = unitOfWork.StockRepository.GetByUserDepartment(username).Where(u => u.IsActive && u.CreatedUser == this.User.Identity.Name).ToList();
                 foreach (var item in Data)
                 {
                     item.Department = unitOfWork.DepartmentRepository.GetDepartmentByGuid(item.Departmentid);

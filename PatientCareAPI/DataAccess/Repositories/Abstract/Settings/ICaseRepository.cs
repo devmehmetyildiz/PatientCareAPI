@@ -8,5 +8,6 @@ namespace PatientCareAPI.DataAccess.Repositories.Abstract.Settings
 {
     public interface ICaseRepository : IRepository<CaseModel>
     {
+        List<CaseModel> GetByUserDepartment(string username);
     }
 }

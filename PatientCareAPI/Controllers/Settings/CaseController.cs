@@ -36,8 +36,8 @@ namespace PatientCareAPI.Controllers.Settings
 
         [HttpGet]
         [Authorize(Roles = UserAuthory.Case_Screen)]
-        [Route("GetAll")]
-        public IActionResult GetAll()
+        [Route("GetAllSettings")]
+        public IActionResult GetAllSettings()
         {
             List<CaseModel> Data = new List<CaseModel>();
             if(Utilities.CheckAuth(UserAuthory.Case_ManageAll,this.User.Identity))
@@ -69,6 +69,44 @@ namespace PatientCareAPI.Controllers.Settings
                 return NotFound();
             }
             return  Ok(Data);
+        }
+
+        [HttpGet]
+        [Authorize(Roles = UserAuthory.Case_Screen)]
+        [Route("GetAll")]
+        public IActionResult GetAll()
+        {
+            var username = (this.User.Identity as ClaimsIdentity).FindFirst(ClaimTypes.Name)?.Value;
+            List<CaseModel> Data = new List<CaseModel>();
+            if (Utilities.CheckAuth(UserAuthory.Case_ManageAll, this.User.Identity))
+            {
+                Data = unitOfWork.CaseRepository.GetByUserDepartment(username).Where(u => u.IsActive).ToList();
+                foreach (var item in Data)
+                {
+                    List<string> Departments = unitOfWork.CasetodepartmentRepository.GetAll().Where(u => u.CaseID == item.ConcurrencyStamp).Select(u => u.DepartmentID).ToList();
+                    foreach (var department in Departments)
+                    {
+                        item.Departments.Add(unitOfWork.DepartmentRepository.GetDepartmentByGuid(department));
+                    }
+                }
+            }
+            else
+            {
+                Data = unitOfWork.CaseRepository.GetByUserDepartment(username).Where(u => u.IsActive && u.CreatedUser == this.User.Identity.Name).ToList();
+                foreach (var item in Data)
+                {
+                    List<string> Departments = unitOfWork.CasetodepartmentRepository.GetAll().Where(u => u.CaseID == item.ConcurrencyStamp).Select(u => u.DepartmentID).ToList();
+                    foreach (var department in Departments)
+                    {
+                        item.Departments.Add(unitOfWork.DepartmentRepository.GetDepartmentByGuid(department));
+                    }
+                }
+            }
+            if (Data.Count == 0)
+            {
+                return NotFound();
+            }
+            return Ok(Data);
         }
 
         [Route("GetSelectedCase")]

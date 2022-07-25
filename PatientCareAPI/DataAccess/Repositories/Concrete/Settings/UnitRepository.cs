@@ -21,5 +21,17 @@ namespace PatientCareAPI.DataAccess.Repositories.Concrete.Settings
         {
             return _dbSet.FirstOrDefault(u => u.ConcurrencyStamp == guid);
         }
+
+        public List<UnitModel> GetByUserDepartment(string username)
+        {
+            string query = "";
+            query += "select u.* from units u ";
+            query += "left join unittodepartments u2 on u.ConcurrencyStamp = u2.UnitId ";
+            query +="left join departments d on d.ConcurrencyStamp = u2.DepartmentId  ";
+            query +="left join usertodepartment u3 on d.ConcurrencyStamp =u3.DepartmanID ";
+            query +="left join users u4 on u3.UserID  = u4.ConcurrencyStamp ";
+            query += $"where u4.Username ='{username}'";
+            return _dbSet.FromSqlRaw(query).ToList(); ;
+        }
     }
 }
