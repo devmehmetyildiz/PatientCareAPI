@@ -39,5 +39,15 @@ namespace PatientCareAPI.DataAccess.Repositories.Concrete.Settings
             query += ")";
             return _dbSet.FromSqlRaw(query).ToList();
         }
+
+        public List<DepartmentModel> GetDepartmentByUserDepartment(string username)
+        {
+            string query = "";
+            query+="select d.* from departments d ";
+            query +="left join usertodepartment u on d.ConcurrencyStamp = u.DepartmanID ";
+            query +="left join users u2 on u.UserID =u2.ConcurrencyStamp  ";
+            query +=$"where u2.Username ='{username}' ";
+            return _dbSet.FromSqlRaw(query).ToList(); 
+        }
     }
 }

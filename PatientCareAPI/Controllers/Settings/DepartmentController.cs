@@ -34,10 +34,10 @@ namespace PatientCareAPI.Controllers.Settings
             unitOfWork = new UnitOfWork(context);
         }
 
-        [Route("GetAll")]
+        [Route("GetAllSettings")]
         [Authorize(Roles = UserAuthory.Department_Screen)]
         [HttpGet]
-        public IActionResult GetAll()
+        public IActionResult GetAllSettings()
         {
             List<DepartmentModel> Data = new List<DepartmentModel>();
             if (Utilities.CheckAuth(UserAuthory.Department_ManageAll, this.User.Identity))
@@ -52,6 +52,36 @@ namespace PatientCareAPI.Controllers.Settings
             else
             {
                 Data = unitOfWork.DepartmentRepository.GetAll().Where(u => u.IsActive && u.CreatedUser == this.User.Identity.Name).ToList();
+                foreach (var item in Data)
+                {
+                    List<string> stations = unitOfWork.DepartmenttoStationRepository.GetAll().Where(u => u.DepartmentID == item.ConcurrencyStamp).Select(u => u.StationID).ToList();
+                    item.Stations.AddRange(unitOfWork.StationsRepository.GetStationsbyGuids(stations));
+                }
+            }
+            if (Data.Count == 0)
+                return NotFound();
+            return Ok(Data);
+        }
+
+        [Route("GetAll")]
+        [Authorize(Roles = UserAuthory.Department_Screen)]
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            var username = (this.User.Identity as ClaimsIdentity).FindFirst(ClaimTypes.Name)?.Value;
+            List<DepartmentModel> Data = new List<DepartmentModel>();
+            if (Utilities.CheckAuth(UserAuthory.Department_ManageAll, this.User.Identity))
+            {
+                Data = unitOfWork.DepartmentRepository.GetDepartmentByUserDepartment(username).Where(u => u.IsActive).ToList();
+                foreach (var item in Data)
+                {
+                    List<string> stations = unitOfWork.DepartmenttoStationRepository.GetAll().Where(u => u.DepartmentID == item.ConcurrencyStamp).Select(u => u.StationID).ToList();
+                    item.Stations.AddRange(unitOfWork.StationsRepository.GetStationsbyGuids(stations));
+                }
+            }
+            else
+            {
+                Data = unitOfWork.DepartmentRepository.GetDepartmentByUserDepartment(username).Where(u => u.IsActive && u.CreatedUser == this.User.Identity.Name).ToList();
                 foreach (var item in Data)
                 {
                     List<string> stations = unitOfWork.DepartmenttoStationRepository.GetAll().Where(u => u.DepartmentID == item.ConcurrencyStamp).Select(u => u.StationID).ToList();
