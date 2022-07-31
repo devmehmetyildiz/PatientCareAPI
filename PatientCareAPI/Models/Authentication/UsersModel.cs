@@ -42,6 +42,7 @@ namespace PatientCareAPI.Models.Authentication
         public int UserID { get; set; }
         [NotMapped]
         public List<RoleModel> Roles { get; set; }
+        public string Defaultdepartment { get; set; }
         [NotMapped]
         public List<DepartmentModel> Departments { get; set; }
         [NotMapped]

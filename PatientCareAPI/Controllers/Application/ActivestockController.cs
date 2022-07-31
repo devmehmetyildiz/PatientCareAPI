@@ -44,6 +44,7 @@ namespace PatientCareAPI.Controllers.Application
             foreach (var item in Data)
             {
                 item.Stock = unitOfWork.StockRepository.GetStockByGuid(item.Stockid);
+                item.Department = unitOfWork.DepartmentRepository.GetDepartmentByGuid(item.Departmentid);
             }
             if (Data.Count == 0)
                 return NotFound();
@@ -57,6 +58,7 @@ namespace PatientCareAPI.Controllers.Application
         {
             ActivestockModel Data = unitOfWork.ActivestockRepository.Getbyid(ID);
             Data.Stock = unitOfWork.StockRepository.GetStockByGuid(Data.Stockid);
+            Data.Department = unitOfWork.DepartmentRepository.GetDepartmentByGuid(Data.Departmentid);
             if (Data == null)
             {
                 return NotFound();
@@ -75,12 +77,35 @@ namespace PatientCareAPI.Controllers.Application
             return Ok();
         }
 
+        [Route("AddRange")]
+        [Authorize(Roles = UserAuthory.Stock_Add)]
+        [HttpPost]
+        public IActionResult AddRange(List<ActivestockModel> list)
+        {
+            var username = (this.User.Identity as ClaimsIdentity).FindFirst(ClaimTypes.Name)?.Value;
+            foreach (var item in list)
+            {
+                item.Stockid = item.Stock.ConcurrencyStamp;
+                item.Departmentid = item.Department.ConcurrencyStamp;
+                item.CreatedUser = username;
+                item.IsActive = true;
+                item.CreateTime = DateTime.Now;
+                item.ConcurrencyStamp = Guid.NewGuid().ToString();
+            }
+            unitOfWork.ActivestockRepository.AddRange(list);
+            unitOfWork.Complate();
+            return Ok();
+        }
+
         [Route("Update")]
         [Authorize(Roles = UserAuthory.Stock_Update)]
         [HttpPost]
         public IActionResult Update(ActivestockModel model)
         {
+            var username = (this.User.Identity as ClaimsIdentity).FindFirst(ClaimTypes.Name)?.Value;
             model.Stockid = model.Stock.ConcurrencyStamp;
+            model.UpdatedUser = username;
+            model.UpdateTime = DateTime.Now;
             unitOfWork.ActivestockRepository.update(unitOfWork.ActivestockRepository.Getbyid(model.Id), model);
             unitOfWork.Complate();
             return Ok();
@@ -91,6 +116,9 @@ namespace PatientCareAPI.Controllers.Application
         [HttpDelete]
         public IActionResult Delete(ActivestockModel model)
         {
+            var username = (this.User.Identity as ClaimsIdentity).FindFirst(ClaimTypes.Name)?.Value;
+            model.DeleteUser = username;
+            model.DeleteTime = DateTime.Now;
             unitOfWork.ActivestockRepository.update(unitOfWork.ActivestockRepository.Getbyid(model.Id), model);
             unitOfWork.Complate();
             return Ok();
