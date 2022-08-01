@@ -52,9 +52,9 @@ namespace PatientCareAPI.Controllers.Application
         }
 
         [Authorize(Roles = (UserAuthory.Stock_Screen + "," + UserAuthory.Stock_Update))]
-        [Route("GetSelectedDepartment")]
+        [Route("GetSelectedActivestock")]
         [HttpGet]
-        public IActionResult GetSelectedCase(int ID)
+        public IActionResult GetSelectedActivestock(int ID)
         {
             ActivestockModel Data = unitOfWork.ActivestockRepository.Getbyid(ID);
             Data.Stock = unitOfWork.StockRepository.GetStockByGuid(Data.Stockid);
