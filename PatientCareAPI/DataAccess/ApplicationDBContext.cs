@@ -22,6 +22,11 @@ namespace PatientCareAPI.DataAccess
         public DbSet<ProcesstoFilesModel> ProcesstoFiles { get; set; }
         public DbSet<ProcesstoUsersModel> ProcesstoUsers { get; set; }
         public DbSet<ActivestockModel> Activestock { get; set; }
+        public DbSet<DeactivestockModel> Deactivestocks { get; set; }
+        public DbSet<PatientactivestockModel> Patientactivestocks { get; set; }
+        public DbSet<PatientmovementModel> Patientmovements { get; set; }
+        public DbSet<StockmovementModel> Stockmovements { get; set; }
+
         public DbSet<ProcessModel> Process{ get; set; }
         //Auth
         public DbSet<AuthoryModel> Authories { get; set; }
@@ -48,6 +53,7 @@ namespace PatientCareAPI.DataAccess
         public DbSet<PatienttypeModel> Patienttypes { get; set; }
         public DbSet<CostumertypeModel> Costumertypes { get; set; }
         public DbSet<CostumertypetoDepartmentModel> CostumertypetoDepartments{ get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

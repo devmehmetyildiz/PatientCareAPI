@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PatientCareAPI.DataAccess;
 
 namespace PatientCareAPI.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20220803081127_V12")]
+    partial class V12
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -98,9 +100,6 @@ namespace PatientCareAPI.Migrations
                         .HasMaxLength(30)
                         .HasColumnType("varchar(30)");
 
-                    b.Property<DateTime?>("Deactivetime")
-                        .HasColumnType("datetime");
-
                     b.Property<DateTime?>("DeleteTime")
                         .HasColumnType("datetime");
 
@@ -150,8 +149,8 @@ namespace PatientCareAPI.Migrations
                     b.Property<string>("Activestockid")
                         .HasColumnType("text");
 
-                    b.Property<double>("Amount")
-                        .HasColumnType("double");
+                    b.Property<string>("Amount")
+                        .HasColumnType("text");
 
                     b.Property<string>("Createduser")
                         .HasColumnType("text");

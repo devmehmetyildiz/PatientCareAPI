@@ -12,11 +12,17 @@ namespace PatientCareAPI.Models.Application
         [Key]
         public int Id { get; set; }
         [NotMapped]
+        public ActivestockModel Activestock { get; set; }
+        [NotMapped]
         public string Stockname { get; set; }
-        public string Activestockid { get; set; }
-        public string UserID { get; set; }
+        [NotMapped]
+        public string Departmentname { get; set; }
+        [NotMapped]
+        public string Username { get; set; }
         [NotMapped]
         public string Movementtypename { get; set; }
+        public string UserID { get; set; }
+        public string Activestockid { get; set; }
         public int Movementtype { get; set; }
         public double Amount { get; set; }
         public double Prevvalue { get; set; }

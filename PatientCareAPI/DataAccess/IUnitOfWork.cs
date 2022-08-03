@@ -16,6 +16,10 @@ namespace PatientCareAPI.DataAccess
         IProcesstoUsersRepository ProcesstoUsersRepository { get; }
         IActivestockRepository ActivestockRepository { get; }
         IProcessRepository ProcessRepository { get; }
+        IDeactivestockRepository DeactivestockRepository { get; }
+        IPatientactivestockRepository PatientactivestockRepository { get; }
+        IPatientmovementRepository PatientmovementRepository { get; }
+        IStockmovementRepository StockmovementRepository { get; }
 
         //Auth
         IAuthoryRepository AuthoryRepository { get; }

@@ -24,6 +24,10 @@ namespace PatientCareAPI.DataAccess
             ProcesstoUsersRepository = new ProcesstoUsersRepository(_dBContext);
             ActivestockRepository = new ActivestockRepository(_dBContext);
             ProcessRepository = new ProcessRepository(_dBContext);
+            DeactivestockRepository = new DeactivestockRepository(_dBContext);
+            PatientactivestockRepository = new PatientactivestockRepository(_dBContext);
+            PatientmovementRepository = new PatientmovementRepository(_dBContext);
+            StockmovementRepository = new StockmovementRepository(_dBContext);
             //Auth
             AuthoryRepository = new AuthoryRepository(_dBContext);
             UsersRepository = new UsersRepository(_dBContext);
@@ -105,6 +109,14 @@ namespace PatientCareAPI.DataAccess
         public ICostumertypeRepository CostumertypeRepository { get; private set; }
 
         public ICostumertypetoDepartmentRepository CostumertypetoDepartmentRepository { get; private set; }
+
+        public IDeactivestockRepository DeactivestockRepository { get; private set; }
+
+        public IPatientactivestockRepository PatientactivestockRepository { get; private set; }
+
+        public IPatientmovementRepository PatientmovementRepository { get; private set; }
+
+        public IStockmovementRepository StockmovementRepository { get; private set; }
 
         public int Complate()
         {

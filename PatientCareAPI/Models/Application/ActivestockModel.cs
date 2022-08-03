@@ -26,6 +26,7 @@ namespace PatientCareAPI.Models.Application
         public double Amount { get; set; }
         public double Purchaseprice { get; set; }
         public DateTime? Purchasedate { get; set; }
+        public DateTime? Deactivetime { get; set; }
         public string Info { get; set; }
 
     }
