@@ -88,9 +88,11 @@ namespace PatientCareAPI.Controllers.Settings
         public IActionResult Update(DatatableModel model)
         {
             var username = (this.User.Identity as ClaimsIdentity).FindFirst(ClaimTypes.Name)?.Value;
-            model.UpdatedUser = username;
-            model.UpdateTime = DateTime.Now;
-            unitOfWork.DatatableRepository.update(unitOfWork.DatatableRepository.Getbyid(model.Id), model);
+            DatatableModel newmodel = unitOfWork.DatatableRepository.GetDatatableByName(model.Tablename);
+            newmodel.Json = model.Json;
+            newmodel.UpdatedUser = username;
+            newmodel.UpdateTime = DateTime.Now;
+            unitOfWork.DatatableRepository.update(unitOfWork.DatatableRepository.GetDatatableByName(model.Tablename), newmodel);
             unitOfWork.Complate();
             return Ok();
         }
