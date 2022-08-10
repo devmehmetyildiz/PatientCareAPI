@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using PatientCareAPI.DataAccess.Repositories.Abstract.Settings;
-using PatientCareAPI.Models.Settings;
+using PatientCareAPI.DataAccess.Repositories.Abstract.Application;
+using PatientCareAPI.Models.Application;
 
-namespace PatientCareAPI.DataAccess.Repositories.Concrete.Settings
+namespace PatientCareAPI.DataAccess.Repositories.Concrete.Application
 {
     public class PatientRepository : Repository<PatientModel>, IPatientRepository
     {

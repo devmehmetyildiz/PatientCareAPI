@@ -17,6 +17,8 @@ namespace PatientCareAPI.Models.Application
         [NotMapped]
         public string Movementtypename { get; set; }
         public int Movementtype { get; set; }
+        public bool Iswaitingactivation { get; set; }
+        public bool IsDeactive { get; set; }
         public DateTime? Movementdate { get; set; }
     }
 }

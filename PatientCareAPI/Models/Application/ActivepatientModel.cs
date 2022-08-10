@@ -18,9 +18,11 @@ namespace PatientCareAPI.Models.Application
         public DateTime? Registerdate { get; set; }
         public DateTime? Releasedate { get; set; }
         public string Processid { get; set; }
-        public string Floornumber { get; set; }
-        public string Roomnumber { get; set; }
+        public bool Iswaitingactivation { get; set; }
         [NotMapped]
         public ProcessModel Process { get; set; }
+        public string CaseId { get; set; }
+        [NotMapped]
+        public CaseModel Case { get; set; }
     }
 }

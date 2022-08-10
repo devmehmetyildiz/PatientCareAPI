@@ -26,6 +26,8 @@ namespace PatientCareAPI.DataAccess
         public DbSet<PatientactivestockModel> Patientactivestocks { get; set; }
         public DbSet<PatientmovementModel> Patientmovements { get; set; }
         public DbSet<StockmovementModel> Stockmovements { get; set; }
+        public DbSet<PatientModel> Patients { get; set; }
+
 
         public DbSet<ProcessModel> Process{ get; set; }
         //Auth
@@ -40,7 +42,6 @@ namespace PatientCareAPI.DataAccess
         public DbSet<CaseModel> Cases { get; set; }
         public DbSet<CasetoDepartmentModel> CasetoDepartments { get; set; }
         public DbSet<FileModel> Files { get; set; }
-        public DbSet<PatientModel> Patients { get; set; }
         public DbSet<RemindingModel> Remindings { get; set; }
         public DbSet<StockModel> Stocks { get; set; }
         public DbSet<UnitModel> Units { get; set; }

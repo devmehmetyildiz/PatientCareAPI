@@ -22,8 +22,6 @@ namespace PatientCareAPI.Models.Application
         public List<UsersModel> Users { get; set; }
         [NotMapped]
         public List<FileModel> Files { get; set; }
-        public string CaseId { get; set; }
-        [NotMapped]
-        public CaseModel Case { get; set; }
+     
     }
 }

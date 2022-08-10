@@ -5,7 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using PatientCareAPI.DataAccess;
 using PatientCareAPI.Models.Authentication;
-using PatientCareAPI.Models.Settings;
+using PatientCareAPI.Models.Application;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +13,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using PatientCareAPI.Utils;
 
-namespace PatientCareAPI.Controllers.Settings
+namespace PatientCareAPI.Controllers.Application
 {
     [Authorize]
     [Route("api/[controller]")]

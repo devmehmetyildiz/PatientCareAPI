@@ -84,6 +84,7 @@ namespace PatientCareAPI.Controllers.Application
             model.Deactivetime = DateTime.Now;
             model.DeleteTime = DateTime.Now;
             model.DeleteUser = username;
+            model.Isdeactive = true;
             unitOfWork.ActivestockRepository.update(unitOfWork.ActivestockRepository.Getbyid(model.Id), model);
             unitOfWork.StockmovementRepository.Add(new StockmovementModel
             {
@@ -104,15 +105,16 @@ namespace PatientCareAPI.Controllers.Application
         [HttpPost]
         public IActionResult Add(ActivestockModel model)
         {
+            string guid = Guid.NewGuid().ToString();
             var username = (this.User.Identity as ClaimsIdentity).FindFirst(ClaimTypes.Name)?.Value;
             model.CreatedUser = username;
             model.CreateTime = DateTime.Now;
             model.IsActive = true;
-            model.Stockid = model.Stock.ConcurrencyStamp;
+            model.ConcurrencyStamp = guid;
             unitOfWork.ActivestockRepository.Add(model);
             unitOfWork.StockmovementRepository.Add(new StockmovementModel
             {
-                Activestockid = model.Stock.ConcurrencyStamp,
+                Activestockid = guid,
                 Amount = model.Amount,
                 Movementdate = DateTime.Now,
                 Movementtype = ((int)Constants.Movementtypes.Create),
@@ -132,9 +134,10 @@ namespace PatientCareAPI.Controllers.Application
             var username = (this.User.Identity as ClaimsIdentity).FindFirst(ClaimTypes.Name)?.Value;
             foreach (var item in list)
             {
+                string guid = Guid.NewGuid().ToString();
                 unitOfWork.StockmovementRepository.Add(new StockmovementModel
                 {
-                    Activestockid = item.Stock.ConcurrencyStamp,
+                    Activestockid = guid,
                     Amount = item.Amount,
                     Movementdate = DateTime.Now,
                     Movementtype = ((int)Constants.Movementtypes.Create),
@@ -147,7 +150,7 @@ namespace PatientCareAPI.Controllers.Application
                 item.CreatedUser = username;
                 item.IsActive = true;
                 item.CreateTime = DateTime.Now;
-                item.ConcurrencyStamp = Guid.NewGuid().ToString();
+                item.ConcurrencyStamp = guid;
             }
             unitOfWork.ActivestockRepository.AddRange(list);
             unitOfWork.Complate();
@@ -163,8 +166,8 @@ namespace PatientCareAPI.Controllers.Application
             ActivestockModel oldmodel = unitOfWork.ActivestockRepository.Getbyid(model.Id);
             unitOfWork.StockmovementRepository.Add(new StockmovementModel
             {
-                Activestockid = model.Stock.ConcurrencyStamp,
-                Amount = model.Amount,
+                Activestockid = model.ConcurrencyStamp,
+                Amount = model.Amount-oldmodel.Amount,
                 Movementdate = DateTime.Now,
                 Movementtype = Getmovementtype(oldmodel.Amount,model.Amount),
                 Prevvalue = oldmodel.Amount,
@@ -188,7 +191,7 @@ namespace PatientCareAPI.Controllers.Application
             ActivestockModel oldmodel = unitOfWork.ActivestockRepository.Getbyid(model.Id);
             unitOfWork.StockmovementRepository.Add(new StockmovementModel
             {
-                Activestockid = model.Stock.ConcurrencyStamp,
+                Activestockid = model.ConcurrencyStamp,
                 Amount = model.Amount,
                 Movementdate = DateTime.Now,
                 Movementtype = (int)Constants.Movementtypes.Delete,

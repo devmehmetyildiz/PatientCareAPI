@@ -17,5 +17,21 @@ namespace PatientCareAPI.Utils
             Kill = 5,
             Delete = 6
         }
+
+        public enum Casetypes
+        {
+            Complated = 0,
+            
+        }
+        public enum Patienttypes
+        {
+            KurumdanCıkıs = 0,
+            KurumaGiriş = 1,
+            İlkKayıt = 2,
+            HastaneCıkıs = 3,
+            HastaneGiris=4,
+            Ölüm=5,
+            Kontrol=6
+        }
     }
 }

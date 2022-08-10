@@ -1,10 +1,10 @@
-﻿using PatientCareAPI.Models.Settings;
+﻿using PatientCareAPI.Models.Application;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace PatientCareAPI.DataAccess.Repositories.Abstract.Settings
+namespace PatientCareAPI.DataAccess.Repositories.Abstract.Application
 {
     public interface IPatientRepository : IRepository<PatientModel>
     {

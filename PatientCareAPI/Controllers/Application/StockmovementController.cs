@@ -50,5 +50,50 @@ namespace PatientCareAPI.Controllers.Application
                 return NotFound();
             return Ok(Data);
         }
+
+        [Route("GetAllSelected")]
+        [Authorize(Roles = UserAuthory.Stock_Screen)]
+        [HttpGet]
+        public IActionResult GetAllSelected(string guid)
+        {
+            List<StockmovementModel> Data = new List<StockmovementModel>();
+            Data = unitOfWork.StockmovementRepository.FindByActivestockGuid(guid);
+            foreach (var item in Data)
+            {
+                item.Activestock = unitOfWork.ActivestockRepository.GetStockByGuid(item.Activestockid);
+                item.Activestock.Stock = unitOfWork.StockRepository.GetStockByGuid(item.Activestock.Stockid);
+                item.Activestock.Department = unitOfWork.DepartmentRepository.GetDepartmentByGuid(item.Activestock.Departmentid);
+                item.Username = unitOfWork.UsersRepository.GetUsertByGuid(item.UserID).Username;
+            }
+            if (Data.Count == 0)
+                return NotFound();
+            return Ok(Data);
+        }
+
+        [Route("GetSelectedStock")]
+        [Authorize(Roles = UserAuthory.Stock_Screen)]
+        [HttpGet]
+        public IActionResult GetSelectedStock(string guid)
+        {
+            var Data = unitOfWork.StockRepository.GetStockByGuid(guid);
+            Data.Department = unitOfWork.DepartmentRepository.GetDepartmentByGuid(Data.Departmentid);
+            Data.Station = unitOfWork.StationsRepository.GetStationbyGuid(Data.Stationtid);
+            Data.Unit = unitOfWork.UnitRepository.GetUnitByGuid(Data.Unitid);
+            Data.Departmenttxt = Data.Department.Name;
+            Data.Stationtxt = Data.Station.Name;
+            Data.Unittxt = Data.Unit.Name;
+            if (!Utilities.CheckAuth(UserAuthory.Stock_ManageAll, this.User.Identity))
+            {
+                if (Data.CreatedUser != this.User.Identity.Name)
+                {
+                    return StatusCode(403);
+                }
+            }
+            if (Data == null)
+            {
+                return NotFound();
+            }
+            return Ok(Data);
+        }
     }
 }

@@ -96,7 +96,7 @@ namespace PatientCareAPI.Controllers.Settings
         [Authorize(Roles = (UserAuthory.Department_Screen + "," + UserAuthory.Department_Update))]
         [Route("GetSelectedDepartment")]
         [HttpGet]
-        public IActionResult GetSelectedCase(int ID)
+        public IActionResult GetSelectedDepartment(int ID)
         {
             var Data = unitOfWork.DepartmentRepository.Getbyid(ID);
             List<string> stations = unitOfWork.DepartmenttoStationRepository.GetAll().Where(u => u.DepartmentID == Data.ConcurrencyStamp).Select(u => u.StationID).ToList();
@@ -115,7 +115,29 @@ namespace PatientCareAPI.Controllers.Settings
             return Ok(Data);
         }
 
-
+        [Authorize(Roles = (UserAuthory.Department_Screen + "," + UserAuthory.Department_Update))]
+        [Route("GetSelectedDepartmentbyguid")]
+        [HttpGet]
+        public IActionResult GetSelectedDepartmentbyguid(string guid)
+        {
+            if (guid == null || guid == "")
+                return NotFound();
+            var Data = unitOfWork.DepartmentRepository.GetDepartmentByGuid(guid);
+            List<string> stations = unitOfWork.DepartmenttoStationRepository.GetAll().Where(u => u.DepartmentID == Data.ConcurrencyStamp).Select(u => u.StationID).ToList();
+            Data.Stations.AddRange(unitOfWork.StationsRepository.GetStationsbyGuids(stations));
+            if (!Utilities.CheckAuth(UserAuthory.Department_ManageAll, this.User.Identity))
+            {
+                if (Data.CreatedUser != this.User.Identity.Name)
+                {
+                    return StatusCode(403);
+                }
+            }
+            if (Data == null)
+            {
+                return NotFound();
+            }
+            return Ok(Data);
+        }
 
         [Route("Add")]
         [Authorize(Roles = UserAuthory.Department_Add)]

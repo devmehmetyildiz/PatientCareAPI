@@ -28,6 +28,7 @@ namespace PatientCareAPI.DataAccess
             PatientactivestockRepository = new PatientactivestockRepository(_dBContext);
             PatientmovementRepository = new PatientmovementRepository(_dBContext);
             StockmovementRepository = new StockmovementRepository(_dBContext);
+            PatientRepository = new PatientRepository(_dBContext);
             //Auth
             AuthoryRepository = new AuthoryRepository(_dBContext);
             UsersRepository = new UsersRepository(_dBContext);
@@ -45,7 +46,6 @@ namespace PatientCareAPI.DataAccess
             UsertoDepartmentRepository = new UsertoDepartmentRepository(_dBContext);
             DepartmenttoStationRepository = new DepartmenttoStationRepository(_dBContext);
             FileRepository = new FileRepository(_dBContext);
-            PatientRepository = new PatientRepository(_dBContext);
             RemindingRepository = new RemindingRepository(_dBContext);
             StockRepository = new StockRepository(_dBContext);
             UnittodepartmentRepository = new UnittodepartmentRepository(_dBContext);

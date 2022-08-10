@@ -20,6 +20,7 @@ namespace PatientCareAPI.DataAccess
         IPatientactivestockRepository PatientactivestockRepository { get; }
         IPatientmovementRepository PatientmovementRepository { get; }
         IStockmovementRepository StockmovementRepository { get; }
+        IPatientRepository PatientRepository { get; }
 
         //Auth
         IAuthoryRepository AuthoryRepository { get; }
@@ -33,7 +34,6 @@ namespace PatientCareAPI.DataAccess
         ICaseRepository CaseRepository { get; }
         ICasetodepartmentRepository CasetodepartmentRepository { get; }
         IFileRepository FileRepository { get; }
-        IPatientRepository PatientRepository { get; }
         IRemindingRepository RemindingRepository { get; }
         IStockRepository StockRepository { get; }
         IUnittodepartmentRepository UnittodepartmentRepository { get; }
