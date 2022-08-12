@@ -11,12 +11,16 @@ namespace PatientCareAPI.Models.Application
 {
     public class ActivepatientModel : BaseModel
     {
-        [StringLength(85)]
         public string PatientID { get; set; }
         [NotMapped]
         public PatientModel Patient { get; set; }
+        public DateTime? Approvaldate { get; set; }
         public DateTime? Registerdate { get; set; }
+        public string patientdiagnosis { get; set; }
         public DateTime? Releasedate { get; set; }
+        public int Roomnumber { get; set; }
+        public int Floornumber { get; set; }
+        public int Bednumber { get; set; }
         public string Processid { get; set; }
         public bool Iswaitingactivation { get; set; }
         [NotMapped]

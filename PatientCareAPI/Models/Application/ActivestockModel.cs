@@ -29,6 +29,5 @@ namespace PatientCareAPI.Models.Application
         public bool Isdeactive { get; set; }
         public DateTime? Deactivetime { get; set; }
         public string Info { get; set; }
-
     }
 }
