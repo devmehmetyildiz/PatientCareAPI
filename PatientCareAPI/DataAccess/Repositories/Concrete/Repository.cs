@@ -33,9 +33,20 @@ namespace PatientCareAPI.DataAccess.Repositories.Concrete
         {
             return _dbSet.ToList();
         }
+
+        public Tentity GetByGuid(string guid)
+        {
+            return _dbSet.Find(guid);
+        }
+
         public Tentity Getbyid(int id)
         {
             return _dbSet.Find(id);
+        }
+
+        public Tentity GetbyName(string Name)
+        {
+            return _dbSet.Find(Name);
         }
 
         public List<Tentity> GetTop(int count)
@@ -46,6 +57,11 @@ namespace PatientCareAPI.DataAccess.Repositories.Concrete
         public void Remove(int id)
         {
             _dbSet.Remove(Getbyid(id));
+        }
+
+        public void RemoveByGuid(string Guid)
+        {
+            _dbSet.Remove(GetByGuid(Guid));
         }
 
         public void RemoveRange(List<Tentity> entities)

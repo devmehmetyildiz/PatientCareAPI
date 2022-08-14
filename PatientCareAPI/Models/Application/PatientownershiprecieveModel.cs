@@ -9,6 +9,7 @@ namespace PatientCareAPI.Models.Application
 {
     public class PatientownershiprecieveModel : PatientformbaseModel
     {
+        public string Activepatientid { get; set; }
         public string Itemstxt { get; set; }
         [NotMapped]
         public List<string> Items { get; set; }

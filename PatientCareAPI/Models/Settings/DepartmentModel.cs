@@ -14,6 +14,7 @@ namespace PatientCareAPI.Models.Settings
         }
 
         public string Name { get; set; }
+        public bool Ishavepatients { get; set; }
 
         [NotMapped]
         public bool IsAdded { get; set; }

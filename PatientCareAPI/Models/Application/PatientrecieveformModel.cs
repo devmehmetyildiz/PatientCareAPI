@@ -9,6 +9,7 @@ namespace PatientCareAPI.Models.Application
 {
     public class PatientrecieveformModel : PatientformbaseModel
     {
+        public string Activepatientid { get; set; }
         public DateTime? Reportdate { get; set; }
         public string Itemstxt { get; set; }
         [NotMapped]

@@ -18,6 +18,15 @@ namespace PatientCareAPI.DataAccess
 
         //Application
         public DbSet<ActivepatientModel> Activepatients { get; set; }
+        public DbSet<PatientapplicantModel> Patientapplicants { get; set; }
+        public DbSet<PatientbodycontrolformModel> Patientbodycontrolforms { get; set; }
+        public DbSet<PatientdiagnosisModel> Patientdiagnosis { get; set; }
+        public DbSet<PatientdisabilitypermitformModel> Patientdisabilitypermitforms { get; set; }
+        public DbSet<PatientfirstadmissionformModel> Patientfirstadmissionforms { get; set; }
+        public DbSet<PatientfirstapproachreportModel> Patientfirstapproachreports{ get; set; }
+        public DbSet<PatientownershiprecieveModel> Patientownershiprecieves{ get; set; }
+        public DbSet<PatientrecieveformModel> Patientrecieveforms { get; set; }
+        public DbSet<PatientsubmittingformModel> Patientsubmittingforms { get; set; }
         public DbSet<ProcesstoActiveStocksModel> ProcesstoActivestocks { get; set; }
         public DbSet<ProcesstoFilesModel> ProcesstoFiles { get; set; }
         public DbSet<ProcesstoUsersModel> ProcesstoUsers { get; set; }
@@ -27,8 +36,6 @@ namespace PatientCareAPI.DataAccess
         public DbSet<PatientmovementModel> Patientmovements { get; set; }
         public DbSet<StockmovementModel> Stockmovements { get; set; }
         public DbSet<PatientModel> Patients { get; set; }
-
-
         public DbSet<ProcessModel> Process{ get; set; }
         //Auth
         public DbSet<AuthoryModel> Authories { get; set; }

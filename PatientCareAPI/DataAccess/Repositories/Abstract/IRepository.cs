@@ -7,6 +7,8 @@ namespace PatientCareAPI.DataAccess.Repositories.Abstract
 {
     public interface IRepository<Tentity> where Tentity : class
     {
+        Tentity GetbyName(string Name);
+        Tentity GetByGuid(string guid);
         Tentity Getbyid(int id);
 
         List<Tentity> GetAll();
@@ -20,6 +22,7 @@ namespace PatientCareAPI.DataAccess.Repositories.Abstract
         void AddRange(List<Tentity> entities);
 
         void Remove(int id);
+        void RemoveByGuid(string Guid);
 
         void RemoveRange(List<Tentity> entities);
     }

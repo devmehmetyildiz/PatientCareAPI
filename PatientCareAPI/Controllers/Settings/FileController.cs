@@ -12,10 +12,11 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using PatientCareAPI.Utils;
+using PatientCareAPI.Models;
 
 namespace PatientCareAPI.Controllers.Settings
 {
-    [Authorize]
+    // [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class FileController : ControllerBase
@@ -75,19 +76,25 @@ namespace PatientCareAPI.Controllers.Settings
             return Ok(Data);
         }
 
+        // [Route("Add")]
+        //// [Authorize(Roles = UserAuthory.File_Add)]
+        // [HttpPost]
+        // public IActionResult Add(FileModel model)
+        // {
+        //     var claimsIdentity = this.User.Identity as ClaimsIdentity;
+        //     var username = claimsIdentity.FindFirst(ClaimTypes.Name)?.Value;
+        //     model.CreatedUser = username;
+        //     model.IsActive = true;
+        //     model.CreateTime = DateTime.Now;
+        //     model.ConcurrencyStamp = Guid.NewGuid().ToString();
+        //     unitOfWork.FileRepository.Add(model);
+        //     unitOfWork.Complate();
+        //     return Ok();
+        // }
         [Route("Add")]
-        [Authorize(Roles = UserAuthory.File_Add)]
         [HttpPost]
-        public IActionResult Add(FileModel model)
+        public IActionResult Add([FromForm] testmodel model)
         {
-            var claimsIdentity = this.User.Identity as ClaimsIdentity;
-            var username = claimsIdentity.FindFirst(ClaimTypes.Name)?.Value;
-            model.CreatedUser = username;
-            model.IsActive = true;
-            model.CreateTime = DateTime.Now;
-            model.ConcurrencyStamp = Guid.NewGuid().ToString();
-            unitOfWork.FileRepository.Add(model);
-            unitOfWork.Complate();
             return Ok();
         }
 

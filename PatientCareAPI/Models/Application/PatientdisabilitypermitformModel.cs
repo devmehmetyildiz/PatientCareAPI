@@ -8,6 +8,6 @@ namespace PatientCareAPI.Models.Application
 {
     public class PatientdisabilitypermitformModel : PatientformbaseModel
     {
-      
+        public string Activepatientid { get; set; }
     }
 }

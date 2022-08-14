@@ -22,7 +22,15 @@ namespace PatientCareAPI.Models.Application
         public string Jobstatus { get; set; }
         public string Educationstatus { get; set; }
         public string Montlyincome { get; set; }
-        public AddressModel Address { get; set; }
+        public string Town { get; set; }
+        public string City { get; set; }
+        public string Address1 { get; set; }
+        public string Address2 { get; set; }
+        public string Country { get; set; }
+        public string Contactnumber1 { get; set; }
+        public string Contactnumber2 { get; set; }
+        public string Contactname1 { get; set; }
+        public string Contactname2 { get; set; }
         public DateTime? Appialdate { get; set; }
         public string Appialreason { get; set; }
     }

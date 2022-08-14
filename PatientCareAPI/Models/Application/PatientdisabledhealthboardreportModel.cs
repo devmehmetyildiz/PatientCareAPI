@@ -9,7 +9,7 @@ namespace PatientCareAPI.Models.Application
 {
     public class PatientdisabledhealthboardreportModel : PatientformbaseModel
     {
-        public string Activestockid { get; set; }
+        public string Activepatientid { get; set; }
         public string Reportno { get; set; }
         public string Reportname { get; set; }
         public string Sendinginstitution { get; set; }

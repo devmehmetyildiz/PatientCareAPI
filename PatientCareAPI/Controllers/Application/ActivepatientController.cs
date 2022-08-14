@@ -63,7 +63,7 @@ namespace PatientCareAPI.Controllers.Application
         }
 
         [Authorize(Roles = (UserAuthory.Patients_Screen + "," + UserAuthory.Patients_Update))]
-        [Route("GetSelectedDepartment")]
+        [Route("GetSelectedActivepatient")]
         [HttpGet]
         public IActionResult GetSelectedCase(int ID)
         {
@@ -83,8 +83,6 @@ namespace PatientCareAPI.Controllers.Application
             return Ok(Data);
         }
 
-
-
         [Route("Add")]
         [Authorize(Roles = UserAuthory.Patients_Add)]
         [HttpPost]
@@ -92,11 +90,66 @@ namespace PatientCareAPI.Controllers.Application
         {
             var claimsIdentity = this.User.Identity as ClaimsIdentity;
             var username = claimsIdentity.FindFirst(ClaimTypes.Name)?.Value;
+            string guid = Guid.NewGuid().ToString();
             model.CreatedUser = username;
             model.IsActive = true;
             model.CreateTime = DateTime.Now;
-            model.ConcurrencyStamp = Guid.NewGuid().ToString();
+            model.ConcurrencyStamp = guid;
             model.PatientID = model.Patient.ConcurrencyStamp;
+            model.Applicant.Activepatientid = guid;
+            model.Bodycontrolform.Activepatientid = guid;
+            model.Disabilitypermitform.Activepatientid = guid;
+            model.Disabledhealthboardreport.Activepatientid = guid;
+            model.Firstadmissionform.ActivepatientID = guid;
+            model.Firstapproachreport.ActivepatientID = guid;
+            model.Ownershiprecieve.Activepatientid = guid;
+            model.Recieveform.Activepatientid = guid;
+            model.Submittingform.Activepatientid = guid;
+            model.Applicant.CreatedUser = username;
+            model.Applicant.IsActive = true;
+            model.Applicant.CreateTime = DateTime.Now;
+            model.Applicant.ConcurrencyStamp = Guid.NewGuid().ToString();
+            model.Bodycontrolform.CreatedUser = username;
+            model.Bodycontrolform.IsActive = true;
+            model.Bodycontrolform.CreateTime = DateTime.Now;
+            model.Bodycontrolform.ConcurrencyStamp = Guid.NewGuid().ToString();
+            model.Disabilitypermitform.CreatedUser = username;
+            model.Disabilitypermitform.IsActive = true;
+            model.Disabilitypermitform.CreateTime = DateTime.Now;
+            model.Disabilitypermitform.ConcurrencyStamp = Guid.NewGuid().ToString();
+            model.Disabledhealthboardreport.CreatedUser = username;
+            model.Disabledhealthboardreport.IsActive = true;
+            model.Disabledhealthboardreport.CreateTime = DateTime.Now;
+            model.Disabledhealthboardreport.ConcurrencyStamp = Guid.NewGuid().ToString();
+            model.Firstadmissionform.CreatedUser = username;
+            model.Firstadmissionform.IsActive = true;
+            model.Firstadmissionform.CreateTime = DateTime.Now;
+            model.Firstadmissionform.ConcurrencyStamp = Guid.NewGuid().ToString();
+            model.Firstapproachreport.CreatedUser = username;
+            model.Firstapproachreport.IsActive = true;
+            model.Firstapproachreport.CreateTime = DateTime.Now;
+            model.Firstapproachreport.ConcurrencyStamp = Guid.NewGuid().ToString();
+            model.Ownershiprecieve.CreatedUser = username;
+            model.Ownershiprecieve.IsActive = true;
+            model.Ownershiprecieve.CreateTime = DateTime.Now;
+            model.Ownershiprecieve.ConcurrencyStamp = Guid.NewGuid().ToString();
+            model.Recieveform.CreatedUser = username;
+            model.Recieveform.IsActive = true;
+            model.Recieveform.CreateTime = DateTime.Now;
+            model.Recieveform.ConcurrencyStamp = Guid.NewGuid().ToString();
+            model.Submittingform.CreatedUser = username;
+            model.Submittingform.IsActive = true;
+            model.Submittingform.CreateTime = DateTime.Now;
+            model.Submittingform.ConcurrencyStamp = Guid.NewGuid().ToString();
+            unitOfWork.PatientapplicantRepository.Add(model.Applicant);
+            unitOfWork.PatientbodycontrolformRepository.Add(model.Bodycontrolform);
+            unitOfWork.PatientdisabilitypermitformRepository.Add(model.Disabilitypermitform);
+            unitOfWork.PatientdisabledhealthboardreportRepository.Add(model.Disabledhealthboardreport);
+            unitOfWork.PatientfirstadmissionformRepository.Add(model.Firstadmissionform);
+            unitOfWork.PatientfirstapproachreportRepository.Add(model.Firstapproachreport);
+            unitOfWork.PatientownershiprecieveRepository.Add(model.Ownershiprecieve);
+            unitOfWork.PatientrecieveformRepository.Add(model.Recieveform);
+            unitOfWork.PatientsubmittingformRepository.Add(model.Submittingform);
             unitOfWork.ActivepatientRepository.Add(model);
             unitOfWork.Complate();
             return Ok();

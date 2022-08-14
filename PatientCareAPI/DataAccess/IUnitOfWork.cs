@@ -11,6 +11,16 @@ namespace PatientCareAPI.DataAccess
     {
         //Application
         IActivepatientRepository ActivepatientRepository { get; }
+        IPatientapplicantRepository PatientapplicantRepository { get; }
+        IPatientbodycontrolformRepository PatientbodycontrolformRepository { get; }
+        IPatientdiagnosisRepository PatientdiagnosisRepository { get; }
+        IPatientdisabilitypermitformRepository PatientdisabilitypermitformRepository { get; }
+        IPatientdisabledhealthboardreportRepository PatientdisabledhealthboardreportRepository { get; }
+        IPatientfirstadmissionformRepository PatientfirstadmissionformRepository { get; }
+        IPatientfirstapproachreportRepository PatientfirstapproachreportRepository { get; }
+        IPatientownershiprecieveRepository PatientownershiprecieveRepository { get; }
+        IPatientrecieveformRepository PatientrecieveformRepository { get; }
+        IPatientsubmittingformRepository PatientsubmittingformRepository { get; }
         IProcesstoActivestocksRepostiyory ProcesstoActivestocksRepostiyory { get; }
         IProcesstoFilesRepostiyory ProcesstoFilesRepostiyory { get; }
         IProcesstoUsersRepository ProcesstoUsersRepository { get; }

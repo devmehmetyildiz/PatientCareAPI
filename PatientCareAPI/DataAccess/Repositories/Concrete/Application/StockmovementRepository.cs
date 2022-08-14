@@ -1,10 +1,8 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using PatientCareAPI.DataAccess.Repositories.Abstract.Application;
+using PatientCareAPI.Models.Application;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using PatientCareAPI.Models.Application;
-using PatientCareAPI.DataAccess.Repositories.Abstract.Application;
-using Microsoft.EntityFrameworkCore;
 
 namespace PatientCareAPI.DataAccess.Repositories.Concrete.Application
 {

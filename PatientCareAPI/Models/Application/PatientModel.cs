@@ -34,7 +34,15 @@ namespace PatientCareAPI.Models.Application
         public string Siblingstatus { get; set; }
         public string Sgkstatus { get; set; }
         public string Budgetstatus { get; set; }
-        public AddressModel Address { get; set; }
+        public string Town { get; set; }
+        public string City { get; set; }
+        public string Address1 { get; set; }
+        public string Address2 { get; set; }
+        public string Country { get; set; }
+        public string Contactnumber1 { get; set; }
+        public string Contactnumber2 { get; set; }
+        public string Contactname1 { get; set; }
+        public string Contactname2 { get; set; }
         public string Costumertypeid{ get; set; }
         public string Patienttypeid { get; set; }
         [NotMapped]

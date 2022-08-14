@@ -20,7 +20,6 @@ namespace PatientCareAPI.DataAccess.Repositories.Concrete.Settings
         public FileModel GetFilebyGuid(string guid)
         {
             return _dbSet.FirstOrDefault(u => u.ConcurrencyStamp == guid);
-
         }
     }
 }

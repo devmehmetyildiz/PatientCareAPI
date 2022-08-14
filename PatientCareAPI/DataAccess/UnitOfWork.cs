@@ -19,6 +19,17 @@ namespace PatientCareAPI.DataAccess
             _dBContext = dBContext;
             //Application
             ActivepatientRepository = new ActivepatientRepository(_dBContext);
+            PatientapplicantRepository = new PatientapplicantRepository(_dBContext);
+            PatientbodycontrolformRepository = new PatientbodycontrolformRepository(_dBContext);
+            PatientdiagnosisRepository = new PatientdiagnosisRepository(_dBContext);
+            PatientdisabilitypermitformRepository = new PatientdisabilitypermitformRepository(_dBContext);
+            PatientdisabledhealthboardreportRepository = new PatientdisabledhealthboardreportRepository(_dBContext);
+            PatientfirstadmissionformRepository = new PatientfirstadmissionformRepository(_dBContext);
+            PatientfirstapproachreportRepository = new PatientfirstapproachreportRepository(_dBContext);
+            PatientownershiprecieveRepository = new PatientownershiprecieveRepository(_dBContext);
+            PatientrecieveformRepository = new PatientrecieveformRepository(_dBContext);
+            PatientsubmittingformRepository = new PatientsubmittingformRepository(_dBContext);
+
             ProcesstoActivestocksRepostiyory = new ProcesstoActivestockRepository(_dBContext);
             ProcesstoFilesRepostiyory = new ProcesstoFilesRepository(_dBContext);
             ProcesstoUsersRepository = new ProcesstoUsersRepository(_dBContext);
@@ -120,6 +131,26 @@ namespace PatientCareAPI.DataAccess
         public IStockmovementRepository StockmovementRepository { get; private set; }
 
         public IDatatableRepository DatatableRepository { get; private set; }
+
+        public IPatientapplicantRepository PatientapplicantRepository { get; private set; }
+
+        public IPatientbodycontrolformRepository PatientbodycontrolformRepository { get; private set; }
+
+        public IPatientdiagnosisRepository PatientdiagnosisRepository { get; private set; }
+
+        public IPatientdisabilitypermitformRepository PatientdisabilitypermitformRepository { get; private set; }
+
+        public IPatientdisabledhealthboardreportRepository PatientdisabledhealthboardreportRepository { get; private set; }
+
+        public IPatientfirstadmissionformRepository PatientfirstadmissionformRepository { get; private set; }
+
+        public IPatientfirstapproachreportRepository PatientfirstapproachreportRepository { get; private set; }
+
+        public IPatientownershiprecieveRepository PatientownershiprecieveRepository { get; private set; }
+
+        public IPatientrecieveformRepository PatientrecieveformRepository { get; private set; }
+
+        public IPatientsubmittingformRepository PatientsubmittingformRepository { get; private set; }
 
         public int Complate()
         {
