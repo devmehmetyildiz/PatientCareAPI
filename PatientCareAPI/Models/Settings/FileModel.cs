@@ -17,6 +17,6 @@ namespace PatientCareAPI.Models.Settings
         public string Lastdownloadeduser { get; set; }
         public string Lastdownloadedip { get; set; }
         [NotMapped]
-        public IFormFile ImageFile { get; set; }
+        public IFormFile File { get; set; }
     }
 }

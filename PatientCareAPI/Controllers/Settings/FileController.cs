@@ -20,7 +20,7 @@ using Newtonsoft.Json;
 
 namespace PatientCareAPI.Controllers.Settings
 {
-    // [Authorize]
+     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class FileController : ControllerBase
@@ -60,112 +60,46 @@ namespace PatientCareAPI.Controllers.Settings
             return Ok(Data);
         }
 
-        //[Route("GetSelectedFile")]
-        //[Authorize(Roles = (UserAuthory.File_Screen + "," + UserAuthory.File_Update))]
-        //[HttpGet]
-        //public IActionResult GetSelectedFile(int ID)
-        //{
-        //    FileModel Data = unitOfWork.FileRepository.Getbyid(ID);
-        //    if (!Utilities.CheckAuth(UserAuthory.File_ManageAll, this.User.Identity))
-        //    {
-        //        if (Data.CreatedUser != this.User.Identity.Name)
-        //        {
-        //            return StatusCode(403);
-        //        }
-        //    }
-        //    if (Data == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return Ok(Data);
-        //}
-
-        // [Route("Add")]
-        //// [Authorize(Roles = UserAuthory.File_Add)]
-        // [HttpPost]
-        // public IActionResult Add(FileModel model)
-        // {
-        //     var claimsIdentity = this.User.Identity as ClaimsIdentity;
-        //     var username = claimsIdentity.FindFirst(ClaimTypes.Name)?.Value;
-        //     model.CreatedUser = username;
-        //     model.IsActive = true;
-        //     model.CreateTime = DateTime.Now;
-        //     model.ConcurrencyStamp = Guid.NewGuid().ToString();
-        //     unitOfWork.FileRepository.Add(model);
-        //     unitOfWork.Complate();
-        //     return Ok();
-        // }
-
         [Route("GetSelectedFile")]
-        //   [Authorize(Roles = (UserAuthory.File_Screen + "," + UserAuthory.File_Update))]
+        [Authorize(Roles = (UserAuthory.File_Screen + "," + UserAuthory.File_Update))]
         [HttpGet]
-        public IActionResult GetSelectedFile()
+        public IActionResult GetSelectedFile(int ID)
         {
-            //string uploadUrl = String.Format("ftp://{0}/{1}/{2}", "interpolapi.armsteknoloji.com", "interpol", "pp.jpeg");
-            //using (WebClient request = new WebClient())
-            //{
-            //    request.Credentials = new NetworkCredential("u0584616", "5^k30nbC");
-            //    byte[] fileData = request.DownloadData(uploadUrl);
-            //    var stream = new MemoryStream(fileData);
-            //    IFormFile file = new FormFile(stream, 0, fileData.Length, "pp", "pp.jpeg");
-            //    return Ok(file);
-            //}
-
-            string ftphost = "ftp://interpolapi.armsteknoloji.com/interpol/";
-            string ftpfilepath = "pp.jpeg";
-
-            string ftpfullpath = ftphost + ftpfilepath;
-
-            using (WebClient request = new WebClient())
+            FileModel Data = unitOfWork.FileRepository.Getbyid(ID);
+            Data.File = Utilities.GetFile(Data);
+            if (!Utilities.CheckAuth(UserAuthory.File_ManageAll, this.User.Identity))
             {
-                request.Credentials = new NetworkCredential("u0584616", "5^k30nbC");
-                byte[] fileData = request.DownloadData(ftpfullpath);
-                var stream = new MemoryStream(fileData);
-
-                IFormFile file = new FormFile(stream, 0, fileData.Length, "pp", "pp.jpeg")
+                if (Data.CreatedUser != this.User.Identity.Name)
                 {
-                    Headers = new HeaderDictionary(),
-                    ContentType = "image/jpeg"
-                };
-
-                return Ok(file);
+                    return StatusCode(403);
+                }
             }
+            if (Data == null)
+            {
+                return NotFound();
+            }
+            return Ok(Data);
         }
 
-
         [Route("Add")]
+        [Authorize(Roles = UserAuthory.File_Add)]
         [HttpPost]
-        public IActionResult Add([FromForm] testmodel model)
+        public IActionResult Add(FileModel model)
         {
-            try
+            var username = (this.User.Identity as ClaimsIdentity).FindFirst(ClaimTypes.Name)?.Value;
+            model.CreatedUser = username;
+            model.IsActive = true;
+            model.CreateTime = DateTime.Now;
+            model.ConcurrencyStamp = Guid.NewGuid().ToString();
+            if (Utilities.UploadFile(model))
             {
-                string uploadUrl = String.Format("ftp://{0}/{1}/{2}", "interpolapi.armsteknoloji.com", "Patientcare", model.ImageFile.FileName);
-                var request = (FtpWebRequest)WebRequest.Create(uploadUrl);
-                request.Method = WebRequestMethods.Ftp.UploadFile;
-                request.Credentials = new NetworkCredential("u0584616", "5^k30nbC");
-                byte[] buffer = new byte[1024];
-                var stream = model.ImageFile.OpenReadStream();
-                byte[] fileContents;
-                using (var ms = new MemoryStream())
-                {
-                    int read;
-                    while ((read = stream.Read(buffer, 0, buffer.Length)) > 0)
-                    {
-                        ms.Write(buffer, 0, read);
-                    }
-                    fileContents = ms.ToArray();
-                }
-                using (Stream requestStream = request.GetRequestStream())
-                {
-                    requestStream.Write(fileContents, 0, fileContents.Length);
-                }
-                FtpWebResponse response = (FtpWebResponse)request.GetResponse();
-                Console.WriteLine("Upload File Complete, status {0}", response.StatusDescription);
-                return Ok("Upload Successfuly.");
+                unitOfWork.FileRepository.Add(model);
+                unitOfWork.Complate();
+                return Ok();
             }
-            catch (Exception ex)
+            else
             {
-                return BadRequest("Upload Failed: " + ex.Message);
+                return BadRequest();
             }
         }
 
@@ -185,8 +119,14 @@ namespace PatientCareAPI.Controllers.Settings
             }
             model.UpdatedUser = username;
             model.UpdateTime = DateTime.Now;
-            unitOfWork.FileRepository.update(unitOfWork.FileRepository.Getbyid(model.Id), model);
-            unitOfWork.Complate();
+            if (Utilities.DeleteFile(model))
+            {
+                if (Utilities.UploadFile(model))
+                {
+                    unitOfWork.FileRepository.update(unitOfWork.FileRepository.Getbyid(model.Id), model);
+                    unitOfWork.Complate();
+                }
+            }
             return Ok();
         }
 
@@ -222,5 +162,6 @@ namespace PatientCareAPI.Controllers.Settings
             return Ok();
         }
 
+       
     }
 }
