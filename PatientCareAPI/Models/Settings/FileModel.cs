@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -15,7 +16,7 @@ namespace PatientCareAPI.Models.Settings
         public int Downloadedcount { get; set; }
         public string Lastdownloadeduser { get; set; }
         public string Lastdownloadedip { get; set; }
-    
-      //  public IFormFile Image { get; set; }
+        [NotMapped]
+        public IFormFile ImageFile { get; set; }
     }
 }

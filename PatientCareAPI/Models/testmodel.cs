@@ -9,6 +9,13 @@ namespace PatientCareAPI.Models
 {
     public class testmodel
     {
+        public string Name { get; set; }
+        public string Filefolder { get; set; }
+        public string Filepath { get; set; }
+        public string Filetype { get; set; }
+        public int Downloadedcount { get; set; }
+        public string Lastdownloadeduser { get; set; }
+        public string Lastdownloadedip { get; set; }
         [NotMapped]
         public IFormFile ImageFile { get; set; }
     }
