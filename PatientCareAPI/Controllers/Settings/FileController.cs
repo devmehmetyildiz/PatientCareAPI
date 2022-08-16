@@ -20,7 +20,7 @@ using Newtonsoft.Json;
 
 namespace PatientCareAPI.Controllers.Settings
 {
-     [Authorize]
+   //  [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class FileController : ControllerBase
@@ -82,25 +82,26 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("Add")]
-        [Authorize(Roles = UserAuthory.File_Add)]
+        //[Authorize(Roles = UserAuthory.File_Add)]
+        [RequestFormLimits(ValueLengthLimit = int.MaxValue, MultipartBodyLengthLimit = int.MaxValue)]
         [HttpPost]
-        public IActionResult Add(FileModel model)
+        public IActionResult Add([FromForm] testmodel model)
         {
             var username = (this.User.Identity as ClaimsIdentity).FindFirst(ClaimTypes.Name)?.Value;
-            model.CreatedUser = username;
-            model.IsActive = true;
-            model.CreateTime = DateTime.Now;
-            model.ConcurrencyStamp = Guid.NewGuid().ToString();
-            if (Utilities.UploadFile(model))
-            {
-                unitOfWork.FileRepository.Add(model);
-                unitOfWork.Complate();
-                return Ok();
-            }
-            else
-            {
-                return BadRequest();
-            }
+            //model.CreatedUser = username;
+            //model.IsActive = true;
+            //model.CreateTime = DateTime.Now;
+            //model.ConcurrencyStamp = Guid.NewGuid().ToString();
+            //if (Utilities.UploadFile(model))
+            //{
+            //    unitOfWork.FileRepository.Add(model);
+            //    unitOfWork.Complate();
+              return Ok();
+            //}
+            //else
+            //{
+            //    return BadRequest();
+            //}
         }
 
         [Route("Update")]

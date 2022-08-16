@@ -16,7 +16,8 @@ namespace PatientCareAPI.Models
         public int Downloadedcount { get; set; }
         public string Lastdownloadeduser { get; set; }
         public string Lastdownloadedip { get; set; }
-        [NotMapped]
-        public IFormFile ImageFile { get; set; }
+
+
+        public IFormFile File { get; set; }
     }
 }
