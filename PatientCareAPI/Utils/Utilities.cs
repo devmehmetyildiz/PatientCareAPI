@@ -56,7 +56,7 @@ namespace PatientCareAPI.Utils
                 {
                     Makefolder(model.Filefolder);
                 }
-                string URL = $"{FTP_URL}/{FTP_FOLDERNAME}/{model.Filefolder}/{model.ConcurrencyStamp}";
+                string URL = $"{FTP_URL}/{FTP_FOLDERNAME}/{model.Filefolder}/{model.File.FileName}";
                 var request = (FtpWebRequest)WebRequest.Create(URL);
                 request.Method = WebRequestMethods.Ftp.UploadFile;
                 request.Credentials = new NetworkCredential(FTP_USERNAME, FTP_PASSWORD);
@@ -87,14 +87,20 @@ namespace PatientCareAPI.Utils
 
         public IFormFile GetFile(FileModel model)
         {
-            string URL = $"{FTP_URL}/{FTP_FOLDERNAME}/{model.Filefolder}/{model.ConcurrencyStamp}";
+            string URL = $"{FTP_URL}/{FTP_FOLDERNAME}/{model.Filefolder}/{model.Filename}";
+
+            WebClient client = new WebClient();
+            client.Credentials = new NetworkCredential("username", "password");
+            client.DownloadFile(
+                "ftp://ftp.example.com/remote/path/file.zip", @"C:\local\path\file.zip");
+
             using (WebClient request = new WebClient())
             {
                 request.Credentials = new NetworkCredential(FTP_USERNAME, FTP_PASSWORD);
                 byte[] fileData = request.DownloadData(URL);
                 var stream = new MemoryStream(fileData);
 
-                IFormFile file = new FormFile(stream, 0, fileData.Length, model.Name, model.Name)
+                IFormFile file = new FormFile(stream, 0, fileData.Length, model.Filename, model.Filename)
                 {
                     Headers = new HeaderDictionary(),
                     ContentType = model.Filetype
@@ -107,7 +113,7 @@ namespace PatientCareAPI.Utils
         {
             try
             {
-                string URL = $"{FTP_URL}/{FTP_FOLDERNAME}/{model.Filefolder}/{model.ConcurrencyStamp}";
+                string URL = $"{FTP_URL}/{FTP_FOLDERNAME}/{model.Filefolder}/{model.Filefolder}";
                 FtpWebRequest request = (FtpWebRequest)WebRequest.Create(URL);
                 request.Method = WebRequestMethods.Ftp.DeleteFile;
                 request.Credentials = new NetworkCredential(FTP_USERNAME, FTP_PASSWORD);
@@ -124,18 +130,25 @@ namespace PatientCareAPI.Utils
 
         private bool FtpDirectoryExists(string directory)
         {
-            List<string> directroys = new List<string>();
-            FtpWebRequest request = (FtpWebRequest)WebRequest.Create($"{FTP_URL}/{FTP_FOLDERNAME}/{directory}");
-            request.Method = WebRequestMethods.Ftp.ListDirectory;
-            request.Credentials = new NetworkCredential(FTP_USERNAME, FTP_PASSWORD);
-            FtpWebResponse response = (FtpWebResponse)request.GetResponse();
-            Stream responseStream = response.GetResponseStream();
-            StreamReader reader = new StreamReader(responseStream);
-            string names = reader.ReadToEnd();
-            reader.Close();
-            response.Close();
-            directroys = names.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries).ToList();
-            return true;
+            try
+            {
+                List<string> directroys = new List<string>();
+                FtpWebRequest request = (FtpWebRequest)WebRequest.Create($"{FTP_URL}/{FTP_FOLDERNAME}/{directory}");
+                request.Method = WebRequestMethods.Ftp.ListDirectory;
+                request.Credentials = new NetworkCredential(FTP_USERNAME, FTP_PASSWORD);
+                FtpWebResponse response = (FtpWebResponse)request.GetResponse();
+                Stream responseStream = response.GetResponseStream();
+                StreamReader reader = new StreamReader(responseStream);
+                string names = reader.ReadToEnd();
+                reader.Close();
+                response.Close();
+                directroys = names.Split(new string[] { "\r\n" }, StringSplitOptions.RemoveEmptyEntries).ToList();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
         private bool Makefolder(string folder)

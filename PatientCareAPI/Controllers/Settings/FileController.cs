@@ -20,7 +20,7 @@ using Newtonsoft.Json;
 
 namespace PatientCareAPI.Controllers.Settings
 {
-   //  [Authorize]
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class FileController : ControllerBase
@@ -82,26 +82,32 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("Add")]
-        //[Authorize(Roles = UserAuthory.File_Add)]
+        [Authorize(Roles = UserAuthory.File_Add)]
         [RequestFormLimits(ValueLengthLimit = int.MaxValue, MultipartBodyLengthLimit = int.MaxValue)]
         [HttpPost]
-        public IActionResult Add([FromForm] testmodel model)
+        public IActionResult Add([FromForm] FileModel model)
         {
             var username = (this.User.Identity as ClaimsIdentity).FindFirst(ClaimTypes.Name)?.Value;
-            //model.CreatedUser = username;
-            //model.IsActive = true;
-            //model.CreateTime = DateTime.Now;
-            //model.ConcurrencyStamp = Guid.NewGuid().ToString();
-            //if (Utilities.UploadFile(model))
-            //{
-            //    unitOfWork.FileRepository.Add(model);
-            //    unitOfWork.Complate();
-              return Ok();
-            //}
-            //else
-            //{
-            //    return BadRequest();
-            //}
+            if (string.IsNullOrWhiteSpace(model.Filefolder))
+            {
+                model.Filefolder = Guid.NewGuid().ToString();
+            }
+            model.CreatedUser = username;
+            model.IsActive = true;
+            model.CreateTime = DateTime.Now;
+            model.ConcurrencyStamp = Guid.NewGuid().ToString();
+            model.Filename = model.File.FileName;
+            model.Filetype = model.File.ContentType;
+            if (Utilities.UploadFile(model))
+            {
+                unitOfWork.FileRepository.Add(model);
+                unitOfWork.Complate();
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
 
         [Route("Update")]
@@ -109,8 +115,7 @@ namespace PatientCareAPI.Controllers.Settings
         [HttpPost]
         public IActionResult Update(FileModel model)
         {
-            var claimsIdentity = this.User.Identity as ClaimsIdentity;
-            var username = claimsIdentity.FindFirst(ClaimTypes.Name)?.Value;
+            var username = (this.User.Identity as ClaimsIdentity).FindFirst(ClaimTypes.Name)?.Value;
             if (!Utilities.CheckAuth(UserAuthory.File_ManageAll, this.User.Identity))
             {
                 if (model.CreatedUser == this.User.Identity.Name)
@@ -122,6 +127,7 @@ namespace PatientCareAPI.Controllers.Settings
             model.UpdateTime = DateTime.Now;
             if (Utilities.DeleteFile(model))
             {
+                model.Filename = model.File.FileName;
                 if (Utilities.UploadFile(model))
                 {
                     unitOfWork.FileRepository.update(unitOfWork.FileRepository.Getbyid(model.Id), model);
