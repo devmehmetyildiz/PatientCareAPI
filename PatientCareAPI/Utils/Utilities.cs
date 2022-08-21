@@ -85,15 +85,9 @@ namespace PatientCareAPI.Utils
             }
         }
 
-        public IFormFile GetFile(FileModel model)
+        public byte[] GetFile(FileModel model)
         {
             string URL = $"{FTP_URL}/{FTP_FOLDERNAME}/{model.Filefolder}/{model.Filename}";
-
-            WebClient client = new WebClient();
-            client.Credentials = new NetworkCredential("username", "password");
-            client.DownloadFile(
-                "ftp://ftp.example.com/remote/path/file.zip", @"C:\local\path\file.zip");
-
             using (WebClient request = new WebClient())
             {
                 request.Credentials = new NetworkCredential(FTP_USERNAME, FTP_PASSWORD);
@@ -105,7 +99,7 @@ namespace PatientCareAPI.Utils
                     Headers = new HeaderDictionary(),
                     ContentType = model.Filetype
                 };
-                return file;
+                return fileData;
             }
         }
 
@@ -113,16 +107,25 @@ namespace PatientCareAPI.Utils
         {
             try
             {
-                string URL = $"{FTP_URL}/{FTP_FOLDERNAME}/{model.Filefolder}/{model.Filefolder}";
+                string URL = $"{FTP_URL}/{FTP_FOLDERNAME}/{model.Filefolder}/{model.Filename}";
                 FtpWebRequest request = (FtpWebRequest)WebRequest.Create(URL);
                 request.Method = WebRequestMethods.Ftp.DeleteFile;
                 request.Credentials = new NetworkCredential(FTP_USERNAME, FTP_PASSWORD);
                 using (FtpWebResponse response = (FtpWebResponse)request.GetResponse())
                 {
-                    return true;
+                    response.Close();
+                    string FOLDERURL = $"{FTP_URL}/{FTP_FOLDERNAME}/{model.Filefolder}/";
+                    FtpWebRequest folderrequest= (FtpWebRequest)WebRequest.Create(URL);
+                    folderrequest.Method = WebRequestMethods.Ftp.RemoveDirectory;
+                    folderrequest.Credentials = new NetworkCredential(FTP_USERNAME, FTP_PASSWORD);
+                    using (FtpWebResponse folderresponse = (FtpWebResponse)request.GetResponse())
+                    {
+                        folderresponse.Close();
+                        return true;
+                    }
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 return false;
             }

@@ -63,10 +63,9 @@ namespace PatientCareAPI.Controllers.Settings
         [Route("GetSelectedFile")]
         [Authorize(Roles = (UserAuthory.File_Screen + "," + UserAuthory.File_Update))]
         [HttpGet]
-        public IActionResult GetSelectedFile(int ID)
+        public IActionResult GetSelectedFile(string ID)
         {
-            FileModel Data = unitOfWork.FileRepository.Getbyid(ID);
-            Data.File = Utilities.GetFile(Data);
+            FileModel Data = unitOfWork.FileRepository.GetFilebyGuid(ID);
             if (!Utilities.CheckAuth(UserAuthory.File_ManageAll, this.User.Identity))
             {
                 if (Data.CreatedUser != this.User.Identity.Name)
@@ -78,7 +77,21 @@ namespace PatientCareAPI.Controllers.Settings
             {
                 return NotFound();
             }
+
+
             return Ok(Data);
+        }
+
+        [Route("GetFile")]
+        [Authorize(Roles = (UserAuthory.File_Screen + "," + UserAuthory.File_Update))]
+        [HttpGet]
+        public IActionResult GetFile(string ID)
+        {
+            FileModel Data = unitOfWork.FileRepository.GetFilebyGuid(ID);
+            if (Data != null)
+                return File(Utilities.GetFile(Data), Data.Filetype);
+            else
+                return NotFound();
         }
 
         [Route("Add")]
@@ -112,8 +125,9 @@ namespace PatientCareAPI.Controllers.Settings
 
         [Route("Update")]
         [Authorize(Roles = UserAuthory.File_Update)]
+        [RequestFormLimits(ValueLengthLimit = int.MaxValue, MultipartBodyLengthLimit = int.MaxValue)]
         [HttpPost]
-        public IActionResult Update(FileModel model)
+        public IActionResult Update([FromForm]FileModel model)
         {
             var username = (this.User.Identity as ClaimsIdentity).FindFirst(ClaimTypes.Name)?.Value;
             if (!Utilities.CheckAuth(UserAuthory.File_ManageAll, this.User.Identity))
@@ -125,7 +139,8 @@ namespace PatientCareAPI.Controllers.Settings
             }
             model.UpdatedUser = username;
             model.UpdateTime = DateTime.Now;
-            if (Utilities.DeleteFile(model))
+            FileModel oldData = unitOfWork.FileRepository.GetFilebyGuid(model.ConcurrencyStamp);
+            if (Utilities.DeleteFile(oldData))
             {
                 model.Filename = model.File.FileName;
                 if (Utilities.UploadFile(model))
@@ -154,9 +169,16 @@ namespace PatientCareAPI.Controllers.Settings
             model.DeleteUser = username;
             model.IsActive = false;
             model.DeleteTime = DateTime.Now;
-            unitOfWork.FileRepository.update(unitOfWork.FileRepository.Getbyid(model.Id), model);
-            unitOfWork.Complate();
-            return Ok();
+            if (Utilities.DeleteFile(model))
+            {
+                unitOfWork.FileRepository.update(unitOfWork.FileRepository.GetFilebyGuid(model.ConcurrencyStamp), model);
+                unitOfWork.Complate();
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
         }
 
         [Route("DeleteFromDB")]
