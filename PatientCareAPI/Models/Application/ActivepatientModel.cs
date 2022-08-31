@@ -13,7 +13,7 @@ namespace PatientCareAPI.Models.Application
     {
         public string PatientID { get; set; }
         [NotMapped]
-        public PatientModel? Patient { get; set; }
+        public PatientModel Patient { get; set; }
         [NotMapped]
         public PatientapplicantModel Applicant { get; set; }
         [NotMapped]

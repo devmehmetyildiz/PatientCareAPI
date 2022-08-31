@@ -86,10 +86,8 @@ namespace PatientCareAPI.Controllers.Application
         [Route("Add")]
         [Authorize(Roles = UserAuthory.Patients_Add)]
         [HttpPost]
-        public IActionResult Add(test test)
+        public IActionResult Add(ActivepatientModel model)
         {
-
-            ActivepatientModel model = null;
             var claimsIdentity = this.User.Identity as ClaimsIdentity;
             var username = claimsIdentity.FindFirst(ClaimTypes.Name)?.Value;
 
