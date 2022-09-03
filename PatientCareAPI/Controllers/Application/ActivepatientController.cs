@@ -12,6 +12,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Security.Claims;
+using PatientCareAPI.Models.Settings;
 
 namespace PatientCareAPI.Controllers.Application
 {
@@ -194,6 +195,54 @@ namespace PatientCareAPI.Controllers.Application
             unitOfWork.Complate();
             return Ok();
         }
+
+        [Route("GetUserImage")]
+        [AllowAnonymous]
+        [HttpGet]
+        public IActionResult GetUserImage(string Guid)
+        {
+            FileModel Data = unitOfWork.FileRepository.GetFilebyGuid(unitOfWork.ActivepatientRepository.GetByGuid(Guid).ImageID);
+            if (Data != null)
+                return File(Utilities.GetFile(Data), Data.Filetype);
+            else
+                return NotFound();
+        }
+
+
+        [Route("AddImage")]
+        [Authorize(Roles = UserAuthory.File_Add)]
+        [RequestFormLimits(ValueLengthLimit = int.MaxValue, MultipartBodyLengthLimit = int.MaxValue)]
+        [HttpPost]
+        public IActionResult AddImage([FromForm] FileModel model)
+        {
+            var username = (this.User.Identity as ClaimsIdentity).FindFirst(ClaimTypes.Name)?.Value;
+            if (string.IsNullOrWhiteSpace(model.Filefolder))
+            {
+                model.Filefolder = Guid.NewGuid().ToString();
+            }
+            string imageguid = Guid.NewGuid().ToString();
+            ActivepatientModel patientmodel = unitOfWork.ActivepatientRepository.GetByGuid(model.ConcurrencyStamp);
+            patientmodel.ImageID = imageguid;
+            PatientModel patient = unitOfWork.PatientRepository.GetByGuid(patientmodel.PatientID);
+            unitOfWork.ActivepatientRepository.update(unitOfWork.ActivepatientRepository.GetByGuid(model.ConcurrencyStamp), patientmodel);
+            model.CreatedUser = username;
+            model.IsActive = true;
+            model.CreateTime = DateTime.Now;
+            model.ConcurrencyStamp = imageguid;
+            model.Filename = patient.Firstname+patient.Lastname;
+            model.Filetype = model.File.ContentType;
+            if (Utilities.UploadFile(model))
+            {
+                unitOfWork.FileRepository.Add(model);
+                unitOfWork.Complate();
+                return Ok();
+            }
+            else
+            {
+                return BadRequest();
+            }
+        }
+
 
         [Route("Update")]
         [Authorize(Roles = UserAuthory.Patients_Update)]

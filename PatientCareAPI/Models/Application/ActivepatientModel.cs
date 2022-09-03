@@ -49,6 +49,7 @@ namespace PatientCareAPI.Models.Application
         public bool Iswaitingactivation { get; set; }
         [NotMapped]
         public ProcessModel Process { get; set; }
+        public string ImageID { get; set; }
         public string CaseId { get; set; }
         [NotMapped]
         public CaseModel Case { get; set; }
