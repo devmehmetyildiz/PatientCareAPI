@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PatientCareAPI.DataAccess.Repositories.Abstract.Application;
 using PatientCareAPI.Models.Application;
+using System.Linq;
 
 namespace PatientCareAPI.DataAccess.Repositories.Concrete.Application
 {
@@ -13,5 +14,9 @@ namespace PatientCareAPI.DataAccess.Repositories.Concrete.Application
             _dbSet = dbcontext.Set<ActivepatientModel>();
         }
 
+        public ActivepatientModel FindByGuid(string guid)
+        {
+            return _dbSet.FirstOrDefault(u => u.ConcurrencyStamp == guid);
+        }
     }
 }

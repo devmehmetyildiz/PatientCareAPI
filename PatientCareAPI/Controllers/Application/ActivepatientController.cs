@@ -66,9 +66,9 @@ namespace PatientCareAPI.Controllers.Application
         [Authorize(Roles = (UserAuthory.Patients_Screen + "," + UserAuthory.Patients_Update))]
         [Route("GetSelectedActivepatient")]
         [HttpGet]
-        public IActionResult GetSelectedCase(int ID)
+        public IActionResult GetSelectedCase(string Guid)
         {
-            ActivepatientModel Data = unitOfWork.ActivepatientRepository.Getbyid(ID);
+            ActivepatientModel Data = unitOfWork.ActivepatientRepository.FindByGuid(Guid);
             Data.Patient = unitOfWork.PatientRepository.GetPatientByGuid(Data.PatientID);
             if (!Utilities.CheckAuth(UserAuthory.Patients_ManageAll, this.User.Identity))
             {
@@ -193,7 +193,7 @@ namespace PatientCareAPI.Controllers.Application
             }
             unitOfWork.ActivepatientRepository.Add(model);
             unitOfWork.Complate();
-            return Ok();
+            return Ok(guid);
         }
 
         [Route("GetUserImage")]
@@ -201,13 +201,12 @@ namespace PatientCareAPI.Controllers.Application
         [HttpGet]
         public IActionResult GetUserImage(string Guid)
         {
-            FileModel Data = unitOfWork.FileRepository.GetFilebyGuid(unitOfWork.ActivepatientRepository.GetByGuid(Guid).ImageID);
+            FileModel Data = unitOfWork.FileRepository.GetFilebyGuid(unitOfWork.ActivepatientRepository.FindByGuid(Guid).ImageID);
             if (Data != null)
                 return File(Utilities.GetFile(Data), Data.Filetype);
             else
                 return NotFound();
         }
-
 
         [Route("AddImage")]
         [Authorize(Roles = UserAuthory.File_Add)]
@@ -221,16 +220,17 @@ namespace PatientCareAPI.Controllers.Application
                 model.Filefolder = Guid.NewGuid().ToString();
             }
             string imageguid = Guid.NewGuid().ToString();
-            ActivepatientModel patientmodel = unitOfWork.ActivepatientRepository.GetByGuid(model.ConcurrencyStamp);
+            ActivepatientModel patientmodel = unitOfWork.ActivepatientRepository.FindByGuid(model.ConcurrencyStamp);
             patientmodel.ImageID = imageguid;
-            PatientModel patient = unitOfWork.PatientRepository.GetByGuid(patientmodel.PatientID);
-            unitOfWork.ActivepatientRepository.update(unitOfWork.ActivepatientRepository.GetByGuid(model.ConcurrencyStamp), patientmodel);
+            PatientModel patient = unitOfWork.PatientRepository.GetPatientByGuid(patientmodel.PatientID);
+            unitOfWork.ActivepatientRepository.update(unitOfWork.ActivepatientRepository.FindByGuid(model.ConcurrencyStamp), patientmodel);
             model.CreatedUser = username;
             model.IsActive = true;
             model.CreateTime = DateTime.Now;
             model.ConcurrencyStamp = imageguid;
-            model.Filename = patient.Firstname+patient.Lastname;
+            model.Name = patient.Firstname+patient.Lastname;
             model.Filetype = model.File.ContentType;
+            model.Filename = model.File.FileName;
             if (Utilities.UploadFile(model))
             {
                 unitOfWork.FileRepository.Add(model);

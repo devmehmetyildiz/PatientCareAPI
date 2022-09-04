@@ -77,6 +77,26 @@ namespace PatientCareAPI.Controllers.Settings
             {
                 return NotFound();
             }
+            return Ok(Data);
+        }
+
+        [Route("GetSelectedFileByPatientGuid")]
+        [Authorize(Roles = (UserAuthory.File_Screen + "," + UserAuthory.File_Update))]
+        [HttpGet]
+        public IActionResult GetSelectedFileByPatientGuid(string Guid)
+        {
+            FileModel Data = unitOfWork.FileRepository.GetFilebyGuid(unitOfWork.ActivepatientRepository.FindByGuid(Guid).ImageID);
+            if (!Utilities.CheckAuth(UserAuthory.File_ManageAll, this.User.Identity))
+            {
+                if (Data.CreatedUser != this.User.Identity.Name)
+                {
+                    return StatusCode(403);
+                }
+            }
+            if (Data == null)
+            {
+                return NotFound();
+            }
 
 
             return Ok(Data);

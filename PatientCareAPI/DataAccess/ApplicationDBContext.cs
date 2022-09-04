@@ -22,6 +22,7 @@ namespace PatientCareAPI.DataAccess
         public DbSet<PatientbodycontrolformModel> Patientbodycontrolforms { get; set; }
         public DbSet<PatientdiagnosisModel> Patientdiagnosis { get; set; }
         public DbSet<PatientdisabilitypermitformModel> Patientdisabilitypermitforms { get; set; }
+        public DbSet<PatientdisabledhealthboardreportModel> Patientdisabledhealthboardreports { get; set; }
         public DbSet<PatientfirstadmissionformModel> Patientfirstadmissionforms { get; set; }
         public DbSet<PatientfirstapproachreportModel> Patientfirstapproachreports{ get; set; }
         public DbSet<PatientownershiprecieveModel> Patientownershiprecieves{ get; set; }
