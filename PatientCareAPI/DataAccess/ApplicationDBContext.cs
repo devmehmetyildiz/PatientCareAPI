@@ -28,16 +28,14 @@ namespace PatientCareAPI.DataAccess
         public DbSet<PatientownershiprecieveModel> Patientownershiprecieves{ get; set; }
         public DbSet<PatientrecieveformModel> Patientrecieveforms { get; set; }
         public DbSet<PatientsubmittingformModel> Patientsubmittingforms { get; set; }
-        public DbSet<ProcesstoActiveStocksModel> ProcesstoActivestocks { get; set; }
-        public DbSet<ProcesstoFilesModel> ProcesstoFiles { get; set; }
-        public DbSet<ProcesstoUsersModel> ProcesstoUsers { get; set; }
+        public DbSet<ActivepatienttoActiveStocksModel> ActivepatienttoActivestocks { get; set; }
+        public DbSet<ActivepatienttofilesModel> ActivepatientstoFiles { get; set; }
         public DbSet<ActivestockModel> Activestock { get; set; }
         public DbSet<DeactivestockModel> Deactivestocks { get; set; }
         public DbSet<PatientactivestockModel> Patientactivestocks { get; set; }
         public DbSet<PatientmovementModel> Patientmovements { get; set; }
         public DbSet<StockmovementModel> Stockmovements { get; set; }
         public DbSet<PatientModel> Patients { get; set; }
-        public DbSet<ProcessModel> Process{ get; set; }
         //Auth
         public DbSet<AuthoryModel> Authories { get; set; }
         public DbSet<UsersModel> Users { get; set; }

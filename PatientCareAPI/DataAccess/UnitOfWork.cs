@@ -30,11 +30,9 @@ namespace PatientCareAPI.DataAccess
             PatientrecieveformRepository = new PatientrecieveformRepository(_dBContext);
             PatientsubmittingformRepository = new PatientsubmittingformRepository(_dBContext);
 
-            ProcesstoActivestocksRepostiyory = new ProcesstoActivestockRepository(_dBContext);
-            ProcesstoFilesRepostiyory = new ProcesstoFilesRepository(_dBContext);
-            ProcesstoUsersRepository = new ProcesstoUsersRepository(_dBContext);
+            ActivepatienttoActivestocksRepostiyory = new ActivepatienttoActivestockRepository(_dBContext);
+            ActivepatienttoFilesRepostiyory = new ActivepatienttoFilesRepository(_dBContext);
             ActivestockRepository = new ActivestockRepository(_dBContext);
-            ProcessRepository = new ProcessRepository(_dBContext);
             DeactivestockRepository = new DeactivestockRepository(_dBContext);
             PatientactivestockRepository = new PatientactivestockRepository(_dBContext);
             PatientmovementRepository = new PatientmovementRepository(_dBContext);
@@ -94,15 +92,11 @@ namespace PatientCareAPI.DataAccess
 
         public IActivepatientRepository ActivepatientRepository { get; private set; }
 
-        public IProcesstoActivestocksRepostiyory ProcesstoActivestocksRepostiyory { get; private set; }
+        public IActivepatienttoActivestocksRepostiyory ActivepatienttoActivestocksRepostiyory { get; private set; }
 
-        public IProcesstoFilesRepostiyory ProcesstoFilesRepostiyory { get; private set; }
-
-        public IProcesstoUsersRepository ProcesstoUsersRepository { get; private set; }
+        public IActivepatienttoFilesRepostiyory ActivepatienttoFilesRepostiyory { get; private set; }
 
         public IActivestockRepository ActivestockRepository { get; private set; }
-
-        public IProcessRepository ProcessRepository { get; private set; }
 
         public ICasetodepartmentRepository CasetodepartmentRepository { get; private set; }
 

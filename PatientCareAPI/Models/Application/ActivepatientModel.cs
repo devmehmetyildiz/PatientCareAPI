@@ -34,6 +34,10 @@ namespace PatientCareAPI.Models.Application
         public PatientrecieveformModel Recieveform { get; set; }
         [NotMapped]
         public PatientsubmittingformModel Submittingform { get; set; }
+        [NotMapped]
+        public List<ActivestockModel> Stocks { get; set; }
+        [NotMapped]
+        public List<FileModel> Files { get; set; }
         public DateTime? Approvaldate { get; set; }
         public DateTime? Registerdate { get; set; }
         public string Patientdiagnosis { get; set; }
@@ -47,8 +51,6 @@ namespace PatientCareAPI.Models.Application
         public DepartmentModel Department { get; set; }
         public string Processid { get; set; }
         public bool Iswaitingactivation { get; set; }
-        [NotMapped]
-        public ProcessModel Process { get; set; }
         public string ImageID { get; set; }
         public string CaseId { get; set; }
         [NotMapped]

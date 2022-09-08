@@ -21,11 +21,9 @@ namespace PatientCareAPI.DataAccess
         IPatientownershiprecieveRepository PatientownershiprecieveRepository { get; }
         IPatientrecieveformRepository PatientrecieveformRepository { get; }
         IPatientsubmittingformRepository PatientsubmittingformRepository { get; }
-        IProcesstoActivestocksRepostiyory ProcesstoActivestocksRepostiyory { get; }
-        IProcesstoFilesRepostiyory ProcesstoFilesRepostiyory { get; }
-        IProcesstoUsersRepository ProcesstoUsersRepository { get; }
+        IActivepatienttoActivestocksRepostiyory ActivepatienttoActivestocksRepostiyory { get; }
+        IActivepatienttoFilesRepostiyory ActivepatienttoFilesRepostiyory { get; }
         IActivestockRepository ActivestockRepository { get; }
-        IProcessRepository ProcessRepository { get; }
         IDeactivestockRepository DeactivestockRepository { get; }
         IPatientactivestockRepository PatientactivestockRepository { get; }
         IPatientmovementRepository PatientmovementRepository { get; }
