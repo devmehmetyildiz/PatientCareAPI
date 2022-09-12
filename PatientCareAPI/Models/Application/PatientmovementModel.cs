@@ -11,14 +11,20 @@ namespace PatientCareAPI.Models.Application
     {
         [Key]
         public int Id { get; set; }
+        public string Movementid { get; set; }
         [NotMapped]
-        public string Patientname { get; set; }
-        public string Patientid { get; set; }
+        public ActivepatientModel Patient { get; set; }
+        public string Activepatientid { get; set; }
         [NotMapped]
         public string Movementtypename { get; set; }
         public int Movementtype { get; set; }
         public bool Iswaitingactivation { get; set; }
         public bool IsDeactive { get; set; }
+        public string Oldstatus { get; set; }
+        public string NewStatus { get; set; }
+        public bool IsTodoneeded { get; set; }
+        public string IsComplated { get; set; }
         public DateTime? Movementdate { get; set; }
+        public string UserID { get; set; }
     }
 }
