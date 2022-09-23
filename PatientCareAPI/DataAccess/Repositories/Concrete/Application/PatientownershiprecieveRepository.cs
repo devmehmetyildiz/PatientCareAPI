@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using PatientCareAPI.DataAccess.Repositories.Abstract.Application;
 using PatientCareAPI.Models.Application;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace PatientCareAPI.DataAccess.Repositories.Concrete.Application
 {
@@ -12,6 +14,9 @@ namespace PatientCareAPI.DataAccess.Repositories.Concrete.Application
         {
             _dbSet = dbcontext.Set<PatientownershiprecieveModel>();
         }
-
+        public List<PatientownershiprecieveModel> GetDataByGuid(string Guid)
+        {
+            return _dbSet.Where(u => u.Activepatientid == Guid).ToList();
+        }
     }
 }

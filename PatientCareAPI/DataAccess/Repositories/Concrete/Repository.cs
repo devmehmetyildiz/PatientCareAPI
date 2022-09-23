@@ -3,6 +3,7 @@ using PatientCareAPI.DataAccess.Repositories.Abstract;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace PatientCareAPI.DataAccess.Repositories.Concrete
@@ -34,11 +35,6 @@ namespace PatientCareAPI.DataAccess.Repositories.Concrete
             return _dbSet.ToList();
         }
 
-        public Tentity GetByGuid(string guid)
-        {
-            return _dbSet.Find(guid);
-        }
-
         public Tentity Getbyid(int id)
         {
             return _dbSet.Find(id);
@@ -59,11 +55,6 @@ namespace PatientCareAPI.DataAccess.Repositories.Concrete
             _dbSet.Remove(Getbyid(id));
         }
 
-        public void RemoveByGuid(string Guid)
-        {
-            _dbSet.Remove(GetByGuid(Guid));
-        }
-
         public void RemoveRange(List<Tentity> entities)
         {
             _dbSet.RemoveRange(entities);
@@ -72,6 +63,18 @@ namespace PatientCareAPI.DataAccess.Repositories.Concrete
         public void update(Tentity olditem, Tentity newitem)
         {
             _context.Entry(olditem).CurrentValues.SetValues(newitem);
+        }
+
+        public T GetSingleRecord<T>(Expression<Func<T, bool>> predicate) where T : class
+        {
+            T item = _context.Set<T>().FirstOrDefault(predicate);
+            return item;
+        }
+
+        public List<T> GetRecords<T>(Expression<Func<T, bool>> predicate) where T : class
+        {
+            List<T> item = _context.Set<T>().Where(predicate).ToList();
+            return item;
         }
     }
 }

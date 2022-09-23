@@ -40,7 +40,7 @@ namespace PatientCareAPI.Controllers.Application
         [HttpGet]
         public IActionResult GetApplicant(string Guid)
         {
-            PatientapplicantModel Data = unitOfWork.PatientapplicantRepository.GetByGuid(Guid);
+            PatientapplicantModel Data = unitOfWork.PatientapplicantRepository.GetDatabyGuid(Guid);
             if (!Utilities.CheckAuth(UserAuthory.Patients_ManageAll, this.User.Identity))
             {
                 if (Data.CreatedUser != this.User.Identity.Name)
@@ -60,19 +60,7 @@ namespace PatientCareAPI.Controllers.Application
         [HttpGet]
         public IActionResult GetBodycontrolform(string Guid)
         {
-            PatientbodycontrolformModel Data = unitOfWork.PatientbodycontrolformRepository.GetByGuid(Guid);
-            if (!Utilities.CheckAuth(UserAuthory.Patients_ManageAll, this.User.Identity))
-            {
-                if (Data.CreatedUser != this.User.Identity.Name)
-                {
-                    return StatusCode(403);
-                }
-            }
-            if (Data == null)
-            {
-                return NotFound();
-            }
-            return Ok(Data);
+            return Ok(unitOfWork.PatientbodycontrolformRepository.GetDataByGuid(Guid));
         }
 
         [Route("GetDisabilitypermitform")]
@@ -80,19 +68,7 @@ namespace PatientCareAPI.Controllers.Application
         [HttpGet]
         public IActionResult GetDisabilitypermitform(string Guid)
         {
-            PatientdisabilitypermitformModel Data = unitOfWork.PatientdisabilitypermitformRepository.GetByGuid(Guid);
-            if (!Utilities.CheckAuth(UserAuthory.Patients_ManageAll, this.User.Identity))
-            {
-                if (Data.CreatedUser != this.User.Identity.Name)
-                {
-                    return StatusCode(403);
-                }
-            }
-            if (Data == null)
-            {
-                return NotFound();
-            }
-            return Ok(Data);
+            return Ok(unitOfWork.PatientdisabilitypermitformRepository.GetDataByGuid(Guid));
         }
 
         [Route("GetDisabledhealthboardreport")]
@@ -100,19 +76,7 @@ namespace PatientCareAPI.Controllers.Application
         [HttpGet]
         public IActionResult Getdisabledhealthboardreport(string Guid)
         {
-            PatientdisabledhealthboardreportModel Data = unitOfWork.PatientdisabledhealthboardreportRepository.GetByGuid(Guid);
-            if (!Utilities.CheckAuth(UserAuthory.Patients_ManageAll, this.User.Identity))
-            {
-                if (Data.CreatedUser != this.User.Identity.Name)
-                {
-                    return StatusCode(403);
-                }
-            }
-            if (Data == null)
-            {
-                return NotFound();
-            }
-            return Ok(Data);
+            return Ok(unitOfWork.PatientdisabledhealthboardreportRepository.GetDataByGuid(Guid));
         }
 
         [Route("GetFirstadmissionform")]
@@ -120,19 +84,7 @@ namespace PatientCareAPI.Controllers.Application
         [HttpGet]
         public IActionResult Getfirstadmissionform(string Guid)
         {
-            PatientfirstadmissionformModel Data = unitOfWork.PatientfirstadmissionformRepository.GetByGuid(Guid);
-            if (!Utilities.CheckAuth(UserAuthory.Patients_ManageAll, this.User.Identity))
-            {
-                if (Data.CreatedUser != this.User.Identity.Name)
-                {
-                    return StatusCode(403);
-                }
-            }
-            if (Data == null)
-            {
-                return NotFound();
-            }
-            return Ok(Data);
+            return Ok(unitOfWork.PatientfirstadmissionformRepository.GetDataByGuid(Guid));
         }
 
         [Route("GetFirstapproachreport")]
@@ -140,19 +92,7 @@ namespace PatientCareAPI.Controllers.Application
         [HttpGet]
         public IActionResult Getfirstapproachreport(string Guid)
         {
-            PatientfirstapproachreportModel Data = unitOfWork.PatientfirstapproachreportRepository.GetByGuid(Guid);
-            if (!Utilities.CheckAuth(UserAuthory.Patients_ManageAll, this.User.Identity))
-            {
-                if (Data.CreatedUser != this.User.Identity.Name)
-                {
-                    return StatusCode(403);
-                }
-            }
-            if (Data == null)
-            {
-                return NotFound();
-            }
-            return Ok(Data);
+            return Ok(unitOfWork.PatientfirstapproachreportRepository.GetDataByGuid(Guid));
         }
 
         [Route("GetOwnershiprecieve")]
@@ -160,19 +100,7 @@ namespace PatientCareAPI.Controllers.Application
         [HttpGet]
         public IActionResult Getownershiprecieve(string Guid)
         {
-            PatientownershiprecieveModel Data = unitOfWork.PatientownershiprecieveRepository.GetByGuid(Guid);
-            if (!Utilities.CheckAuth(UserAuthory.Patients_ManageAll, this.User.Identity))
-            {
-                if (Data.CreatedUser != this.User.Identity.Name)
-                {
-                    return StatusCode(403);
-                }
-            }
-            if (Data == null)
-            {
-                return NotFound();
-            }
-            return Ok(Data);
+            return Ok(unitOfWork.PatientownershiprecieveRepository.GetDataByGuid(Guid));
         }
 
         [Route("GetRecieveform")]
@@ -180,19 +108,7 @@ namespace PatientCareAPI.Controllers.Application
         [HttpGet]
         public IActionResult Getrecieveform(string Guid)
         {
-            PatientrecieveformModel Data = unitOfWork.PatientrecieveformRepository.GetByGuid(Guid);
-            if (!Utilities.CheckAuth(UserAuthory.Patients_ManageAll, this.User.Identity))
-            {
-                if (Data.CreatedUser != this.User.Identity.Name)
-                {
-                    return StatusCode(403);
-                }
-            }
-            if (Data == null)
-            {
-                return NotFound();
-            }
-            return Ok(Data);
+            return Ok(unitOfWork.PatientrecieveformRepository.GetDataByGuid(Guid));
         }
 
         [Route("GetSubmittingform")]
@@ -200,19 +116,7 @@ namespace PatientCareAPI.Controllers.Application
         [HttpGet]
         public IActionResult GetSubmittingform(string Guid)
         {
-            PatientsubmittingformModel Data = unitOfWork.PatientsubmittingformRepository.GetByGuid(Guid);
-            if (!Utilities.CheckAuth(UserAuthory.Patients_ManageAll, this.User.Identity))
-            {
-                if (Data.CreatedUser != this.User.Identity.Name)
-                {
-                    return StatusCode(403);
-                }
-            }
-            if (Data == null)
-            {
-                return NotFound();
-            }
-            return Ok(Data);
+            return Ok(unitOfWork.PatientsubmittingformRepository.GetDataByGuid(Guid));
         }
         #endregion
 
@@ -233,7 +137,7 @@ namespace PatientCareAPI.Controllers.Application
             }
             model.UpdatedUser = username;
             model.UpdateTime = DateTime.Now;
-            unitOfWork.PatientapplicantRepository.update(unitOfWork.PatientapplicantRepository.GetByGuid(model.ConcurrencyStamp), model);
+            unitOfWork.PatientapplicantRepository.update(unitOfWork.PatientapplicantRepository.GetSingleRecord<PatientapplicantModel>(u=>u.ConcurrencyStamp==model.ConcurrencyStamp), model);
             unitOfWork.Complate();
             return Ok();
         }
@@ -253,7 +157,7 @@ namespace PatientCareAPI.Controllers.Application
             }
             model.UpdatedUser = username;
             model.UpdateTime = DateTime.Now;
-            unitOfWork.PatientbodycontrolformRepository.update(unitOfWork.PatientbodycontrolformRepository.GetByGuid(model.ConcurrencyStamp), model);
+            unitOfWork.PatientbodycontrolformRepository.update(unitOfWork.PatientbodycontrolformRepository.GetSingleRecord<PatientbodycontrolformModel>(u=>u.ConcurrencyStamp==model.ConcurrencyStamp), model);
             unitOfWork.Complate();
             return Ok();
         }
@@ -273,7 +177,7 @@ namespace PatientCareAPI.Controllers.Application
             }
             model.UpdatedUser = username;
             model.UpdateTime = DateTime.Now;
-            unitOfWork.PatientdisabilitypermitformRepository.update(unitOfWork.PatientdisabilitypermitformRepository.GetByGuid(model.ConcurrencyStamp), model);
+            unitOfWork.PatientdisabilitypermitformRepository.update(unitOfWork.PatientdisabilitypermitformRepository.GetSingleRecord<PatientdisabilitypermitformModel>(u => u.ConcurrencyStamp == model.ConcurrencyStamp), model);
             unitOfWork.Complate();
             return Ok();
         }
@@ -293,7 +197,7 @@ namespace PatientCareAPI.Controllers.Application
             }
             model.UpdatedUser = username;
             model.UpdateTime = DateTime.Now;
-            unitOfWork.PatientdisabledhealthboardreportRepository.update(unitOfWork.PatientdisabledhealthboardreportRepository.GetByGuid(model.ConcurrencyStamp), model);
+            unitOfWork.PatientdisabledhealthboardreportRepository.update(unitOfWork.PatientdisabledhealthboardreportRepository.GetSingleRecord<PatientdisabledhealthboardreportModel>(u => u.ConcurrencyStamp == model.ConcurrencyStamp), model);
             unitOfWork.Complate();
             return Ok();
         }
@@ -313,7 +217,7 @@ namespace PatientCareAPI.Controllers.Application
             }
             model.UpdatedUser = username;
             model.UpdateTime = DateTime.Now;
-            unitOfWork.PatientfirstadmissionformRepository.update(unitOfWork.PatientfirstadmissionformRepository.GetByGuid(model.ConcurrencyStamp), model);
+            unitOfWork.PatientfirstadmissionformRepository.update(unitOfWork.PatientfirstadmissionformRepository.GetSingleRecord<PatientfirstadmissionformModel>(u => u.ConcurrencyStamp == model.ConcurrencyStamp), model);
             unitOfWork.Complate();
             return Ok();
         }
@@ -333,7 +237,7 @@ namespace PatientCareAPI.Controllers.Application
             }
             model.UpdatedUser = username;
             model.UpdateTime = DateTime.Now;
-            unitOfWork.PatientfirstapproachreportRepository.update(unitOfWork.PatientfirstapproachreportRepository.GetByGuid(model.ConcurrencyStamp), model);
+            unitOfWork.PatientfirstapproachreportRepository.update(unitOfWork.PatientfirstapproachreportRepository.GetSingleRecord<PatientfirstapproachreportModel>(u => u.ConcurrencyStamp == model.ConcurrencyStamp), model);
             unitOfWork.Complate();
             return Ok();
         }
@@ -353,7 +257,7 @@ namespace PatientCareAPI.Controllers.Application
             }
             model.UpdatedUser = username;
             model.UpdateTime = DateTime.Now;
-            unitOfWork.PatientownershiprecieveRepository.update(unitOfWork.PatientownershiprecieveRepository.GetByGuid(model.ConcurrencyStamp), model);
+            unitOfWork.PatientownershiprecieveRepository.update(unitOfWork.PatientownershiprecieveRepository.GetSingleRecord<PatientownershiprecieveModel>(u => u.ConcurrencyStamp == model.ConcurrencyStamp), model);
             unitOfWork.Complate();
             return Ok();
         }
@@ -373,7 +277,7 @@ namespace PatientCareAPI.Controllers.Application
             }
             model.UpdatedUser = username;
             model.UpdateTime = DateTime.Now;
-            unitOfWork.PatientrecieveformRepository.update(unitOfWork.PatientrecieveformRepository.GetByGuid(model.ConcurrencyStamp), model);
+            unitOfWork.PatientrecieveformRepository.update(unitOfWork.PatientrecieveformRepository.GetSingleRecord<PatientrecieveformModel>(u => u.ConcurrencyStamp == model.ConcurrencyStamp), model);
             unitOfWork.Complate();
             return Ok();
         }
@@ -393,7 +297,7 @@ namespace PatientCareAPI.Controllers.Application
             }
             model.UpdatedUser = username;
             model.UpdateTime = DateTime.Now;
-            unitOfWork.PatientsubmittingformRepository.update(unitOfWork.PatientsubmittingformRepository.GetByGuid(model.ConcurrencyStamp), model);
+            unitOfWork.PatientsubmittingformRepository.update(unitOfWork.PatientsubmittingformRepository.GetSingleRecord<PatientsubmittingformModel>(u => u.ConcurrencyStamp == model.ConcurrencyStamp), model);
             unitOfWork.Complate();
             return Ok();
         }

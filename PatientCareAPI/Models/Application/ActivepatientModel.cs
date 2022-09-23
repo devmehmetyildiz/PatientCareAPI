@@ -17,23 +17,23 @@ namespace PatientCareAPI.Models.Application
         [NotMapped]
         public PatientapplicantModel Applicant { get; set; }
         [NotMapped]
-        public PatientbodycontrolformModel Bodycontrolform { get; set; }
+        public List<PatientbodycontrolformModel> Bodycontrolforms { get; set; }
         [NotMapped]
         public List<PatientdiagnosisModel> Diagnosis { get; set; }
         [NotMapped]
-        public PatientdisabilitypermitformModel Disabilitypermitform { get; set; }
+        public List<PatientdisabilitypermitformModel> Disabilitypermitforms { get; set; }
         [NotMapped]
-        public PatientdisabledhealthboardreportModel Disabledhealthboardreport { get; set; }
+        public List<PatientdisabledhealthboardreportModel> Disabledhealthboardreports { get; set; }
         [NotMapped]
-        public PatientfirstadmissionformModel Firstadmissionform { get; set; }
+        public List<PatientfirstadmissionformModel> Firstadmissionforms { get; set; }
         [NotMapped]
-        public PatientfirstapproachreportModel Firstapproachreport { get; set; }
+        public List<PatientfirstapproachreportModel> Firstapproachreports { get; set; }
         [NotMapped]
-        public PatientownershiprecieveModel Ownershiprecieve { get; set; }
+        public List<PatientownershiprecieveModel> Ownershiprecieves { get; set; }
         [NotMapped]
-        public PatientrecieveformModel Recieveform { get; set; }
+        public List<PatientrecieveformModel> Recieveforms { get; set; }
         [NotMapped]
-        public PatientsubmittingformModel Submittingform { get; set; }
+        public List<PatientsubmittingformModel> Submittingforms { get; set; }
         [NotMapped]
         public List<ActivestockModel> Stocks { get; set; }
         [NotMapped]
@@ -47,11 +47,11 @@ namespace PatientCareAPI.Models.Application
         public int Bednumber { get; set; }
         public string Departmentname { get; set; }
         public string Departmentid { get; set; }
-        [NotMapped]
-        public DepartmentModel Department { get; set; }
         public string Processid { get; set; }
         public bool Iswaitingactivation { get; set; }
         public string ImageID { get; set; }
+        [NotMapped]
+        public DepartmentModel Department { get; set; }
         public string CaseId { get; set; }
         [NotMapped]
         public CaseModel Case { get; set; }
