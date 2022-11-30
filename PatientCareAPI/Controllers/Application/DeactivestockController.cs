@@ -33,7 +33,7 @@ namespace PatientCareAPI.Controllers.Application
         }
 
         [Route("GetAll")]
-        [Authorize(Roles = UserAuthory.Stock_Screen)]
+        [AuthorizeMultiplePolicy(UserAuthory.Stock_Screen)]
         [HttpGet]
         public IActionResult GetAll()
         {

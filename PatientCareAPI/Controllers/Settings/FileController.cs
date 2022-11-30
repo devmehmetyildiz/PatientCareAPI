@@ -40,7 +40,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [HttpGet]
-        [Authorize(Roles = UserAuthory.File_Screen)]
+        [AuthorizeMultiplePolicy(UserAuthory.File_Screen)]
         [Route("GetAll")]
         public IActionResult GetAll()
         {
@@ -61,7 +61,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("GetSelectedFile")]
-        [Authorize(Roles = (UserAuthory.File_Screen + "," + UserAuthory.File_Update))]
+        [AuthorizeMultiplePolicy((UserAuthory.File_Screen + "," + UserAuthory.File_Update))]
         [HttpGet]
         public IActionResult GetSelectedFile(string ID)
         {
@@ -81,7 +81,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("GetSelectedFileByPatientGuid")]
-        [Authorize(Roles = (UserAuthory.File_Screen + "," + UserAuthory.File_Update))]
+        [AuthorizeMultiplePolicy((UserAuthory.File_Screen + "," + UserAuthory.File_Update))]
         [HttpGet]
         public IActionResult GetSelectedFileByPatientGuid(string Guid)
         {
@@ -103,7 +103,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("GetFile")]
-        [Authorize(Roles = (UserAuthory.File_Screen + "," + UserAuthory.File_Update))]
+        [AuthorizeMultiplePolicy((UserAuthory.File_Screen + "," + UserAuthory.File_Update))]
         [HttpGet]
         public IActionResult GetFile(string ID)
         {
@@ -115,7 +115,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("Add")]
-        [Authorize(Roles = UserAuthory.File_Add)]
+        [AuthorizeMultiplePolicy(UserAuthory.File_Add)]
         [RequestFormLimits(ValueLengthLimit = int.MaxValue, MultipartBodyLengthLimit = int.MaxValue)]
         [HttpPost]
         public IActionResult Add([FromForm] FileModel model)
@@ -144,7 +144,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("Update")]
-        [Authorize(Roles = UserAuthory.File_Update)]
+        [AuthorizeMultiplePolicy(UserAuthory.File_Update)]
         [RequestFormLimits(ValueLengthLimit = int.MaxValue, MultipartBodyLengthLimit = int.MaxValue)]
         [HttpPost]
         public IActionResult Update([FromForm]FileModel model)
@@ -173,7 +173,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("Delete")]
-        [Authorize(Roles = UserAuthory.File_Delete)]
+        [AuthorizeMultiplePolicy(UserAuthory.File_Delete)]
         [HttpDelete]
         public IActionResult Delete(FileModel model)
         {
@@ -202,7 +202,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("DeleteFromDB")]
-        [Authorize(Roles = UserAuthory.Admin)]
+        [AuthorizeMultiplePolicy(UserAuthory.Admin)]
         [HttpDelete]
         public IActionResult DeleteFromDB(FileModel model)
         {

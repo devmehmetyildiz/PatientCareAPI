@@ -10,6 +10,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using PatientCareAPI.Models.Authentication;
 using System.Security.Claims;
+using PatientCareAPI.Utils;
 
 namespace PatientCareAPI.Controllers.Auth
 {
@@ -31,47 +32,58 @@ namespace PatientCareAPI.Controllers.Auth
             unitOfWork = new UnitOfWork(context);
         }
 
-        [Authorize(Roles = UserAuthory.Roles_Screen)]
+        private string GetSessionUser()
+        {
+            return (this.User.Identity as ClaimsIdentity).FindFirst(ClaimTypes.Name)?.Value;
+        }
+
+        [AuthorizeMultiplePolicy(UserAuthory.Roles_Screen)]
         [Route("GetAll")]
         [HttpGet]
-        public IActionResult GetAll()
+        public IActionResult RolesGetAll()
         {
             var roles = unitOfWork.RoleRepository.GetAll().Where(u => u.IsActive).ToList();
             foreach (var role in roles)
             {
-                List<string> authories = unitOfWork.RoletoAuthoryRepository.GetAll().Where(u => u.RoleID== role.ConcurrencyStamp).Select(u => u.AuthoryID).ToList();
+                List<string> authories = unitOfWork.RoletoAuthoryRepository.GetRecords<RoletoAuthory>(u => u.RoleID == role.ConcurrencyStamp).Select(u => u.AuthoryID).ToList();
                 role.Authories.AddRange(unitOfWork.AuthoryRepository.GetAuthoriesbyGuids(authories));
             }
             return Ok(roles);
         }
 
-        [Authorize(Roles = UserAuthory.Roles_Screen)]
-        [Route("GetSelectedRole")]
+        [AuthorizeMultiplePolicy(UserAuthory.Roles_Screen)]
+        [Route("Getselected")]
         [HttpGet]
-        public IActionResult GetSelectedRole(int ID)
+        public IActionResult RolesGetselected(string guid)
         {
-            var role = unitOfWork.RoleRepository.Getbyid(ID);
-            List<string> authories = unitOfWork.RoletoAuthoryRepository.GetAll().Where(u => u.RoleID == role.ConcurrencyStamp).Select(u => u.AuthoryID).ToList();
+            var role = unitOfWork.RoleRepository.GetSingleRecord<RoleModel>(u=>u.ConcurrencyStamp==guid);
+            List<string> authories = unitOfWork.RoletoAuthoryRepository.GetRecords<RoletoAuthory>(u => u.RoleID == role.ConcurrencyStamp).Select(u => u.AuthoryID).ToList();
             role.Authories.AddRange(unitOfWork.AuthoryRepository.GetAuthoriesbyGuids(authories));
             return Ok(role);
         }
 
-        [Authorize(Roles = UserAuthory.Roles_Screen)]
+        [AuthorizeMultiplePolicy(UserAuthory.Roles_Screen)]
         [Route("GetAllAuthories")]
         [HttpGet]
-        public IActionResult GetAllroles()
+        public IActionResult RolesGetAllroles()
         {
-            return Ok(unitOfWork.AuthoryRepository.GetAll().Where(U=>U.Name!=UserAuthory.Admin).ToList().OrderBy(u=>u.Group));
+            return Ok(unitOfWork.AuthoryRepository.GetRecords<AuthoryModel>(u => u.Name != UserAuthory.Admin).OrderBy(u => u.Group));
         }
 
-        [Authorize(Roles = UserAuthory.Roles_Add)]
+        [AuthorizeMultiplePolicy(UserAuthory.Roles_Screen)]
+        [Route("GetAllAuthoryGroups")]
+        [HttpGet]
+        public IActionResult RolesGetAllAuthoryGroups()
+        {
+            return Ok(unitOfWork.AuthoryRepository.GetRecords<AuthoryModel>(u => u.Name != UserAuthory.Admin).OrderBy(u => u.Group).Select(u=>u.Group).Distinct());
+        }
+
+        [AuthorizeMultiplePolicy(UserAuthory.Roles_Screen + "," + UserAuthory.Roles_Add)]
         [Route("Add")]
         [HttpPost]
-        public IActionResult Add(RoleModel model)
+        public IActionResult RolesAdd(RoleModel model)
         {
-            var claimsIdentity = this.User.Identity as ClaimsIdentity;
-            var username = claimsIdentity.FindFirst(ClaimTypes.Name)?.Value;
-            model.CreatedUser = username;
+            model.CreatedUser = GetSessionUser();
             model.IsActive = true;
             model.CreateTime = DateTime.Now;
             model.ConcurrencyStamp = Guid.NewGuid().ToString();
@@ -81,17 +93,21 @@ namespace PatientCareAPI.Controllers.Auth
                 unitOfWork.RoletoAuthoryRepository.AddAuthorytoRole(new RoletoAuthory { RoleID = model.ConcurrencyStamp, AuthoryID = yetki.ConcurrencyStamp });
             }
             unitOfWork.Complate();
-            return Ok();
+            var roles = unitOfWork.RoleRepository.GetAll().Where(u => u.IsActive).ToList();
+            foreach (var role in roles)
+            {
+                List<string> authories = unitOfWork.RoletoAuthoryRepository.GetRecords<RoletoAuthory>(u => u.RoleID == role.ConcurrencyStamp).Select(u => u.AuthoryID).ToList();
+                role.Authories.AddRange(unitOfWork.AuthoryRepository.GetAuthoriesbyGuids(authories));
+            }
+            return Ok(roles);
         }
 
-        [Authorize(Roles = (UserAuthory.Roles_Screen + "," + UserAuthory.Roles_Update))]
+        [AuthorizeMultiplePolicy(UserAuthory.Roles_Screen+","+UserAuthory.Roles_Update)]
         [Route("Update")]
         [HttpPost]
-        public IActionResult Update(RoleModel model)
+        public IActionResult RolesUpdate(RoleModel model)
         {
-            var claimsIdentity = this.User.Identity as ClaimsIdentity;
-            var username = claimsIdentity.FindFirst(ClaimTypes.Name)?.Value;
-            model.UpdatedUser = username;
+            model.UpdatedUser = (this.User.Identity as ClaimsIdentity).FindFirst(ClaimTypes.Name)?.Value;
             model.UpdateTime = DateTime.Now;
             unitOfWork.RoleRepository.update(unitOfWork.RoleRepository.Getbyid(model.Id), model);
             unitOfWork.RoletoAuthoryRepository.DeleteAuthoriesbyRole(model.ConcurrencyStamp);
@@ -100,28 +116,38 @@ namespace PatientCareAPI.Controllers.Auth
                 unitOfWork.RoletoAuthoryRepository.AddAuthorytoRole(new RoletoAuthory { RoleID = model.ConcurrencyStamp, AuthoryID = yetki.ConcurrencyStamp });
             }
             unitOfWork.Complate();
-            return Ok();
+            var roles = unitOfWork.RoleRepository.GetAll().Where(u => u.IsActive).ToList();
+            foreach (var role in roles)
+            {
+                List<string> authories = unitOfWork.RoletoAuthoryRepository.GetRecords<RoletoAuthory>(u => u.RoleID == role.ConcurrencyStamp).Select(u => u.AuthoryID).ToList();
+                role.Authories.AddRange(unitOfWork.AuthoryRepository.GetAuthoriesbyGuids(authories));
+            }
+            return Ok(roles);
         }
 
-        [Authorize(Roles = UserAuthory.Roles_Delete)]
+        [AuthorizeMultiplePolicy(UserAuthory.Roles_Screen + "," + UserAuthory.Roles_Delete)]
         [Route("Delete")]
         [HttpDelete]
-        public IActionResult Delete(RoleModel model)
+        public IActionResult RolesDelete(RoleModel model)
         {
-            var claimsIdentity = this.User.Identity as ClaimsIdentity;
-            var username = claimsIdentity.FindFirst(ClaimTypes.Name)?.Value;
-            model.DeleteUser = username;
+            model.DeleteUser = GetSessionUser();
             model.IsActive = false;
             model.DeleteTime = DateTime.Now;
             unitOfWork.RoleRepository.update(unitOfWork.RoleRepository.Getbyid(model.Id), model);
             unitOfWork.Complate();
-            return Ok();
+            var roles = unitOfWork.RoleRepository.GetAll().Where(u => u.IsActive).ToList();
+            foreach (var role in roles)
+            {
+                List<string> authories = unitOfWork.RoletoAuthoryRepository.GetRecords<RoletoAuthory>(u => u.RoleID == role.ConcurrencyStamp).Select(u => u.AuthoryID).ToList();
+                role.Authories.AddRange(unitOfWork.AuthoryRepository.GetAuthoriesbyGuids(authories));
+            }
+            return Ok(roles);
         }
 
-        [Authorize(Roles = UserAuthory.Admin)]
+        [AuthorizeMultiplePolicy(UserAuthory.Admin)]
         [Route("DeleteFromDB")]
         [HttpDelete]
-        public IActionResult DeleteFromDB(RoleModel model)
+        public IActionResult RolesDeleteFromDB(RoleModel model)
         {
             unitOfWork.RoleRepository.Remove(model.Id);
             unitOfWork.RoletoAuthoryRepository.DeleteAuthoriesbyRole(model.ConcurrencyStamp);

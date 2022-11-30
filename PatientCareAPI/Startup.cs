@@ -17,6 +17,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.AspNetCore.Http.Features;
+using PatientCareAPI.Utils;
 
 namespace PatientCareAPI
 {
@@ -73,12 +74,14 @@ namespace PatientCareAPI
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "PatientCareAPI", Version = "v1" });
             });
+         //   services.AddTransient<AuthorizeMultiplePolicyAttribute>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             app.UseCors("AllowOrigin");
+            
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -87,6 +90,7 @@ namespace PatientCareAPI
             }
 
             app.UseRouting();
+            app.UseErrorHandling();
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseEndpoints(endpoints =>

@@ -63,13 +63,18 @@ namespace PatientCareAPI.Controllers.Auth
         [Route("Register")]
         public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
+            List<ResponseModel> Notification = new List<ResponseModel>();
             if (unitOfWork.UsersRepository.GetAll().Count>0)
             {
-                return BadRequest(new ResponseModel { Status = "ERROR", Massage = "Admin Kullanıcı Oluşturuldu. Bu fonksiyon geçersiz" });
+                Notification.Add(new ResponseModel { Status = "ERROR", Massage = "Admin Kullanıcı Oluşturuldu. Bu fonksiyon geçersiz" });
+                return BadRequest(Notification);
             } 
             var userExist = unitOfWork.UsersRepository.FindUserByName(model.Username);
             if (userExist != null)
-                return StatusCode(StatusCodes.Status500InternalServerError, new ResponseModel { Status = "Error", Massage = "Bu Kullanıcı Adı Daha Önce Alındı" });
+            {
+                Notification.Add(new ResponseModel { Status = "Error", Massage = "Bu Kullanıcı Adı Daha Önce Alındı" });
+                return StatusCode(StatusCodes.Status500InternalServerError, Notification);
+            }
             var userGuid = Guid.NewGuid().ToString();
             var RoleGuid = Guid.NewGuid().ToString();
             var salt = securityutils.CreateSalt(30);
@@ -92,20 +97,10 @@ namespace PatientCareAPI.Controllers.Auth
             ConfigureRoles();
             unitOfWork.RoleRepository.Add(new RoleModel { Id = 0, ConcurrencyStamp = RoleGuid, CreatedUser = "System", CreateTime = DateTime.Now, IsActive = true, Name = "Admin" });
             unitOfWork.RoletoAuthoryRepository.AddAuthorytoRole(new RoletoAuthory { Id = 0, RoleID = RoleGuid, AuthoryID = unitOfWork.AuthoryRepository.FindAuthoryByName(UserAuthory.Admin).ConcurrencyStamp });
-            unitOfWork.RoletoAuthoryRepository.AddAuthorytoRole(new RoletoAuthory { Id = 0, RoleID = RoleGuid, AuthoryID = unitOfWork.AuthoryRepository.FindAuthoryByName(UserAuthory.User_Screen).ConcurrencyStamp });
-            unitOfWork.RoletoAuthoryRepository.AddAuthorytoRole(new RoletoAuthory { Id = 0, RoleID = RoleGuid, AuthoryID = unitOfWork.AuthoryRepository.FindAuthoryByName(UserAuthory.User_Add).ConcurrencyStamp });
-            unitOfWork.RoletoAuthoryRepository.AddAuthorytoRole(new RoletoAuthory { Id = 0, RoleID = RoleGuid, AuthoryID = unitOfWork.AuthoryRepository.FindAuthoryByName(UserAuthory.User_Update).ConcurrencyStamp });
-            unitOfWork.RoletoAuthoryRepository.AddAuthorytoRole(new RoletoAuthory { Id = 0, RoleID = RoleGuid, AuthoryID = unitOfWork.AuthoryRepository.FindAuthoryByName(UserAuthory.User_Delete).ConcurrencyStamp });
-            unitOfWork.RoletoAuthoryRepository.AddAuthorytoRole(new RoletoAuthory { Id = 0, RoleID = RoleGuid, AuthoryID = unitOfWork.AuthoryRepository.FindAuthoryByName(UserAuthory.User_ManageAll).ConcurrencyStamp });
-            unitOfWork.RoletoAuthoryRepository.AddAuthorytoRole(new RoletoAuthory { Id = 0, RoleID = RoleGuid, AuthoryID = unitOfWork.AuthoryRepository.FindAuthoryByName(UserAuthory.Roles_Screen).ConcurrencyStamp });
-            unitOfWork.RoletoAuthoryRepository.AddAuthorytoRole(new RoletoAuthory { Id = 0, RoleID = RoleGuid, AuthoryID = unitOfWork.AuthoryRepository.FindAuthoryByName(UserAuthory.Roles_Add).ConcurrencyStamp });
-            unitOfWork.RoletoAuthoryRepository.AddAuthorytoRole(new RoletoAuthory { Id = 0, RoleID = RoleGuid, AuthoryID = unitOfWork.AuthoryRepository.FindAuthoryByName(UserAuthory.Roles_Update).ConcurrencyStamp });
-            unitOfWork.RoletoAuthoryRepository.AddAuthorytoRole(new RoletoAuthory { Id = 0, RoleID = RoleGuid, AuthoryID = unitOfWork.AuthoryRepository.FindAuthoryByName(UserAuthory.Roles_Delete).ConcurrencyStamp });
-            unitOfWork.RoletoAuthoryRepository.AddAuthorytoRole(new RoletoAuthory { Id = 0, RoleID = RoleGuid, AuthoryID = unitOfWork.AuthoryRepository.FindAuthoryByName(UserAuthory.Roles_ManageAll).ConcurrencyStamp });
-            unitOfWork.RoletoAuthoryRepository.AddAuthorytoRole(new RoletoAuthory { Id = 0, RoleID = RoleGuid, AuthoryID = unitOfWork.AuthoryRepository.FindAuthoryByName(UserAuthory.Admin).ConcurrencyStamp });
             unitOfWork.UsertoRoleRepository.AddRolestoUser(new UsertoRoleModel { Id = 0, RoleID = RoleGuid, UserID = userGuid });
             unitOfWork.Complate();
-            return Ok(new ResponseModel { Status = "Success", Massage = "Kullanıcı Başarı ile Oluşturuldu" });
+            Notification.Add(new ResponseModel { Status = "Success", Massage = "Kullanıcı Başarı ile Oluşturuldu" });
+            return Ok(Notification);
         }
 
         [AllowAnonymous]
@@ -113,14 +108,18 @@ namespace PatientCareAPI.Controllers.Auth
         [Route("Login")]
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
+            List<ResponseModel> Notification = new List<ResponseModel>();
+
             var user = unitOfWork.UsersRepository.FindUserByName(model.Username);
             if ((user == null))
             {
-                return NotFound(new ResponseModel { Status = "Error", Massage = "Kullanıcı Bulunamadı" });
+                Notification.Add(new ResponseModel { Status = "Error", Massage = "Kullanıcı Bulunamadı" });
+                return NotFound(Notification);
             }
             if (!CheckPassword(user, model.Password))
             {
-                return Unauthorized(new ResponseModel { Status = "Error", Massage = "Kullanıcı Adı veya Şifre Hatalı" });
+                Notification.Add(new ResponseModel { Status = "Error", Massage = "Kullanıcı Adı veya Şifre Hatalı" });
+                return Unauthorized(Notification);
             }             
             var authClaims = new List<Claim>
                 {
@@ -165,7 +164,7 @@ namespace PatientCareAPI.Controllers.Auth
             return Ok(userId);
         }
 
-        [Authorize(Roles =UserAuthory.Admin)]
+        [AuthorizeMultiplePolicy(UserAuthory.Admin)]
         [HttpGet]
         [Route("ConfigureRoles")]
         public async Task<IActionResult> ConfigureRolesAsAdmin()
@@ -183,7 +182,6 @@ namespace PatientCareAPI.Controllers.Auth
         {
             List<AuthoryModel> Roles = new List<AuthoryModel>();
             List<AuthoryModel> newRoles = new List<AuthoryModel>();
-       
             Roles.Add(new AuthoryModel{ Group=UserAuthory.BaseGroup,Name=UserAuthory.Basic });
             Roles.Add(new AuthoryModel{ Group=UserAuthory.BaseGroup,Name=UserAuthory.Admin });
             Roles.Add(new AuthoryModel{ Group=UserAuthory.User,Name=UserAuthory.User_Screen });

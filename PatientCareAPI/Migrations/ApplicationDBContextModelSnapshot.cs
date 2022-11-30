@@ -98,6 +98,35 @@ namespace PatientCareAPI.Migrations
                     b.ToTable("Activepatients");
                 });
 
+            modelBuilder.Entity("PatientCareAPI.Models.Application.ActivepatientmovementstotodosModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("ComplatedUser")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("Complatetime")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("Iscomplated")
+                        .HasColumnType("text");
+
+                    b.Property<string>("MovementID")
+                        .HasColumnType("text");
+
+                    b.Property<string>("TodoID")
+                        .HasColumnType("text");
+
+                    b.Property<int>("Vieworder")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Activepatientmovementstotodos");
+                });
+
             modelBuilder.Entity("PatientCareAPI.Models.Application.ActivepatienttoActiveStocksModel", b =>
                 {
                     b.Property<int>("Id")
@@ -930,7 +959,16 @@ namespace PatientCareAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<string>("Activepatientid")
+                        .HasColumnType("text");
+
+                    b.Property<string>("IsComplated")
+                        .HasColumnType("text");
+
                     b.Property<bool>("IsDeactive")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("IsTodoneeded")
                         .HasColumnType("tinyint(1)");
 
                     b.Property<bool>("Iswaitingactivation")
@@ -939,10 +977,19 @@ namespace PatientCareAPI.Migrations
                     b.Property<DateTime?>("Movementdate")
                         .HasColumnType("datetime");
 
+                    b.Property<string>("Movementid")
+                        .HasColumnType("text");
+
                     b.Property<int>("Movementtype")
                         .HasColumnType("int");
 
-                    b.Property<string>("Patientid")
+                    b.Property<string>("NewStatus")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Oldstatus")
+                        .HasColumnType("text");
+
+                    b.Property<string>("UserID")
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -1415,6 +1462,9 @@ namespace PatientCareAPI.Migrations
                     b.Property<int>("CaseStatus")
                         .HasColumnType("int");
 
+                    b.Property<string>("Casecolor")
+                        .HasColumnType("text");
+
                     b.Property<string>("ConcurrencyStamp")
                         .HasMaxLength(85)
                         .HasColumnType("varchar(85)");
@@ -1437,6 +1487,9 @@ namespace PatientCareAPI.Migrations
                         .HasColumnType("tinyint(1)");
 
                     b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Shortname")
                         .HasColumnType("text");
 
                     b.Property<DateTime?>("UpdateTime")
@@ -1876,6 +1929,93 @@ namespace PatientCareAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Stocks");
+                });
+
+            modelBuilder.Entity("PatientCareAPI.Models.Settings.TodoModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .HasMaxLength(85)
+                        .HasColumnType("varchar(85)");
+
+                    b.Property<DateTime?>("CreateTime")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("CreatedUser")
+                        .HasMaxLength(30)
+                        .HasColumnType("varchar(30)");
+
+                    b.Property<DateTime?>("DeleteTime")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("DeleteUser")
+                        .HasMaxLength(30)
+                        .HasColumnType("varchar(30)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<bool>("IsRequired")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Todoname")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdateTime")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("UpdatedUser")
+                        .HasMaxLength(30)
+                        .HasColumnType("varchar(30)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Todos");
+                });
+
+            modelBuilder.Entity("PatientCareAPI.Models.Settings.TodogroupModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .HasMaxLength(85)
+                        .HasColumnType("varchar(85)");
+
+                    b.Property<DateTime?>("CreateTime")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("CreatedUser")
+                        .HasMaxLength(30)
+                        .HasColumnType("varchar(30)");
+
+                    b.Property<DateTime?>("DeleteTime")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("DeleteUser")
+                        .HasMaxLength(30)
+                        .HasColumnType("varchar(30)");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("UpdateTime")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("UpdatedUser")
+                        .HasMaxLength(30)
+                        .HasColumnType("varchar(30)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Todogroups");
                 });
 
             modelBuilder.Entity("PatientCareAPI.Models.Settings.UnitModel", b =>

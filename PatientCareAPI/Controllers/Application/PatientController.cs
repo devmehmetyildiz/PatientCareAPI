@@ -35,7 +35,7 @@ namespace PatientCareAPI.Controllers.Application
         }
 
         [HttpGet]
-        [Authorize(Roles = UserAuthory.Patients_Screen)]
+        [AuthorizeMultiplePolicy(UserAuthory.Patients_Screen)]
         [Route("GetAll")]
         public IActionResult GetAll()
         {
@@ -64,7 +64,7 @@ namespace PatientCareAPI.Controllers.Application
         }
 
         [Route("GetSelectedPatient")]
-        [Authorize(Roles = (UserAuthory.Patients_Screen + "," + UserAuthory.Patients_Update))]
+        [AuthorizeMultiplePolicy((UserAuthory.Patients_Screen + "," + UserAuthory.Patients_Update))]
         [HttpGet]
         public IActionResult GetSelectedPatient(int ID)
         {
@@ -85,7 +85,7 @@ namespace PatientCareAPI.Controllers.Application
         }
 
         [Route("Add")]
-        [Authorize(Roles = UserAuthory.Patients_Add)]
+        [AuthorizeMultiplePolicy(UserAuthory.Patients_Add)]
         [HttpPost]
         public IActionResult Add(PatientModel model)
         {
@@ -102,7 +102,7 @@ namespace PatientCareAPI.Controllers.Application
         }
 
         [Route("Update")]
-        [Authorize(Roles = UserAuthory.Patients_Update)]
+        [AuthorizeMultiplePolicy(UserAuthory.Patients_Update)]
         [HttpPost]
         public IActionResult Update(PatientModel model)
         {
@@ -124,7 +124,7 @@ namespace PatientCareAPI.Controllers.Application
         }
 
         [Route("Delete")]
-        [Authorize(Roles = UserAuthory.Patients_Delete)]
+        [AuthorizeMultiplePolicy(UserAuthory.Patients_Delete)]
         [HttpDelete]
         public IActionResult Delete(PatientModel model)
         {
@@ -146,7 +146,7 @@ namespace PatientCareAPI.Controllers.Application
         }
 
         [Route("DeleteFromDB")]
-        [Authorize(Roles = UserAuthory.Admin)]
+        [AuthorizeMultiplePolicy(UserAuthory.Admin)]
         [HttpDelete]
         public IActionResult DeleteFromDB(PatientModel model)
         {

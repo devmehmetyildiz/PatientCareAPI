@@ -35,7 +35,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [HttpGet]
-        [Authorize(Roles = UserAuthory.Case_Screen)]
+        [AuthorizeMultiplePolicy(UserAuthory.Case_Screen)]
         [Route("GetAllSettings")]
         public IActionResult GetAllSettings()
         {
@@ -72,7 +72,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [HttpGet]
-        [Authorize(Roles = UserAuthory.Case_Screen)]
+        [AuthorizeMultiplePolicy(UserAuthory.Case_Screen)]
         [Route("GetAll")]
         public IActionResult GetAll()
         {
@@ -110,7 +110,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("GetSelectedCase")]
-        [Authorize(Roles = (UserAuthory.Case_Screen + "," + UserAuthory.Case_Update))]
+        [AuthorizeMultiplePolicy(UserAuthory.Case_Screen + "," + UserAuthory.Case_Update)]
         [HttpGet]
         public IActionResult GetSelectedCase(int ID)
         {
@@ -135,7 +135,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("Add")]
-        [Authorize(Roles = UserAuthory.Case_Add)]
+        [AuthorizeMultiplePolicy(UserAuthory.Case_Add)]
         [HttpPost]
         public IActionResult Add(CaseModel model)
         {
@@ -152,7 +152,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("Update")]
-        [Authorize(Roles = UserAuthory.Case_Update)]
+        [AuthorizeMultiplePolicy(UserAuthory.Case_Update)]
         [HttpPost]
         public IActionResult Update(CaseModel model)
         {
@@ -175,7 +175,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("Delete")]
-        [Authorize(Roles = UserAuthory.Case_Delete)]
+        [AuthorizeMultiplePolicy(UserAuthory.Case_Delete)]
         [HttpDelete]
         public IActionResult Delete(CaseModel model)
         {
@@ -198,7 +198,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("DeleteFromDB")]
-        [Authorize(Roles = UserAuthory.Admin)]
+        [AuthorizeMultiplePolicy(UserAuthory.Admin)]
         [HttpDelete]
         public IActionResult DeleteFromDB(CaseModel model)
         {

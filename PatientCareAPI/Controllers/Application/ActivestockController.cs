@@ -35,7 +35,7 @@ namespace PatientCareAPI.Controllers.Application
         }
 
         [Route("GetAll")]
-        [Authorize(Roles = UserAuthory.Stock_Screen)]
+        [AuthorizeMultiplePolicy(UserAuthory.Stock_Screen)]
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -51,8 +51,8 @@ namespace PatientCareAPI.Controllers.Application
             return Ok(Data);
         }
 
-        [Authorize(Roles = (UserAuthory.Stock_Screen + "," + UserAuthory.Stock_Update))]
         [Route("GetSelectedActivestock")]
+        [AuthorizeMultiplePolicy((UserAuthory.Stock_Screen + "," + UserAuthory.Stock_Update))]
         [HttpGet]
         public IActionResult GetSelectedActivestock(int ID)
         {
@@ -67,7 +67,7 @@ namespace PatientCareAPI.Controllers.Application
         }
 
         [Route("Deactivestock")]
-        [Authorize(Roles = UserAuthory.Stock_Screen)]
+        [AuthorizeMultiplePolicy(UserAuthory.Stock_Screen)]
         [HttpPost]
         public IActionResult Deactivestock(string guid)
         {
@@ -101,7 +101,7 @@ namespace PatientCareAPI.Controllers.Application
         }
 
         [Route("Add")]
-        [Authorize(Roles = UserAuthory.Stock_Add)]
+        [AuthorizeMultiplePolicy(UserAuthory.Stock_Add)]
         [HttpPost]
         public IActionResult Add(ActivestockModel model)
         {
@@ -127,7 +127,7 @@ namespace PatientCareAPI.Controllers.Application
         }
 
         [Route("AddRange")]
-        [Authorize(Roles = UserAuthory.Stock_Add)]
+        [AuthorizeMultiplePolicy(UserAuthory.Stock_Add)]
         [HttpPost]
         public IActionResult AddRange(List<ActivestockModel> list)
         {
@@ -158,7 +158,7 @@ namespace PatientCareAPI.Controllers.Application
         }
 
         [Route("Update")]
-        [Authorize(Roles = UserAuthory.Stock_Update)]
+        [AuthorizeMultiplePolicy(UserAuthory.Stock_Update)]
         [HttpPost]
         public IActionResult Update(ActivestockModel model)
         {
@@ -183,7 +183,7 @@ namespace PatientCareAPI.Controllers.Application
         }
 
         [Route("Delete")]
-        [Authorize(Roles = UserAuthory.Stock_Delete)]
+        [AuthorizeMultiplePolicy(UserAuthory.Stock_Delete)]
         [HttpDelete]
         public IActionResult Delete(ActivestockModel model)
         {
@@ -207,7 +207,7 @@ namespace PatientCareAPI.Controllers.Application
         }
 
         [Route("DeleteFromDB")]
-        [Authorize(Roles = UserAuthory.Admin)]
+        [AuthorizeMultiplePolicy(UserAuthory.Admin)]
         [HttpDelete]
         public IActionResult DeleteFromDB(ActivestockModel model)
         {

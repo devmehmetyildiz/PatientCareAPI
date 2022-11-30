@@ -36,7 +36,7 @@ namespace PatientCareAPI.Controllers.Application
 
         #region GetAll
         [Route("GetApplicant")]
-        [Authorize(Roles = (UserAuthory.Patients_Screen + "," + UserAuthory.Patients_Update))]
+        [AuthorizeMultiplePolicy((UserAuthory.Patients_Screen + "," + UserAuthory.Patients_Update))]
         [HttpGet]
         public IActionResult GetApplicant(string Guid)
         {
@@ -56,7 +56,7 @@ namespace PatientCareAPI.Controllers.Application
         }
 
         [Route("GetBodycontrolform")]
-        [Authorize(Roles = (UserAuthory.Patients_Screen + "," + UserAuthory.Patients_Update))]
+        [AuthorizeMultiplePolicy((UserAuthory.Patients_Screen + "," + UserAuthory.Patients_Update))]
         [HttpGet]
         public IActionResult GetBodycontrolform(string Guid)
         {
@@ -64,7 +64,7 @@ namespace PatientCareAPI.Controllers.Application
         }
 
         [Route("GetDisabilitypermitform")]
-        [Authorize(Roles = (UserAuthory.Patients_Screen + "," + UserAuthory.Patients_Update))]
+        [AuthorizeMultiplePolicy((UserAuthory.Patients_Screen + "," + UserAuthory.Patients_Update))]
         [HttpGet]
         public IActionResult GetDisabilitypermitform(string Guid)
         {
@@ -72,7 +72,7 @@ namespace PatientCareAPI.Controllers.Application
         }
 
         [Route("GetDisabledhealthboardreport")]
-        [Authorize(Roles = (UserAuthory.Patients_Screen + "," + UserAuthory.Patients_Update))]
+        [AuthorizeMultiplePolicy((UserAuthory.Patients_Screen + "," + UserAuthory.Patients_Update))]
         [HttpGet]
         public IActionResult Getdisabledhealthboardreport(string Guid)
         {
@@ -80,7 +80,7 @@ namespace PatientCareAPI.Controllers.Application
         }
 
         [Route("GetFirstadmissionform")]
-        [Authorize(Roles = (UserAuthory.Patients_Screen + "," + UserAuthory.Patients_Update))]
+        [AuthorizeMultiplePolicy((UserAuthory.Patients_Screen + "," + UserAuthory.Patients_Update))]
         [HttpGet]
         public IActionResult Getfirstadmissionform(string Guid)
         {
@@ -88,7 +88,7 @@ namespace PatientCareAPI.Controllers.Application
         }
 
         [Route("GetFirstapproachreport")]
-        [Authorize(Roles = (UserAuthory.Patients_Screen + "," + UserAuthory.Patients_Update))]
+        [AuthorizeMultiplePolicy((UserAuthory.Patients_Screen + "," + UserAuthory.Patients_Update))]
         [HttpGet]
         public IActionResult Getfirstapproachreport(string Guid)
         {
@@ -96,7 +96,7 @@ namespace PatientCareAPI.Controllers.Application
         }
 
         [Route("GetOwnershiprecieve")]
-        [Authorize(Roles = (UserAuthory.Patients_Screen + "," + UserAuthory.Patients_Update))]
+        [AuthorizeMultiplePolicy((UserAuthory.Patients_Screen + "," + UserAuthory.Patients_Update))]
         [HttpGet]
         public IActionResult Getownershiprecieve(string Guid)
         {
@@ -104,7 +104,7 @@ namespace PatientCareAPI.Controllers.Application
         }
 
         [Route("GetRecieveform")]
-        [Authorize(Roles = (UserAuthory.Patients_Screen + "," + UserAuthory.Patients_Update))]
+        [AuthorizeMultiplePolicy((UserAuthory.Patients_Screen + "," + UserAuthory.Patients_Update))]
         [HttpGet]
         public IActionResult Getrecieveform(string Guid)
         {
@@ -112,7 +112,7 @@ namespace PatientCareAPI.Controllers.Application
         }
 
         [Route("GetSubmittingform")]
-        [Authorize(Roles = (UserAuthory.Patients_Screen + "," + UserAuthory.Patients_Update))]
+        [AuthorizeMultiplePolicy((UserAuthory.Patients_Screen + "," + UserAuthory.Patients_Update))]
         [HttpGet]
         public IActionResult GetSubmittingform(string Guid)
         {
@@ -122,7 +122,7 @@ namespace PatientCareAPI.Controllers.Application
 
         #region Update
         [Route("UpdateApplicant")]
-        [Authorize(Roles = UserAuthory.Patients_Update)]
+        [AuthorizeMultiplePolicy(UserAuthory.Patients_Update)]
         [HttpPost]
         public IActionResult UpdateApplicant(PatientapplicantModel model)
         {
@@ -142,7 +142,7 @@ namespace PatientCareAPI.Controllers.Application
             return Ok();
         }
         [Route("UpdateBodycontrolform")]
-        [Authorize(Roles = UserAuthory.Patients_Update)]
+        [AuthorizeMultiplePolicy(UserAuthory.Patients_Update)]
         [HttpPost]
         public IActionResult UpdateBodycontrolform(PatientbodycontrolformModel model)
         {
@@ -162,7 +162,7 @@ namespace PatientCareAPI.Controllers.Application
             return Ok();
         }
         [Route("UpdateDisabilitypermitform")]
-        [Authorize(Roles = UserAuthory.Patients_Update)]
+        [AuthorizeMultiplePolicy(UserAuthory.Patients_Update)]
         [HttpPost]
         public IActionResult UpdateDisabilitypermitform(PatientdisabilitypermitformModel model)
         {
@@ -182,7 +182,7 @@ namespace PatientCareAPI.Controllers.Application
             return Ok();
         }
         [Route("UpdateDisabledhealthboardreport")]
-        [Authorize(Roles = UserAuthory.Patients_Update)]
+        [AuthorizeMultiplePolicy(UserAuthory.Patients_Update)]
         [HttpPost]
         public IActionResult UpdateDisabledhealthboardreport(PatientdisabledhealthboardreportModel model)
         {
@@ -202,7 +202,7 @@ namespace PatientCareAPI.Controllers.Application
             return Ok();
         }
         [Route("UpdateFirstadmissionform")]
-        [Authorize(Roles = UserAuthory.Patients_Update)]
+        [AuthorizeMultiplePolicy(UserAuthory.Patients_Update)]
         [HttpPost]
         public IActionResult UpdateFirstadmissionform(PatientfirstadmissionformModel model)
         {
@@ -222,7 +222,7 @@ namespace PatientCareAPI.Controllers.Application
             return Ok();
         }
         [Route("UpdateFirstapproachreport")]
-        [Authorize(Roles = UserAuthory.Patients_Update)]
+        [AuthorizeMultiplePolicy(UserAuthory.Patients_Update)]
         [HttpPost]
         public IActionResult UpdateFirstapproachreport(PatientfirstapproachreportModel model)
         {
@@ -242,7 +242,7 @@ namespace PatientCareAPI.Controllers.Application
             return Ok();
         }
         [Route("UpdateOwnershiprecieveModel")]
-        [Authorize(Roles = UserAuthory.Patients_Update)]
+        [AuthorizeMultiplePolicy(UserAuthory.Patients_Update)]
         [HttpPost]
         public IActionResult UpdateOwnershiprecieveModel(PatientownershiprecieveModel model)
         {
@@ -262,7 +262,7 @@ namespace PatientCareAPI.Controllers.Application
             return Ok();
         }
         [Route("UpdateRecieveform")]
-        [Authorize(Roles = UserAuthory.Patients_Update)]
+        [AuthorizeMultiplePolicy(UserAuthory.Patients_Update)]
         [HttpPost]
         public IActionResult UpdateRecieveform(PatientrecieveformModel model)
         {
@@ -282,7 +282,7 @@ namespace PatientCareAPI.Controllers.Application
             return Ok();
         }
         [Route("UpdatSubmittingform")]
-        [Authorize(Roles = UserAuthory.Patients_Update)]
+        [AuthorizeMultiplePolicy(UserAuthory.Patients_Update)]
         [HttpPost]
         public IActionResult UpdatSubmittingform(PatientsubmittingformModel model)
         {

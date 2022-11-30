@@ -35,7 +35,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [HttpGet]
-        [Authorize(Roles = UserAuthory.Costumertype_Screen)]
+        [AuthorizeMultiplePolicy(UserAuthory.Costumertype_Screen)]
         [Route("GetAll")]
         public IActionResult GetAll()
         {
@@ -72,7 +72,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("GetSelectedCostumertype")]
-        [Authorize(Roles = (UserAuthory.Costumertype_Screen + "," + UserAuthory.Costumertype_Update))]
+        [AuthorizeMultiplePolicy((UserAuthory.Costumertype_Screen + "," + UserAuthory.Costumertype_Update))]
         [HttpGet]
         public IActionResult GetSelectedCostumertype(int ID)
         {
@@ -97,7 +97,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("Add")]
-        [Authorize(Roles = UserAuthory.Costumertype_Add)]
+        [AuthorizeMultiplePolicy(UserAuthory.Costumertype_Add)]
         [HttpPost]
         public IActionResult Add(CostumertypeModel model)
         {
@@ -114,7 +114,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("Update")]
-        [Authorize(Roles = UserAuthory.Costumertype_Update)]
+        [AuthorizeMultiplePolicy(UserAuthory.Costumertype_Update)]
         [HttpPost]
         public IActionResult Update(CostumertypeModel model)
         {
@@ -137,7 +137,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("Delete")]
-        [Authorize(Roles = UserAuthory.Costumertype_Delete)]
+        [AuthorizeMultiplePolicy(UserAuthory.Costumertype_Delete)]
         [HttpDelete]
         public IActionResult Delete(CostumertypeModel model)
         {
@@ -160,7 +160,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("DeleteFromDB")]
-        [Authorize(Roles = UserAuthory.Admin)]
+        [AuthorizeMultiplePolicy(UserAuthory.Admin)]
         [HttpDelete]
         public IActionResult DeleteFromDB(CostumertypeModel model)
         {

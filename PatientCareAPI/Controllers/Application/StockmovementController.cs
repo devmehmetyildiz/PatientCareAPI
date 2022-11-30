@@ -33,7 +33,7 @@ namespace PatientCareAPI.Controllers.Application
         }
 
         [Route("GetAll")]
-        [Authorize(Roles = UserAuthory.Stock_Screen)]
+        [AuthorizeMultiplePolicy(UserAuthory.Stock_Screen)]
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -52,7 +52,7 @@ namespace PatientCareAPI.Controllers.Application
         }
 
         [Route("GetAllSelected")]
-        [Authorize(Roles = UserAuthory.Stock_Screen)]
+        [AuthorizeMultiplePolicy(UserAuthory.Stock_Screen)]
         [HttpGet]
         public IActionResult GetAllSelected(string guid)
         {
@@ -71,7 +71,7 @@ namespace PatientCareAPI.Controllers.Application
         }
 
         [Route("GetSelectedStock")]
-        [Authorize(Roles = UserAuthory.Stock_Screen)]
+        [AuthorizeMultiplePolicy(UserAuthory.Stock_Screen)]
         [HttpGet]
         public IActionResult GetSelectedStock(string guid)
         {

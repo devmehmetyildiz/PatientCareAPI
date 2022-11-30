@@ -35,7 +35,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [HttpGet]
-        [Authorize(Roles = UserAuthory.Basic)]
+        [AuthorizeMultiplePolicy(UserAuthory.Basic)]
         [Route("GetAll")]
         public IActionResult GetAll()
         {
@@ -49,7 +49,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [HttpPost]
-        [Authorize(Roles = UserAuthory.Basic)]
+        [AuthorizeMultiplePolicy(UserAuthory.Basic)]
         [Route("Add")]
         public IActionResult Add(DatatableModel model)
         {
@@ -65,7 +65,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [HttpPost]
-        [Authorize(Roles = UserAuthory.Basic)]
+        [AuthorizeMultiplePolicy(UserAuthory.Basic)]
         [Route("AddRecord")]
         public IActionResult Add(List<DatatableModel> list)
         {
@@ -83,7 +83,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("Update")]
-        [Authorize(Roles = UserAuthory.Basic)]
+        [AuthorizeMultiplePolicy(UserAuthory.Basic)]
         [HttpPost]
         public IActionResult Update(DatatableModel model)
         {

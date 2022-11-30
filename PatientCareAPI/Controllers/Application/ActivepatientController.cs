@@ -36,7 +36,7 @@ namespace PatientCareAPI.Controllers.Application
         }
 
         [Route("GetAll")]
-        [Authorize(Roles = UserAuthory.Patients_Screen)]
+        [AuthorizeMultiplePolicy(UserAuthory.Patients_Screen)]
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -64,8 +64,8 @@ namespace PatientCareAPI.Controllers.Application
             return Ok(Data);
         }
 
-        [Authorize(Roles = (UserAuthory.Patients_Screen + "," + UserAuthory.Patients_Update))]
         [Route("GetSelectedActivepatient")]
+        [AuthorizeMultiplePolicy((UserAuthory.Patients_Screen + "," + UserAuthory.Patients_Update))]
         [HttpGet]
         public IActionResult GetSelectedCase(string Guid)
         {
@@ -86,7 +86,7 @@ namespace PatientCareAPI.Controllers.Application
         }
 
         [Route("Add")]
-        [Authorize(Roles = UserAuthory.Patients_Add)]
+        [AuthorizeMultiplePolicy(UserAuthory.Patients_Add)]
         [HttpPost]
         public IActionResult Add(ActivepatientModel model)
         {
@@ -125,7 +125,7 @@ namespace PatientCareAPI.Controllers.Application
         }
 
         [Route("AddImage")]
-        [Authorize(Roles = UserAuthory.File_Add)]
+        [AuthorizeMultiplePolicy(UserAuthory.File_Add)]
         [RequestFormLimits(ValueLengthLimit = int.MaxValue, MultipartBodyLengthLimit = int.MaxValue)]
         [HttpPost]
         public IActionResult AddImage([FromForm] FileModel model)
@@ -161,7 +161,7 @@ namespace PatientCareAPI.Controllers.Application
 
 
         [Route("Update")]
-        [Authorize(Roles = UserAuthory.Patients_Update)]
+        [AuthorizeMultiplePolicy(UserAuthory.Patients_Update)]
         [HttpPost]
         public IActionResult Update(ActivepatientModel model)
         {
@@ -183,7 +183,7 @@ namespace PatientCareAPI.Controllers.Application
         }
 
         [Route("Delete")]
-        [Authorize(Roles = UserAuthory.Patients_Delete)]
+        [AuthorizeMultiplePolicy(UserAuthory.Patients_Delete)]
         [HttpDelete]
         public IActionResult Delete(ActivepatientModel model)
         {
@@ -205,7 +205,7 @@ namespace PatientCareAPI.Controllers.Application
         }
 
         [Route("DeleteFromDB")]
-        [Authorize(Roles = UserAuthory.Admin)]
+        [AuthorizeMultiplePolicy(UserAuthory.Admin)]
         [HttpDelete]
         public IActionResult DeleteFromDB(ActivepatientModel model)
         {

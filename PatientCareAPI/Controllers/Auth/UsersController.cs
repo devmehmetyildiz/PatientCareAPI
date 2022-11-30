@@ -34,7 +34,7 @@ namespace PatientCareAPI.Controllers.Auth
             securityutils = new CryptographyProcessor();
         }
 
-        [Authorize(Roles = UserAuthory.User_Screen)]
+        [AuthorizeMultiplePolicy(UserAuthory.User_Screen + "," + UserAuthory.Admin)]
         [Route("GetAll")]
         [HttpGet]
         public IActionResult GetAll()
@@ -42,19 +42,19 @@ namespace PatientCareAPI.Controllers.Auth
             var Users = unitOfWork.UsersRepository.GetAll().Where(u => u.IsActive).ToList();
             foreach (var user in Users)
             {
-                List<string> stations = unitOfWork.UsertoStationRepository.GetAll().Where(u => u.UserID == user.ConcurrencyStamp).Select(u => u.StationID).ToList();
+                List<string> stations = unitOfWork.UsertoStationRepository.GetRecords<UsertoStationsModel>(u => u.UserID == user.ConcurrencyStamp).Select(u => u.StationID).ToList();
                 user.Stations.AddRange(unitOfWork.StationsRepository.GetStationsbyGuids(stations));
 
                 List<string> departments = unitOfWork.UsertoDepartmentRepository.GetAll().Where(u => u.UserID == user.ConcurrencyStamp).Select(u => u.DepartmanID).ToList();
                 user.Departments.AddRange(unitOfWork.DepartmentRepository.GetDepartmentsbyGuids(departments));
 
-                List<string> roles = unitOfWork.UsertoRoleRepository.GetAll().Where(u => u.UserID == user.ConcurrencyStamp).Select(u => u.RoleID).ToList();
+                List<string> roles = unitOfWork.UsertoRoleRepository.GetRecords<UsertoRoleModel>(u => u.UserID == user.ConcurrencyStamp).Select(u => u.RoleID).ToList();
                 user.Roles.AddRange(unitOfWork.RoleRepository.GetRolesbyGuids(roles));
             }
             return Ok(Users);
         }
 
-        [Authorize(Roles = UserAuthory.User_Screen)]
+        [AuthorizeMultiplePolicy(UserAuthory.User_Screen)]
         [Route("GetSelectedUser")]
         [HttpGet]
         public IActionResult GetSelectedUser(int ID)
@@ -71,8 +71,7 @@ namespace PatientCareAPI.Controllers.Auth
             return Ok(user);
         }
 
-
-        [Authorize(Roles = UserAuthory.User_Add)]
+        [AuthorizeMultiplePolicy(UserAuthory.User_Add)]
         [Route("Add")]
         [HttpPost]
         public IActionResult Add(UsersModel model)
@@ -108,7 +107,7 @@ namespace PatientCareAPI.Controllers.Auth
             return Ok();
         }
 
-        [Authorize(Roles = (UserAuthory.User_Screen + "," + UserAuthory.User_Update))]
+        [AuthorizeMultiplePolicy(UserAuthory.User_Screen + "," + UserAuthory.User_Update)]
         [Route("Update")]
         [HttpPost]
         public IActionResult Update(UsersModel model)
@@ -137,7 +136,7 @@ namespace PatientCareAPI.Controllers.Auth
             return Ok();
         }
 
-        [Authorize(Roles = UserAuthory.User_Delete)]
+        [AuthorizeMultiplePolicy(UserAuthory.User_Delete)]
         [Route("Delete")]
         [HttpDelete]
         public IActionResult Delete(UsersModel model)
@@ -152,7 +151,7 @@ namespace PatientCareAPI.Controllers.Auth
             return Ok();
         }
 
-        [Authorize(Roles = UserAuthory.Admin)]
+        [AuthorizeMultiplePolicy(UserAuthory.Admin)]
         [Route("DeleteFromDB")]
         [HttpDelete]
         public IActionResult DeleteFromDB(RoleModel model)

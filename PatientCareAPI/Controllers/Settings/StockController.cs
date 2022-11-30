@@ -35,7 +35,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [HttpGet]
-        [Authorize(Roles = UserAuthory.Stock_Screen)]
+        [AuthorizeMultiplePolicy(UserAuthory.Stock_Screen)]
         [Route("GetAllSettings")]
         public IActionResult GetAllSettings()
         {
@@ -74,7 +74,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [HttpGet]
-        [Authorize(Roles = UserAuthory.Stock_Screen)]
+        [AuthorizeMultiplePolicy(UserAuthory.Stock_Screen)]
         [Route("GetAll")]
         public IActionResult GetAll()
         {
@@ -114,7 +114,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("GetSelectedStock")]
-        [Authorize(Roles = (UserAuthory.Stock_Screen + "," + UserAuthory.Stock_Update))]
+        [AuthorizeMultiplePolicy((UserAuthory.Stock_Screen + "," + UserAuthory.Stock_Update))]
         [HttpGet]
         public IActionResult GetSelectedStock(int ID)
         {
@@ -140,7 +140,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("Add")]
-        [Authorize(Roles = UserAuthory.Stock_Add)]
+        [AuthorizeMultiplePolicy(UserAuthory.Stock_Add)]
         [HttpPost]
         public IActionResult Add(StockModel model)
         {
@@ -159,7 +159,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("Update")]
-        [Authorize(Roles = UserAuthory.Stock_Update)]
+        [AuthorizeMultiplePolicy(UserAuthory.Stock_Update)]
         [HttpPost]
         public IActionResult Update(StockModel model)
         {
@@ -183,7 +183,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("Delete")]
-        [Authorize(Roles = UserAuthory.Stock_Delete)]
+        [AuthorizeMultiplePolicy(UserAuthory.Stock_Delete)]
         [HttpDelete]
         public IActionResult Delete(StockModel model)
         {
@@ -205,7 +205,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("DeleteFromDB")]
-        [Authorize(Roles = UserAuthory.Admin)]
+        [AuthorizeMultiplePolicy(UserAuthory.Admin)]
         [HttpDelete]
         public IActionResult DeleteFromDB(StockModel model)
         {
