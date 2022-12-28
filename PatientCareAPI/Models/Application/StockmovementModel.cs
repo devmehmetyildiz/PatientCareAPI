@@ -12,11 +12,7 @@ namespace PatientCareAPI.Models.Application
         [Key]
         public int Id { get; set; }
         [NotMapped]
-        public ActivestockModel Activestock { get; set; }
-        [NotMapped]
-        public string Stockname { get; set; }
-        [NotMapped]
-        public string Departmentname { get; set; }
+        public StockModel Stock { get; set; }
         [NotMapped]
         public string Username { get; set; }
         [NotMapped]

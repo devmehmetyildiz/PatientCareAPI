@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using PatientCareAPI.DataAccess;
 using PatientCareAPI.Models.Application;
 using PatientCareAPI.Models.Authentication;
+using PatientCareAPI.Models.Settings;
 using PatientCareAPI.Utils;
 using System;
 using System.Collections.Generic;
@@ -41,59 +42,32 @@ namespace PatientCareAPI.Controllers.Application
             Data = unitOfWork.StockmovementRepository.GetAll();
             foreach (var item in Data)
             {
-                item.Activestock = unitOfWork.ActivestockRepository.GetStockByGuid(item.Activestockid);
-                item.Activestock.Stock = unitOfWork.StockRepository.GetStockByGuid(item.Activestock.Stockid);
-                item.Activestock.Department = unitOfWork.DepartmentRepository.GetDepartmentByGuid(item.Activestock.Departmentid);
+                item.Stock = unitOfWork.StockRepository.GetSingleRecord<StockModel>(u=>u.ConcurrencyStamp==item.Activestockid);
+                item.Stock.Stockdefine = unitOfWork.StockdefineRepository.GetSingleRecord<StockdefineModel>(u => u.ConcurrencyStamp == item.Stock.Stockid);
+                item.Stock.Stockdefine.Unit = unitOfWork.UnitRepository.GetSingleRecord<UnitModel>(u => u.ConcurrencyStamp == item.Stock.Stockdefine.Unitid);
+                item.Stock.Department = unitOfWork.DepartmentRepository.GetSingleRecord<DepartmentModel>(u => u.ConcurrencyStamp == item.Stock.Stockdefine.Departmentid);
                 item.Username = unitOfWork.UsersRepository.GetUsertByGuid(item.UserID).Username;
             }
-            if (Data.Count == 0)
-                return NotFound();
             return Ok(Data);
         }
 
-        [Route("GetAllSelected")]
+        [Route("GetSelected")]
         [AuthorizeMultiplePolicy(UserAuthory.Stock_Screen)]
         [HttpGet]
         public IActionResult GetAllSelected(string guid)
         {
             List<StockmovementModel> Data = new List<StockmovementModel>();
-            Data = unitOfWork.StockmovementRepository.FindByActivestockGuid(guid);
+            Data = unitOfWork.StockmovementRepository.GetRecords<StockmovementModel>(u=>u.Activestockid==guid);
             foreach (var item in Data)
             {
-                item.Activestock = unitOfWork.ActivestockRepository.GetStockByGuid(item.Activestockid);
-                item.Activestock.Stock = unitOfWork.StockRepository.GetStockByGuid(item.Activestock.Stockid);
-                item.Activestock.Department = unitOfWork.DepartmentRepository.GetDepartmentByGuid(item.Activestock.Departmentid);
+                item.Stock = unitOfWork.StockRepository.GetSingleRecord<StockModel>(u => u.ConcurrencyStamp == item.Activestockid);
+                item.Stock.Stockdefine = unitOfWork.StockdefineRepository.GetSingleRecord<StockdefineModel>(u => u.ConcurrencyStamp == item.Stock.Stockid);
+                item.Stock.Department = unitOfWork.DepartmentRepository.GetSingleRecord<DepartmentModel>(u => u.ConcurrencyStamp == item.Stock.Stockdefine.Departmentid);
+                item.Stock.Stockdefine.Unit = unitOfWork.UnitRepository.GetSingleRecord<UnitModel>(u => u.ConcurrencyStamp == item.Stock.Stockdefine.Unitid);
                 item.Username = unitOfWork.UsersRepository.GetUsertByGuid(item.UserID).Username;
             }
-            if (Data.Count == 0)
-                return NotFound();
             return Ok(Data);
         }
 
-        [Route("GetSelectedStock")]
-        [AuthorizeMultiplePolicy(UserAuthory.Stock_Screen)]
-        [HttpGet]
-        public IActionResult GetSelectedStock(string guid)
-        {
-            var Data = unitOfWork.StockRepository.GetStockByGuid(guid);
-            Data.Department = unitOfWork.DepartmentRepository.GetDepartmentByGuid(Data.Departmentid);
-            Data.Station = unitOfWork.StationsRepository.GetStationbyGuid(Data.Stationtid);
-            Data.Unit = unitOfWork.UnitRepository.GetUnitByGuid(Data.Unitid);
-            Data.Departmenttxt = Data.Department.Name;
-            Data.Stationtxt = Data.Station.Name;
-            Data.Unittxt = Data.Unit.Name;
-            if (!Utilities.CheckAuth(UserAuthory.Stock_ManageAll, this.User.Identity))
-            {
-                if (Data.CreatedUser != this.User.Identity.Name)
-                {
-                    return StatusCode(403);
-                }
-            }
-            if (Data == null)
-            {
-                return NotFound();
-            }
-            return Ok(Data);
-        }
     }
 }

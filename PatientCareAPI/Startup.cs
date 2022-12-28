@@ -18,6 +18,7 @@ using System.Text;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.AspNetCore.Http.Features;
 using PatientCareAPI.Utils;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace PatientCareAPI
 {
@@ -35,13 +36,21 @@ namespace PatientCareAPI
         {
             services.AddCors(c =>
             {
-                c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin().AllowAnyMethod()
-                 .AllowAnyHeader());
+                c.AddPolicy("AllowOrigin", options => options.AllowAnyMethod().AllowCredentials()
+                 .AllowAnyHeader().WithOrigins("http://localhost:3000"));
             });
             services.AddDbContext<ApplicationDBContext>(options => options.UseMySQL(Configuration.GetConnectionString("Default")));
 
+            services.ConfigureApplicationCookie(options =>
+            {
+                // Cookie settings
+                options.Cookie.HttpOnly = true;
+                options.SlidingExpiration = true;
+            });
+
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-               .AddJwtBearer(options => {
+               .AddJwtBearer(options =>
+               {
                    options.TokenValidationParameters = new TokenValidationParameters
                    {
                        ValidateIssuer = true,
@@ -53,6 +62,7 @@ namespace PatientCareAPI
                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
                    };
                });
+               
             services.AddControllers();
             services.Configure<IISServerOptions>(options =>
             {
@@ -88,7 +98,7 @@ namespace PatientCareAPI
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "PatientCareAPI v1"));
             }
-
+            app.UseCookiePolicy();
             app.UseRouting();
             app.UseErrorHandling();
             app.UseAuthentication();

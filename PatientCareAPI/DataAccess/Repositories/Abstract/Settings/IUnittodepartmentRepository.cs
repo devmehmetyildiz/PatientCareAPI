@@ -11,5 +11,6 @@ namespace PatientCareAPI.DataAccess.Repositories.Abstract.Settings
         void AddDepartments(List<DepartmentModel> List, string UnitGuid);
 
         void DeleteDepartmentsByUnit(string UnitGuid);
+        void RemoveDepartmentsfromUnit(string UnitId);
     }
 }

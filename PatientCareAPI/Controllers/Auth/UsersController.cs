@@ -55,11 +55,11 @@ namespace PatientCareAPI.Controllers.Auth
         }
 
         [AuthorizeMultiplePolicy(UserAuthory.User_Screen)]
-        [Route("GetSelectedUser")]
+        [Route("Getselected")]
         [HttpGet]
-        public IActionResult GetSelectedUser(int ID)
+        public IActionResult GetSelectedUser(string guid)
         {
-            var user = unitOfWork.UsersRepository.Getbyid(ID);
+            var user = unitOfWork.UsersRepository.GetSingleRecord<UsersModel>(u => u.ConcurrencyStamp == guid);
             List<string> stations = unitOfWork.UsertoStationRepository.GetAll().Where(u => u.UserID == user.ConcurrencyStamp).Select(u => u.StationID).ToList();
             user.Stations.AddRange(unitOfWork.StationsRepository.GetStationsbyGuids(stations));
 

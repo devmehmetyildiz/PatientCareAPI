@@ -18,26 +18,16 @@ namespace PatientCareAPI.DataAccess
         {
             _dBContext = dBContext;
             //Application
-            ActivepatientRepository = new ActivepatientRepository(_dBContext);
-            PatientapplicantRepository = new PatientapplicantRepository(_dBContext);
-            PatientbodycontrolformRepository = new PatientbodycontrolformRepository(_dBContext);
-            PatientdiagnosisRepository = new PatientdiagnosisRepository(_dBContext);
-            PatientdisabilitypermitformRepository = new PatientdisabilitypermitformRepository(_dBContext);
-            PatientdisabledhealthboardreportRepository = new PatientdisabledhealthboardreportRepository(_dBContext);
-            PatientfirstadmissionformRepository = new PatientfirstadmissionformRepository(_dBContext);
-            PatientfirstapproachreportRepository = new PatientfirstapproachreportRepository(_dBContext);
-            PatientownershiprecieveRepository = new PatientownershiprecieveRepository(_dBContext);
-            PatientrecieveformRepository = new PatientrecieveformRepository(_dBContext);
-            PatientsubmittingformRepository = new PatientsubmittingformRepository(_dBContext);
-
-            ActivepatienttoActivestocksRepostiyory = new ActivepatienttoActivestockRepository(_dBContext);
-            ActivepatienttoFilesRepostiyory = new ActivepatienttoFilesRepository(_dBContext);
-            ActivestockRepository = new ActivestockRepository(_dBContext);
-            DeactivestockRepository = new DeactivestockRepository(_dBContext);
-            PatientactivestockRepository = new PatientactivestockRepository(_dBContext);
-            PatientmovementRepository = new PatientmovementRepository(_dBContext);
-            StockmovementRepository = new StockmovementRepository(_dBContext);
             PatientRepository = new PatientRepository(_dBContext);
+            PatientdefineRepository = new PatientdefineRepository(_dBContext);
+            PatientToStockRepostiyory = new PatientToStockRepository(_dBContext);
+            PatientmovementRepository = new PatientmovementRepository(_dBContext);
+
+            StockRepository = new StockRepository(_dBContext);
+            DeactivestockRepository = new DeactivestockRepository(_dBContext);
+            StockmovementRepository = new StockmovementRepository(_dBContext);
+            PurchaseorderRepository = new PurchaseorderRepository(_dBContext);
+            PurchaseorderToStockRepository = new PurchaseorderToStockRepository(_dBContext);
             //Auth
             AuthoryRepository = new AuthoryRepository(_dBContext);
             UsersRepository = new UsersRepository(_dBContext);
@@ -47,7 +37,7 @@ namespace PatientCareAPI.DataAccess
             UsertoSaltRepository = new UsertoSaltRepository(_dBContext);
             //Settings
             CaseRepository = new CaseRepository(_dBContext);
-            CasetodepartmentRepository = new CasetodepartmentRepository(dBContext);
+            CasetodepartmentRepository = new CasetodepartmentRepository(_dBContext);
             UnitRepository = new UnitRepository(_dBContext);
             DepartmentRepository = new DepartmentRepository(_dBContext);
             StationsRepository = new StationsRepository(_dBContext);
@@ -56,7 +46,7 @@ namespace PatientCareAPI.DataAccess
             DepartmenttoStationRepository = new DepartmenttoStationRepository(_dBContext);
             FileRepository = new FileRepository(_dBContext);
             RemindingRepository = new RemindingRepository(_dBContext);
-            StockRepository = new StockRepository(_dBContext);
+            StockdefineRepository = new StockdefineRepository(_dBContext);
             UnittodepartmentRepository = new UnittodepartmentRepository(_dBContext);
             PatienttypeRepository = new PatienttypeRepository(_dBContext);
             CostumertypeRepository = new CostumertypeRepository(_dBContext);
@@ -90,23 +80,21 @@ namespace PatientCareAPI.DataAccess
 
         public IDepartmenttoStationRepository DepartmenttoStationRepository { get; private set; }
 
-        public IActivepatientRepository ActivepatientRepository { get; private set; }
+        public IPatientRepository PatientRepository { get; private set; }
 
-        public IActivepatienttoActivestocksRepostiyory ActivepatienttoActivestocksRepostiyory { get; private set; }
+        public IPatientToStockRepostiyory PatientToStockRepostiyory { get; private set; }
 
-        public IActivepatienttoFilesRepostiyory ActivepatienttoFilesRepostiyory { get; private set; }
-
-        public IActivestockRepository ActivestockRepository { get; private set; }
+        public IStockRepository StockRepository { get; private set; }
 
         public ICasetodepartmentRepository CasetodepartmentRepository { get; private set; }
 
         public IFileRepository FileRepository { get; private set; }
 
-        public IPatientRepository PatientRepository { get; private set; }
+        public IPatientdefineRepository PatientdefineRepository { get; private set; }
 
         public IRemindingRepository RemindingRepository { get; private set; }
 
-        public IStockRepository StockRepository { get; private set; }
+        public IStockdefineRepository StockdefineRepository { get; private set; }
 
         public IUnittodepartmentRepository UnittodepartmentRepository { get; private set; }
 
@@ -118,33 +106,15 @@ namespace PatientCareAPI.DataAccess
 
         public IDeactivestockRepository DeactivestockRepository { get; private set; }
 
-        public IPatientactivestockRepository PatientactivestockRepository { get; private set; }
-
         public IPatientmovementRepository PatientmovementRepository { get; private set; }
 
         public IStockmovementRepository StockmovementRepository { get; private set; }
 
         public IDatatableRepository DatatableRepository { get; private set; }
 
-        public IPatientapplicantRepository PatientapplicantRepository { get; private set; }
+        public IPurchaseorderRepository PurchaseorderRepository { get; private set; }
 
-        public IPatientbodycontrolformRepository PatientbodycontrolformRepository { get; private set; }
-
-        public IPatientdiagnosisRepository PatientdiagnosisRepository { get; private set; }
-
-        public IPatientdisabilitypermitformRepository PatientdisabilitypermitformRepository { get; private set; }
-
-        public IPatientdisabledhealthboardreportRepository PatientdisabledhealthboardreportRepository { get; private set; }
-
-        public IPatientfirstadmissionformRepository PatientfirstadmissionformRepository { get; private set; }
-
-        public IPatientfirstapproachreportRepository PatientfirstapproachreportRepository { get; private set; }
-
-        public IPatientownershiprecieveRepository PatientownershiprecieveRepository { get; private set; }
-
-        public IPatientrecieveformRepository PatientrecieveformRepository { get; private set; }
-
-        public IPatientsubmittingformRepository PatientsubmittingformRepository { get; private set; }
+        public IPurchaseorderToStockRepository PurchaseorderToStockRepository { get; private set; }
 
         public int Complate()
         {

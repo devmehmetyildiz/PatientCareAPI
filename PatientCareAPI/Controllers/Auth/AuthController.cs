@@ -16,6 +16,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
+using PatientCareAPI.Models.Global;
 
 namespace PatientCareAPI.Controllers.Auth
 {
@@ -109,7 +110,6 @@ namespace PatientCareAPI.Controllers.Auth
         public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
             List<ResponseModel> Notification = new List<ResponseModel>();
-
             var user = unitOfWork.UsersRepository.FindUserByName(model.Username);
             if ((user == null))
             {
@@ -143,12 +143,19 @@ namespace PatientCareAPI.Controllers.Auth
                     expires: DateTime.Now.AddHours(3),
                     claims: authClaims,
                     signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
-                );            
-            Response.Cookies.Append("X-Access-Token", new JwtSecurityTokenHandler().WriteToken(token), new CookieOptions() { HttpOnly = true, SameSite = SameSiteMode.Strict });
-            Response.Cookies.Append("X-Username", user.Username, new CookieOptions() { HttpOnly = true, SameSite = SameSiteMode.Strict });
+                );
+            var cookieOptions = new CookieOptions
+            {
+                HttpOnly = false,
+                IsEssential = true
+            };
+            var tokenresponse = new JwtSecurityTokenHandler().WriteToken(token);
+            HttpContext.Response.Cookies.Append(
+                      "patientcare", tokenresponse,
+                     cookieOptions);
             return Ok(new
             {
-                token = new JwtSecurityTokenHandler().WriteToken(token),
+                token = tokenresponse,
                 expiration = token.ValidTo,
                 User = user.Username
             });
@@ -162,6 +169,59 @@ namespace PatientCareAPI.Controllers.Auth
             var claimsIdentity = this.User.Identity as ClaimsIdentity;
             var userId = claimsIdentity.FindFirst(ClaimTypes.Name)?.Value;
             return Ok(userId);
+        }
+
+        [Authorize]
+        [HttpGet]
+        [Route("GetUserMeta")]
+        public async Task<IActionResult> GetUserMeta()
+        {
+            var claimsIdentity = this.User.Identity as ClaimsIdentity;
+            var userId = claimsIdentity.FindFirst(ClaimTypes.Name)?.Value;
+            return Ok(unitOfWork.UsersRepository.GetSingleRecord<UsersModel>(u => u.Username == userId));
+        }
+
+        [Authorize]
+        [HttpGet]
+        [Route("GetUserRoles")]
+        public async Task<IActionResult> GetUserRoles()
+        {
+            var claimsIdentity = this.User.Identity as ClaimsIdentity;
+            var userId = claimsIdentity.FindFirst(ClaimTypes.Name)?.Value;
+            UsersModel User = unitOfWork.UsersRepository.GetSingleRecord<UsersModel>(u => u.Username == userId);
+            List<string> userroles = unitOfWork.UsertoRoleRepository.GetRecords<UsertoRoleModel>(u => u.UserID == User.ConcurrencyStamp).Select(u=>u.RoleID).ToList();
+            List<string> roles = unitOfWork.RoleRepository.GetRolesbyGuids(userroles).Select(u=>u.Name).ToList();
+            return Ok(roles);
+        }
+
+     
+        public async Task<IActionResult> CheckCredentials(LoginModel model)
+        {
+           
+            return Ok();
+        }
+
+        [Authorize]
+        [HttpPost]
+        [Route("ChangePassword")]
+        public async Task<IActionResult> ChangePassword(PasswordModel model)
+        {
+            var claimsIdentity = this.User.Identity as ClaimsIdentity;
+            var userId = claimsIdentity.FindFirst(ClaimTypes.Name)?.Value;
+            List<ResponseModel> Notification = new List<ResponseModel>();
+            var user = unitOfWork.UsersRepository.FindUserByName(model.Username);
+            if (!CheckPassword(user, model.Oldpassword))
+            {
+                Notification.Add(new ResponseModel { Status = "Error", Massage = "Şifre Hatalı" });
+                return Unauthorized(Notification);
+            }
+            UsersModel User = unitOfWork.UsersRepository.GetSingleRecord<UsersModel>(u => u.Username == userId);
+            var salt = securityutils.CreateSalt(30);
+            unitOfWork.UsertoSaltRepository.Remove(unitOfWork.UsertoSaltRepository.GetSingleRecord<UsertoSaltModel>(u => u.UserID == User.ConcurrencyStamp).Id);
+            unitOfWork.UsertoSaltRepository.Add(new UsertoSaltModel { Salt = salt, UserID = User.ConcurrencyStamp });
+            User.PasswordHash = securityutils.GenerateHash(model.Newpassword, salt);
+            unitOfWork.Complate();
+            return Ok();
         }
 
         [AuthorizeMultiplePolicy(UserAuthory.Admin)]

@@ -31,5 +31,11 @@ namespace PatientCareAPI.DataAccess.Repositories.Concrete.Settings
         {
             _dbSet.RemoveRange(_dbSet.Where(u => u.CaseID == CaseGuid));
         }
+
+        public void RemoveCasesfromDepartment(string CaseId)
+        {
+            string query = $"DELETE FROM `casetodepartments` WHERE `CaseID` = '{CaseId}'";
+            var result = dbcontext.Database.ExecuteSqlRaw(query);
+        }
     }
 }

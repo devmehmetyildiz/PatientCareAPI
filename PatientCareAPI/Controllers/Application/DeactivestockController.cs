@@ -40,8 +40,8 @@ namespace PatientCareAPI.Controllers.Application
             List<DeactivestockModel> Data = unitOfWork.DeactivestockRepository.GetAll();
             foreach (var item in Data)
             {
-                item.Activestock = unitOfWork.ActivestockRepository.GetStockByGuid(item.Activestockid);
-                item.Activestock.Stock = unitOfWork.StockRepository.GetStockByGuid(item.Activestock.Stockid);
+                item.Activestock = unitOfWork.StockRepository.GetStockByGuid(item.Activestockid);
+                item.Activestock.Stockdefine = unitOfWork.StockdefineRepository.GetStockByGuid(item.Activestock.Stockid);
                 item.Activestock.Department = unitOfWork.DepartmentRepository.GetDepartmentByGuid(item.Activestock.Departmentid);
             }
             if (Data.Count == 0)

@@ -10,25 +10,16 @@ namespace PatientCareAPI.DataAccess
     public interface IUnitOfWork : IDisposable
     {
         //Application
-        IActivepatientRepository ActivepatientRepository { get; }
-        IPatientapplicantRepository PatientapplicantRepository { get; }
-        IPatientbodycontrolformRepository PatientbodycontrolformRepository { get; }
-        IPatientdiagnosisRepository PatientdiagnosisRepository { get; }
-        IPatientdisabilitypermitformRepository PatientdisabilitypermitformRepository { get; }
-        IPatientdisabledhealthboardreportRepository PatientdisabledhealthboardreportRepository { get; }
-        IPatientfirstadmissionformRepository PatientfirstadmissionformRepository { get; }
-        IPatientfirstapproachreportRepository PatientfirstapproachreportRepository { get; }
-        IPatientownershiprecieveRepository PatientownershiprecieveRepository { get; }
-        IPatientrecieveformRepository PatientrecieveformRepository { get; }
-        IPatientsubmittingformRepository PatientsubmittingformRepository { get; }
-        IActivepatienttoActivestocksRepostiyory ActivepatienttoActivestocksRepostiyory { get; }
-        IActivepatienttoFilesRepostiyory ActivepatienttoFilesRepostiyory { get; }
-        IActivestockRepository ActivestockRepository { get; }
+        IPatientRepository PatientRepository { get; }
+        IPatientToStockRepostiyory PatientToStockRepostiyory { get; }
+        IStockRepository StockRepository { get; }
         IDeactivestockRepository DeactivestockRepository { get; }
-        IPatientactivestockRepository PatientactivestockRepository { get; }
         IPatientmovementRepository PatientmovementRepository { get; }
         IStockmovementRepository StockmovementRepository { get; }
-        IPatientRepository PatientRepository { get; }
+        IPatientdefineRepository PatientdefineRepository { get; }
+        IPurchaseorderRepository PurchaseorderRepository { get; }
+        IPurchaseorderToStockRepository PurchaseorderToStockRepository { get; }
+        
 
         //Auth
         IAuthoryRepository AuthoryRepository { get; }
@@ -43,7 +34,7 @@ namespace PatientCareAPI.DataAccess
         ICasetodepartmentRepository CasetodepartmentRepository { get; }
         IFileRepository FileRepository { get; }
         IRemindingRepository RemindingRepository { get; }
-        IStockRepository StockRepository { get; }
+        IStockdefineRepository StockdefineRepository { get; }
         IUnittodepartmentRepository UnittodepartmentRepository { get; }
         IUnitRepository UnitRepository { get; }
         IDepartmentRepository DepartmentRepository { get; }

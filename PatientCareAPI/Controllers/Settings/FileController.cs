@@ -38,76 +38,38 @@ namespace PatientCareAPI.Controllers.Settings
             Utilities = new Utilities(context);
             unitOfWork = new UnitOfWork(context);
         }
+        private string GetSessionUser()
+        {
+            return (this.User.Identity as ClaimsIdentity).FindFirst(ClaimTypes.Name)?.Value;
+        }
+
+        private List<FileModel> FetchList()
+        {
+            return unitOfWork.FileRepository.GetRecords<FileModel>(u => u.IsActive);
+        }
 
         [HttpGet]
         [AuthorizeMultiplePolicy(UserAuthory.File_Screen)]
         [Route("GetAll")]
         public IActionResult GetAll()
         {
-            List<FileModel> Data = new List<FileModel>();
-            if (Utilities.CheckAuth(UserAuthory.File_ManageAll, this.User.Identity))
-            {
-                Data = unitOfWork.FileRepository.GetAll().Where(u => u.IsActive).ToList();
-            }
-            else
-            {
-                Data = unitOfWork.FileRepository.GetAll().Where(u => u.IsActive && u.CreatedUser == this.User.Identity.Name).ToList();
-            }
-            if (Data.Count == 0)
-            {
-                return NotFound();
-            }
-            return Ok(Data);
+            return Ok(FetchList());
         }
 
-        [Route("GetSelectedFile")]
+        [Route("GetSelected")]
         [AuthorizeMultiplePolicy((UserAuthory.File_Screen + "," + UserAuthory.File_Update))]
         [HttpGet]
-        public IActionResult GetSelectedFile(string ID)
+        public IActionResult GetSelectedFile(string guid)
         {
-            FileModel Data = unitOfWork.FileRepository.GetFilebyGuid(ID);
-            if (!Utilities.CheckAuth(UserAuthory.File_ManageAll, this.User.Identity))
-            {
-                if (Data.CreatedUser != this.User.Identity.Name)
-                {
-                    return StatusCode(403);
-                }
-            }
-            if (Data == null)
-            {
-                return NotFound();
-            }
-            return Ok(Data);
-        }
-
-        [Route("GetSelectedFileByPatientGuid")]
-        [AuthorizeMultiplePolicy((UserAuthory.File_Screen + "," + UserAuthory.File_Update))]
-        [HttpGet]
-        public IActionResult GetSelectedFileByPatientGuid(string Guid)
-        {
-            FileModel Data = unitOfWork.FileRepository.GetFilebyGuid(unitOfWork.ActivepatientRepository.FindByGuid(Guid).ImageID);
-            if (!Utilities.CheckAuth(UserAuthory.File_ManageAll, this.User.Identity))
-            {
-                if (Data.CreatedUser != this.User.Identity.Name)
-                {
-                    return StatusCode(403);
-                }
-            }
-            if (Data == null)
-            {
-                return NotFound();
-            }
-
-
-            return Ok(Data);
+            return Ok(unitOfWork.FileRepository.GetFilebyGuid(guid));
         }
 
         [Route("GetFile")]
         [AuthorizeMultiplePolicy((UserAuthory.File_Screen + "," + UserAuthory.File_Update))]
         [HttpGet]
-        public IActionResult GetFile(string ID)
+        public IActionResult GetFile(string guid)
         {
-            FileModel Data = unitOfWork.FileRepository.GetFilebyGuid(ID);
+            FileModel Data = unitOfWork.FileRepository.GetFilebyGuid(guid);
             if (Data != null)
                 return File(Utilities.GetFile(Data), Data.Filetype);
             else
@@ -118,29 +80,32 @@ namespace PatientCareAPI.Controllers.Settings
         [AuthorizeMultiplePolicy(UserAuthory.File_Add)]
         [RequestFormLimits(ValueLengthLimit = int.MaxValue, MultipartBodyLengthLimit = int.MaxValue)]
         [HttpPost]
-        public IActionResult Add([FromForm] FileModel model)
+        public IActionResult Add([FromForm] List<FileModel> list)
         {
-            var username = (this.User.Identity as ClaimsIdentity).FindFirst(ClaimTypes.Name)?.Value;
-            if (string.IsNullOrWhiteSpace(model.Filefolder))
+            var username = GetSessionUser();
+            foreach (var model in list)
             {
-                model.Filefolder = Guid.NewGuid().ToString();
+                if (string.IsNullOrWhiteSpace(model.Filefolder))
+                {
+                    model.Filefolder = Guid.NewGuid().ToString();
+                }
+                model.CreatedUser = username;
+                model.IsActive = true;
+                model.CreateTime = DateTime.Now;
+                model.ConcurrencyStamp = Guid.NewGuid().ToString();
+                model.Filename = model.File.FileName;
+                model.Filetype = model.File.ContentType;
+                if (Utilities.UploadFile(model))
+                {
+                    unitOfWork.FileRepository.Add(model);
+                }
+                else
+                {
+                    return BadRequest();
+                }
             }
-            model.CreatedUser = username;
-            model.IsActive = true;
-            model.CreateTime = DateTime.Now;
-            model.ConcurrencyStamp = Guid.NewGuid().ToString();
-            model.Filename = model.File.FileName;
-            model.Filetype = model.File.ContentType;
-            if (Utilities.UploadFile(model))
-            {
-                unitOfWork.FileRepository.Add(model);
-                unitOfWork.Complate();
-                return Ok();
-            }
-            else
-            {
-                return BadRequest();
-            }
+            unitOfWork.Complate();
+            return Ok();
         }
 
         [Route("Update")]
@@ -149,7 +114,7 @@ namespace PatientCareAPI.Controllers.Settings
         [HttpPost]
         public IActionResult Update([FromForm]FileModel model)
         {
-            var username = (this.User.Identity as ClaimsIdentity).FindFirst(ClaimTypes.Name)?.Value;
+            var username = GetSessionUser();
             if (!Utilities.CheckAuth(UserAuthory.File_ManageAll, this.User.Identity))
             {
                 if (model.CreatedUser == this.User.Identity.Name)
@@ -177,8 +142,7 @@ namespace PatientCareAPI.Controllers.Settings
         [HttpDelete]
         public IActionResult Delete(FileModel model)
         {
-            var claimsIdentity = this.User.Identity as ClaimsIdentity;
-            var username = claimsIdentity.FindFirst(ClaimTypes.Name)?.Value;
+            var username = GetSessionUser();
             if (!Utilities.CheckAuth(UserAuthory.File_ManageAll, this.User.Identity))
             {
                 if (model.CreatedUser == this.User.Identity.Name)

@@ -11,13 +11,14 @@ namespace PatientCareAPI.Models.Settings
     public class FileModel : BaseModel
     {
         public string Name { get; set; }
+
+        public string Parentid { get; set; }
         public string Filename { get; set; }
         public string Filefolder { get; set; }
         public string Filepath { get; set; }
         public string Filetype { get; set; }
-        public int Downloadedcount { get; set; }
-        public string Lastdownloadeduser { get; set; }
-        public string Lastdownloadedip { get; set; }
+        public string Usagetype { get; set; }
+        public bool Canteditfile { get; set; }
         [NotMapped]
         public IFormFile File { get; set; }
     }

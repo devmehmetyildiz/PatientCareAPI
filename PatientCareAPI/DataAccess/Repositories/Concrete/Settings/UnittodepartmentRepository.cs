@@ -27,9 +27,17 @@ namespace PatientCareAPI.DataAccess.Repositories.Concrete.Settings
             _dbSet.AddRange(Data);
         }
 
+       
+
         public void DeleteDepartmentsByUnit(string UnitGuid)
         {
             _dbSet.RemoveRange(_dbSet.Where(u => u.UnitId == UnitGuid));
+        }
+
+        public void RemoveDepartmentsfromUnit(string UnitId)
+        {
+            string query = $"DELETE FROM `unittodepartments` WHERE `UnitId` = '{UnitId}'";
+            var result = dbcontext.Database.ExecuteSqlRaw(query);
         }
     }
 }

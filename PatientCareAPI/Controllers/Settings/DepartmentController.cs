@@ -127,9 +127,21 @@ namespace PatientCareAPI.Controllers.Settings
 
         [Route("Delete")]
         [AuthorizeMultiplePolicy(UserAuthory.Department_Delete)]
-        [HttpDelete]
+        [HttpPost]
         public IActionResult Delete(DepartmentModel model)
         {
+            var casedepartman = unitOfWork.CasetodepartmentRepository.GetRecords<CasetoDepartmentModel>(u => u.DepartmentID == model.ConcurrencyStamp).Select(u => u.CaseID).ToList();
+            var activecaselist = unitOfWork.CaseRepository.GetCasesbyGuids(casedepartman).Where(u => u.IsActive).ToList();
+            if (activecaselist.Count > 0)
+            {
+                return new ObjectResult(new ResponseModel { Status = "Can't Delete", Massage = model.Name + " departmanına bağlı durumlar var" }) { StatusCode = 403 };
+            }
+            var unitdepartman = unitOfWork.UnittodepartmentRepository.GetRecords<CasetoDepartmentModel>(u => u.DepartmentID == model.ConcurrencyStamp).Select(u => u.CaseID).ToList();
+            var activeunitlist = unitOfWork.UnitRepository.GetUnitsbyGuids(unitdepartman).Where(u => u.IsActive).ToList();
+            if (activeunitlist.Count > 0)
+            {
+                return new ObjectResult(new ResponseModel { Status = "Can't Delete", Massage = model.Name + " departmanına bağlı birimler var" }) { StatusCode = 403 };
+            }
             var username = GetSessionUser();
             model.DeleteUser = username;
             model.IsActive = false;

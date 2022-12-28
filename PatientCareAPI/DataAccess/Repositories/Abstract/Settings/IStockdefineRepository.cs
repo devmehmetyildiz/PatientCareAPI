@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace PatientCareAPI.DataAccess.Repositories.Abstract.Settings
 {
-    public interface ICaseRepository : IRepository<CaseModel>
+    public interface IStockdefineRepository : IRepository<StockdefineModel>
     {
-        List<CaseModel> GetByUserDepartment(string username);
-        List<CaseModel> GetCasesbyGuids(List<string> cases);
+        List<StockdefineModel> GetByUserDepartment(string username);
+
+        StockdefineModel GetStockByGuid(string guid);
     }
 }

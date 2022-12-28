@@ -33,5 +33,23 @@ namespace PatientCareAPI.DataAccess.Repositories.Concrete.Settings
             query += $"where u4.Username ='{username}'";
             return _dbSet.FromSqlRaw(query).ToList(); ;
         }
+
+        public List<UnitModel> GetUnitsbyGuids(List<string> units)
+        {
+            if (units.Count == 0)
+            {
+                return new List<UnitModel>();
+            }
+            string query = "";
+            query += "select * from units  where ConcurrencyStamp IN (";
+            for (int i = 0; i < units.Count; i++)
+            {
+                query += $"'{units[i]}'";
+                if (i != units.Count - 1)
+                    query += ",";
+            }
+            query += ")";
+            return _dbSet.FromSqlRaw(query).ToList();
+        }
     }
 }

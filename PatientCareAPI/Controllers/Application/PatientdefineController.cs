@@ -5,28 +5,27 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using PatientCareAPI.DataAccess;
 using PatientCareAPI.Models.Authentication;
-using PatientCareAPI.Models.Settings;
-using PatientCareAPI.Utils;
+using PatientCareAPI.Models.Application;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using PatientCareAPI.Utils;
 
-namespace PatientCareAPI.Controllers.Settings
+namespace PatientCareAPI.Controllers.Application
 {
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class StationController : ControllerBase
+    public class PatientdefineController : ControllerBase
     {
         private IConfiguration _configuration;
-        private readonly ILogger<StationController> _logger;
+        private readonly ILogger<PatientdefineController> _logger;
         private readonly ApplicationDBContext _context;
         UnitOfWork unitOfWork;
         Utilities Utilities;
-
-        public StationController(IConfiguration configuration, ILogger<StationController> logger, ApplicationDBContext context)
+        public PatientdefineController(IConfiguration configuration, ILogger<PatientdefineController> logger, ApplicationDBContext context)
         {
             _configuration = configuration;
             _logger = logger;
@@ -40,77 +39,68 @@ namespace PatientCareAPI.Controllers.Settings
             return (this.User.Identity as ClaimsIdentity).FindFirst(ClaimTypes.Name)?.Value;
         }
 
-        private List<StationsModel> FetchList()
+        private List<PatientdefineModel> FetchList()
         {
-            var List = unitOfWork.StationsRepository.GetRecords<StationsModel>(u => u.IsActive);
+            var List = unitOfWork.PatientdefineRepository.GetRecords<PatientdefineModel>(u => u.IsActive);
             return List;
         }
 
-        [Route("GetAll")]
-        [AuthorizeMultiplePolicy(UserAuthory.Stations_Screen)]
         [HttpGet]
+        [AuthorizeMultiplePolicy(UserAuthory.Patients_Screen)]
+        [Route("GetAll")]
         public IActionResult GetAll()
         {
             return Ok(FetchList());
         }
 
         [Route("GetSelected")]
-        [AuthorizeMultiplePolicy(UserAuthory.Stations_Screen)]
+        [AuthorizeMultiplePolicy((UserAuthory.Patients_Screen + "," + UserAuthory.Patients_Update))]
         [HttpGet]
-        public IActionResult GetSelectedStation(string guid)
+        public IActionResult GetSelectedPatient(string guid)
         {
-            var Data = unitOfWork.StationsRepository.GetSingleRecord<StationsModel>(u => u.ConcurrencyStamp == guid);
-            if (Data == null)
-            {
-                return NotFound();
-            }
-            return Ok(Data);
+            return Ok(unitOfWork.PatientdefineRepository.GetSingleRecord<PatientdefineModel>(u=>u.ConcurrencyStamp==guid));
         }
 
         [Route("Add")]
-        [AuthorizeMultiplePolicy(UserAuthory.Stations_Add)]
+        [AuthorizeMultiplePolicy(UserAuthory.Patients_Add)]
         [HttpPost]
-        public IActionResult Add(StationsModel model)
+        public IActionResult Add(PatientdefineModel model)
         {
             var username = GetSessionUser();
             model.CreatedUser = username;
             model.IsActive = true;
             model.CreateTime = DateTime.Now;
             model.ConcurrencyStamp = Guid.NewGuid().ToString();
-            unitOfWork.StationsRepository.Add(model);
+            model.Patienttypeid = model.Patienttype.ConcurrencyStamp;
+            unitOfWork.PatientdefineRepository.Add(model);
             unitOfWork.Complate();
             return Ok(FetchList());
         }
 
         [Route("Update")]
-        [AuthorizeMultiplePolicy((UserAuthory.Stations_Update + "," + UserAuthory.Stations_Screen))]
+        [AuthorizeMultiplePolicy(UserAuthory.Patients_Update)]
         [HttpPost]
-        public IActionResult Update(StationsModel model)
+        public IActionResult Update(PatientdefineModel model)
         {
             var username = GetSessionUser();
             model.UpdatedUser = username;
             model.UpdateTime = DateTime.Now;
-            unitOfWork.StationsRepository.update(unitOfWork.StationsRepository.Getbyid(model.Id), model);
+            model.Patienttypeid = model.Patienttype.ConcurrencyStamp;
+            unitOfWork.PatientdefineRepository.update(unitOfWork.PatientdefineRepository.Getbyid(model.Id), model);
             unitOfWork.Complate();
             return Ok(FetchList());
         }
 
         [Route("Delete")]
-        [AuthorizeMultiplePolicy(UserAuthory.Stations_Delete)]
-        [HttpPost]
-        public IActionResult Delete(StationsModel model)
+        [AuthorizeMultiplePolicy(UserAuthory.Patients_Delete)]
+        [HttpDelete]
+        public IActionResult Delete(PatientdefineModel model)
         {
-            var list = unitOfWork.DepartmenttoStationRepository.GetRecords<DepartmenttoStationModel>(u => u.StationID == model.ConcurrencyStamp).Select(u=>u.DepartmentID).ToList();
-            var activelist = unitOfWork.DepartmentRepository.GetDepartmentsbyGuids(list).Where(u=>u.IsActive).ToList();
-            if (activelist.Count > 0)
-            {
-                return new ObjectResult(new ResponseModel { Status = "Can't Delete", Massage = model.Name +" istasyona bağlı departmanlar var" }) { StatusCode = 403 };
-            }
             var username = GetSessionUser();
             model.DeleteUser = username;
             model.IsActive = false;
             model.DeleteTime = DateTime.Now;
-            unitOfWork.StationsRepository.update(unitOfWork.StationsRepository.Getbyid(model.Id), model);
+            unitOfWork.PatientdefineRepository.update(unitOfWork.PatientdefineRepository.Getbyid(model.Id), model);
             unitOfWork.Complate();
             return Ok(FetchList());
         }
@@ -118,9 +108,9 @@ namespace PatientCareAPI.Controllers.Settings
         [Route("DeleteFromDB")]
         [AuthorizeMultiplePolicy(UserAuthory.Admin)]
         [HttpDelete]
-        public IActionResult DeleteFromDB(DepartmentModel model)
+        public IActionResult DeleteFromDB(PatientdefineModel model)
         {
-            unitOfWork.StationsRepository.Remove(model.Id);
+            unitOfWork.PatientdefineRepository.Remove(model.Id);
             unitOfWork.Complate();
             return Ok();
         }

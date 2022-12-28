@@ -10,5 +10,6 @@ namespace PatientCareAPI.DataAccess.Repositories.Abstract.Settings
     {
         List<UnitModel> GetByUserDepartment(string username);
         UnitModel GetUnitByGuid(string guid);
+        List<UnitModel> GetUnitsbyGuids(List<string> units);
     }
 }

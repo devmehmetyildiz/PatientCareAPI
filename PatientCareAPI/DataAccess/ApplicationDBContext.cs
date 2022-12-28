@@ -17,26 +17,15 @@ namespace PatientCareAPI.DataAccess
         }
 
         //Application
-        public DbSet<ActivepatientModel> Activepatients { get; set; }
-        public DbSet<PatientapplicantModel> Patientapplicants { get; set; }
-        public DbSet<PatientbodycontrolformModel> Patientbodycontrolforms { get; set; }
-        public DbSet<PatientdiagnosisModel> Patientdiagnosis { get; set; }
-        public DbSet<PatientdisabilitypermitformModel> Patientdisabilitypermitforms { get; set; }
-        public DbSet<PatientdisabledhealthboardreportModel> Patientdisabledhealthboardreports { get; set; }
-        public DbSet<PatientfirstadmissionformModel> Patientfirstadmissionforms { get; set; }
-        public DbSet<PatientfirstapproachreportModel> Patientfirstapproachreports{ get; set; }
-        public DbSet<PatientownershiprecieveModel> Patientownershiprecieves{ get; set; }
-        public DbSet<PatientrecieveformModel> Patientrecieveforms { get; set; }
-        public DbSet<PatientsubmittingformModel> Patientsubmittingforms { get; set; }
-        public DbSet<ActivepatienttoActiveStocksModel> ActivepatienttoActivestocks { get; set; }
-        public DbSet<ActivepatienttofilesModel> ActivepatientstoFiles { get; set; }
-        public DbSet<ActivestockModel> Activestock { get; set; }
+        public DbSet<PurchaseorderModel> Purchaseorders { get; set; }
+        public DbSet<PurchaseorderToStockModel> PurchaseorderToStocks { get; set; }
+        public DbSet<PatientModel> Patients { get; set; }
+        public DbSet<PatientToStockModel> PatientToStocks { get; set; }
+        public DbSet<StockModel> Stocks { get; set; }
         public DbSet<DeactivestockModel> Deactivestocks { get; set; }
-        public DbSet<PatientactivestockModel> Patientactivestocks { get; set; }
         public DbSet<PatientmovementModel> Patientmovements { get; set; }
         public DbSet<StockmovementModel> Stockmovements { get; set; }
-        public DbSet<PatientModel> Patients { get; set; }
-        public DbSet<ActivepatientmovementstotodosModel> Activepatientmovementstotodos { get; set; }
+        public DbSet<PatientdefineModel> Patientdefines { get; set; }
         //Auth
         public DbSet<AuthoryModel> Authories { get; set; }
         public DbSet<UsersModel> Users { get; set; }
@@ -52,7 +41,7 @@ namespace PatientCareAPI.DataAccess
         public DbSet<CasetoDepartmentModel> CasetoDepartments { get; set; }
         public DbSet<FileModel> Files { get; set; }
         public DbSet<RemindingModel> Remindings { get; set; }
-        public DbSet<StockModel> Stocks { get; set; }
+        public DbSet<StockdefineModel> Stockdefines { get; set; }
         public DbSet<UnitModel> Units { get; set; }
         public DbSet<UnittoDepartmentModel> UnittoDepartments { get; set; }
         public DbSet<StationsModel> Stations { get; set; }

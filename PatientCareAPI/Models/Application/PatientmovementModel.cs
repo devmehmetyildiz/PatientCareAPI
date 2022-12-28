@@ -13,7 +13,7 @@ namespace PatientCareAPI.Models.Application
         public int Id { get; set; }
         public string Movementid { get; set; }
         [NotMapped]
-        public ActivepatientModel Patient { get; set; }
+        public PatientModel Patient { get; set; }
         public string Activepatientid { get; set; }
         [NotMapped]
         public string Movementtypename { get; set; }

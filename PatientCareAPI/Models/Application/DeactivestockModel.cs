@@ -16,7 +16,7 @@ namespace PatientCareAPI.Models.Application
         [NotMapped]
         public string Departmentname { get; set; }
         [NotMapped]
-        public ActivestockModel Activestock { get; set; }
+        public StockModel Activestock { get; set; }
         public string Activestockid { get; set; }
         public DateTime? Createtime { get; set; }
         public string Createduser { get; set; }

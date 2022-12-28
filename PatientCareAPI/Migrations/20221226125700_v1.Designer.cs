@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PatientCareAPI.DataAccess;
 
 namespace PatientCareAPI.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20221226125700_v1")]
+    partial class v1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -328,13 +330,7 @@ namespace PatientCareAPI.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    b.Property<string>("CaseID")
-                        .HasColumnType("text");
-
                     b.Property<string>("Company")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Companypersonelname")
                         .HasColumnType("text");
 
                     b.Property<string>("ConcurrencyStamp")
@@ -361,14 +357,8 @@ namespace PatientCareAPI.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("tinyint(1)");
 
-                    b.Property<string>("Personelname")
-                        .HasColumnType("text");
-
                     b.Property<DateTime?>("Purchasedate")
                         .HasColumnType("datetime");
-
-                    b.Property<string>("Purchasenumber")
-                        .HasColumnType("text");
 
                     b.Property<double>("Purchaseprice")
                         .HasColumnType("double");
@@ -456,9 +446,6 @@ namespace PatientCareAPI.Migrations
                     b.Property<double>("Maxamount")
                         .HasColumnType("double");
 
-                    b.Property<int>("Order")
-                        .HasColumnType("int");
-
                     b.Property<DateTime?>("Skt")
                         .HasColumnType("datetime");
 
@@ -466,9 +453,6 @@ namespace PatientCareAPI.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Stockid")
-                        .HasColumnType("text");
-
-                    b.Property<string>("UnitID")
                         .HasColumnType("text");
 
                     b.Property<DateTime?>("UpdateTime")

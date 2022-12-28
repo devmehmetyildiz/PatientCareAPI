@@ -127,7 +127,7 @@ namespace PatientCareAPI.Controllers.Auth
 
         [AuthorizeMultiplePolicy(UserAuthory.Roles_Screen + "," + UserAuthory.Roles_Delete)]
         [Route("Delete")]
-        [HttpDelete]
+        [HttpPost]
         public IActionResult RolesDelete(RoleModel model)
         {
             model.DeleteUser = GetSessionUser();
