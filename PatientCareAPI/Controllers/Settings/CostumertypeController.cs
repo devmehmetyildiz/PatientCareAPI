@@ -34,129 +34,98 @@ namespace PatientCareAPI.Controllers.Settings
             unitOfWork = new UnitOfWork(context);
         }
 
-        [HttpGet]
-        [AuthorizeMultiplePolicy(UserAuthory.Costumertype_Screen)]
-        [Route("GetAll")]
-        public IActionResult GetAll()
+        private string GetSessionUser()
         {
-            List<CostumertypeModel> Data = new List<CostumertypeModel>();
-            if (Utilities.CheckAuth(UserAuthory.Costumertype_ManageAll, this.User.Identity))
-            {
-                Data = unitOfWork.CostumertypeRepository.GetAll().Where(u => u.IsActive).ToList();
-                foreach (var item in Data)
-                {
-                    List<string> Departments = unitOfWork.CostumertypetoDepartmentRepository.GetAll().Where(u => u.CostumertypeID == item.ConcurrencyStamp).Select(u => u.DepartmentID).ToList();
-                    foreach (var department in Departments)
-                    {
-                        item.Departments.Add(unitOfWork.DepartmentRepository.GetDepartmentByGuid(department));
-                    }
-                }
-            }
-            else
-            {
-                Data = unitOfWork.CostumertypeRepository.GetAll().Where(u => u.IsActive && u.CreatedUser == this.User.Identity.Name).ToList();
-                foreach (var item in Data)
-                {
-                    List<string> Departments = unitOfWork.CostumertypetoDepartmentRepository.GetAll().Where(u => u.CostumertypeID == item.ConcurrencyStamp).Select(u => u.DepartmentID).ToList();
-                    foreach (var department in Departments)
-                    {
-                        item.Departments.Add(unitOfWork.DepartmentRepository.GetDepartmentByGuid(department));
-                    }
-                }
-            }
-            if (Data.Count == 0)
-            {
-                return NotFound();
-            }
-            return Ok(Data);
+            return (this.User.Identity as ClaimsIdentity).FindFirst(ClaimTypes.Name)?.Value;
         }
 
-        [Route("GetSelectedCostumertype")]
-        [AuthorizeMultiplePolicy((UserAuthory.Costumertype_Screen + "," + UserAuthory.Costumertype_Update))]
-        [HttpGet]
-        public IActionResult GetSelectedCostumertype(int ID)
+        private List<CostumertypeModel> FetchList()
         {
-            CostumertypeModel Data = unitOfWork.CostumertypeRepository.Getbyid(ID);
-            List<string> Departments = unitOfWork.CostumertypetoDepartmentRepository.GetAll().Where(u => u.CostumertypeID == Data.ConcurrencyStamp).Select(u => u.DepartmentID).ToList();
-            foreach (var department in Departments)
+            var List = unitOfWork.CostumertypeRepository.GetRecords<CostumertypeModel>(u => u.IsActive);
+            foreach (var item in List)
             {
-                Data.Departments.Add(unitOfWork.DepartmentRepository.GetDepartmentByGuid(department));
+                var departmentguids = unitOfWork.CostumertypetoDepartmentRepository.GetRecords<CostumertypetoDepartmentModel>(u => u.CostumertypeID == item.ConcurrencyStamp).Select(u => u.DepartmentID).ToList();
+                item.Departments = unitOfWork.DepartmentRepository.GetDepartmentsbyGuids(departmentguids);
             }
-            if (!Utilities.CheckAuth(UserAuthory.Costumertype_ManageAll, this.User.Identity))
-            {
-                if (Data.CreatedUser != this.User.Identity.Name)
-                {
-                    return StatusCode(403);
-                }
-            }
+            return List;
+        }
+
+        [Route("GetAll")]
+        [AuthorizeMultiplePolicy(UserAuthory.Stations_Screen)]
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            return Ok(FetchList());
+        }
+
+        [Route("GetSelected")]
+        [AuthorizeMultiplePolicy(UserAuthory.Stations_Screen)]
+        [HttpGet]
+        public IActionResult GetSelectedStation(string guid)
+        {
+            var Data = unitOfWork.CostumertypeRepository.GetSingleRecord<CostumertypeModel>(u => u.ConcurrencyStamp == guid);
             if (Data == null)
             {
                 return NotFound();
             }
+            var departmentguids = unitOfWork.CostumertypetoDepartmentRepository.GetRecords<CostumertypetoDepartmentModel>(u => u.CostumertypeID == Data.ConcurrencyStamp).Select(u => u.DepartmentID).ToList();
+            Data.Departments = unitOfWork.DepartmentRepository.GetDepartmentsbyGuids(departmentguids);
             return Ok(Data);
         }
 
         [Route("Add")]
-        [AuthorizeMultiplePolicy(UserAuthory.Costumertype_Add)]
+        [AuthorizeMultiplePolicy(UserAuthory.Stations_Add)]
         [HttpPost]
         public IActionResult Add(CostumertypeModel model)
         {
-            var claimsIdentity = this.User.Identity as ClaimsIdentity;
-            var username = claimsIdentity.FindFirst(ClaimTypes.Name)?.Value;
+            var username = GetSessionUser();
             model.CreatedUser = username;
             model.IsActive = true;
             model.CreateTime = DateTime.Now;
             model.ConcurrencyStamp = Guid.NewGuid().ToString();
             unitOfWork.CostumertypeRepository.Add(model);
-            unitOfWork.CostumertypetoDepartmentRepository.AddDepartments(model.Departments, model.ConcurrencyStamp);
+            List<CostumertypetoDepartmentModel> list = new List<CostumertypetoDepartmentModel>();
+            foreach (var item in model.Departments)
+            {
+                list.Add(new CostumertypetoDepartmentModel { CostumertypeID = model.ConcurrencyStamp, DepartmentID = item.ConcurrencyStamp });
+            }
+            unitOfWork.CostumertypetoDepartmentRepository.AddRange(list);
             unitOfWork.Complate();
-            return Ok();
+            return Ok(FetchList());
         }
 
         [Route("Update")]
-        [AuthorizeMultiplePolicy(UserAuthory.Costumertype_Update)]
+        [AuthorizeMultiplePolicy((UserAuthory.Stations_Update + "," + UserAuthory.Stations_Screen))]
         [HttpPost]
         public IActionResult Update(CostumertypeModel model)
         {
-            var claimsIdentity = this.User.Identity as ClaimsIdentity;
-            var username = claimsIdentity.FindFirst(ClaimTypes.Name)?.Value;
-            if (!Utilities.CheckAuth(UserAuthory.Costumertype_ManageAll, this.User.Identity))
-            {
-                if (model.CreatedUser == this.User.Identity.Name)
-                {
-                    return StatusCode(403);
-                }
-            }
+            var username = GetSessionUser();
             model.UpdatedUser = username;
             model.UpdateTime = DateTime.Now;
             unitOfWork.CostumertypeRepository.update(unitOfWork.CostumertypeRepository.Getbyid(model.Id), model);
             unitOfWork.CostumertypetoDepartmentRepository.DeleteDepartmentsByCostumertype(model.ConcurrencyStamp);
-            unitOfWork.CostumertypetoDepartmentRepository.AddDepartments(model.Departments, model.ConcurrencyStamp);
+            List<CostumertypetoDepartmentModel> list = new List<CostumertypetoDepartmentModel>();
+            foreach (var item in model.Departments)
+            {
+                list.Add(new CostumertypetoDepartmentModel { CostumertypeID = model.ConcurrencyStamp, DepartmentID = item.ConcurrencyStamp });
+            }
+            unitOfWork.CostumertypetoDepartmentRepository.AddRange(list);
             unitOfWork.Complate();
-            return Ok();
+            return Ok(FetchList());
         }
 
         [Route("Delete")]
-        [AuthorizeMultiplePolicy(UserAuthory.Costumertype_Delete)]
-        [HttpDelete]
+        [AuthorizeMultiplePolicy(UserAuthory.Stations_Delete)]
+        [HttpPost]
         public IActionResult Delete(CostumertypeModel model)
         {
-            var claimsIdentity = this.User.Identity as ClaimsIdentity;
-            var username = claimsIdentity.FindFirst(ClaimTypes.Name)?.Value;
-            if (!Utilities.CheckAuth(UserAuthory.Case_ManageAll, this.User.Identity))
-            {
-                if (model.CreatedUser == this.User.Identity.Name)
-                {
-                    return StatusCode(403);
-                }
-            }
+            var username = GetSessionUser();
             model.DeleteUser = username;
             model.IsActive = false;
             model.DeleteTime = DateTime.Now;
             unitOfWork.CostumertypeRepository.update(unitOfWork.CostumertypeRepository.Getbyid(model.Id), model);
-            unitOfWork.CostumertypetoDepartmentRepository.DeleteDepartmentsByCostumertype(model.ConcurrencyStamp);
             unitOfWork.Complate();
-            return Ok();
+            return Ok(FetchList());
         }
 
         [Route("DeleteFromDB")]

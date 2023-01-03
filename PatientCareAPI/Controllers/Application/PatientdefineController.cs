@@ -12,6 +12,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using PatientCareAPI.Utils;
+using PatientCareAPI.Models.Settings;
 
 namespace PatientCareAPI.Controllers.Application
 {
@@ -42,6 +43,11 @@ namespace PatientCareAPI.Controllers.Application
         private List<PatientdefineModel> FetchList()
         {
             var List = unitOfWork.PatientdefineRepository.GetRecords<PatientdefineModel>(u => u.IsActive);
+            foreach (var item in List)
+            {
+                item.Patienttype = unitOfWork.PatienttypeRepository.GetSingleRecord<PatienttypeModel>(u => u.ConcurrencyStamp == item.Patienttypeid);
+                item.Costumertype = unitOfWork.CostumertypeRepository.GetSingleRecord<CostumertypeModel>(u => u.ConcurrencyStamp == item.Costumertypeid);
+            }
             return List;
         }
 
@@ -58,7 +64,10 @@ namespace PatientCareAPI.Controllers.Application
         [HttpGet]
         public IActionResult GetSelectedPatient(string guid)
         {
-            return Ok(unitOfWork.PatientdefineRepository.GetSingleRecord<PatientdefineModel>(u=>u.ConcurrencyStamp==guid));
+            var data = unitOfWork.PatientdefineRepository.GetSingleRecord<PatientdefineModel>(u => u.ConcurrencyStamp == guid);
+            data.Patienttype = unitOfWork.PatienttypeRepository.GetSingleRecord<PatienttypeModel>(u => u.ConcurrencyStamp == data.Patienttypeid);
+            data.Costumertype = unitOfWork.CostumertypeRepository.GetSingleRecord<CostumertypeModel>(u => u.ConcurrencyStamp == data.Costumertypeid);
+            return Ok(data);
         }
 
         [Route("Add")]
@@ -71,7 +80,6 @@ namespace PatientCareAPI.Controllers.Application
             model.IsActive = true;
             model.CreateTime = DateTime.Now;
             model.ConcurrencyStamp = Guid.NewGuid().ToString();
-            model.Patienttypeid = model.Patienttype.ConcurrencyStamp;
             unitOfWork.PatientdefineRepository.Add(model);
             unitOfWork.Complate();
             return Ok(FetchList());
@@ -85,7 +93,6 @@ namespace PatientCareAPI.Controllers.Application
             var username = GetSessionUser();
             model.UpdatedUser = username;
             model.UpdateTime = DateTime.Now;
-            model.Patienttypeid = model.Patienttype.ConcurrencyStamp;
             unitOfWork.PatientdefineRepository.update(unitOfWork.PatientdefineRepository.Getbyid(model.Id), model);
             unitOfWork.Complate();
             return Ok(FetchList());
@@ -93,7 +100,7 @@ namespace PatientCareAPI.Controllers.Application
 
         [Route("Delete")]
         [AuthorizeMultiplePolicy(UserAuthory.Patients_Delete)]
-        [HttpDelete]
+        [HttpPost]
         public IActionResult Delete(PatientdefineModel model)
         {
             var username = GetSessionUser();

@@ -49,9 +49,5 @@ namespace PatientCareAPI.Models.Application
         public CostumertypeModel Costumertype { get; set; }
         [NotMapped]
         public PatienttypeModel Patienttype { get; set; }
-        [NotMapped]
-        public string Patienttypetxt { get; set; }
-        [NotMapped]
-        public string Costumertypetxt { get; set; }
     }
 }

@@ -34,40 +34,31 @@ namespace PatientCareAPI.Controllers.Settings
             unitOfWork = new UnitOfWork(context);
         }
 
-        [HttpGet]
-        [AuthorizeMultiplePolicy(UserAuthory.Patienttype_Screen)]
-        [Route("GetAll")]
-        public IActionResult GetAll()
+        private string GetSessionUser()
         {
-            List<PatienttypeModel> Data = new List<PatienttypeModel>();
-            if (Utilities.CheckAuth(UserAuthory.Patienttype_ManageAll, this.User.Identity))
-            {
-                Data = unitOfWork.PatienttypeRepository.GetAll().Where(u => u.IsActive).ToList();
-            }
-            else
-            {
-                Data = unitOfWork.PatienttypeRepository.GetAll().Where(u => u.IsActive && u.CreatedUser == this.User.Identity.Name).ToList();
-            }
-            if (Data.Count == 0)
-            {
-                return NotFound();
-            }
-            return Ok(Data);
+            return (this.User.Identity as ClaimsIdentity).FindFirst(ClaimTypes.Name)?.Value;
         }
 
-        [Route("GetSelectedPatienttype")]
-        [AuthorizeMultiplePolicy((UserAuthory.Patienttype_Screen + "," + UserAuthory.Patienttype_Update))]
-        [HttpGet]
-        public IActionResult GetSelectedPatienttype(int ID)
+        private List<PatienttypeModel> FetchList()
         {
-            PatienttypeModel Data = unitOfWork.PatienttypeRepository.Getbyid(ID);
-            if (!Utilities.CheckAuth(UserAuthory.Patienttype_ManageAll, this.User.Identity))
-            {
-                if (Data.CreatedUser != this.User.Identity.Name)
-                {
-                    return StatusCode(403);
-                }
-            }
+            var List = unitOfWork.PatienttypeRepository.GetRecords<PatienttypeModel>(u => u.IsActive);
+            return List;
+        }
+
+        [Route("GetAll")]
+        [AuthorizeMultiplePolicy(UserAuthory.Stations_Screen)]
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+            return Ok(FetchList());
+        }
+
+        [Route("GetSelected")]
+        [AuthorizeMultiplePolicy(UserAuthory.Stations_Screen)]
+        [HttpGet]
+        public IActionResult GetSelectedStation(string guid)
+        {
+            var Data = unitOfWork.PatienttypeRepository.GetSingleRecord<PatienttypeModel>(u => u.ConcurrencyStamp == guid);
             if (Data == null)
             {
                 return NotFound();
@@ -75,63 +66,47 @@ namespace PatientCareAPI.Controllers.Settings
             return Ok(Data);
         }
 
+
         [Route("Add")]
-        [AuthorizeMultiplePolicy(UserAuthory.Patienttype_Add)]
+        [AuthorizeMultiplePolicy(UserAuthory.Stations_Add)]
         [HttpPost]
         public IActionResult Add(PatienttypeModel model)
         {
-            var claimsIdentity = this.User.Identity as ClaimsIdentity;
-            var username = claimsIdentity.FindFirst(ClaimTypes.Name)?.Value;
+            var username = GetSessionUser();
             model.CreatedUser = username;
             model.IsActive = true;
             model.CreateTime = DateTime.Now;
             model.ConcurrencyStamp = Guid.NewGuid().ToString();
             unitOfWork.PatienttypeRepository.Add(model);
             unitOfWork.Complate();
-            return Ok();
+            return Ok(FetchList());
         }
 
         [Route("Update")]
-        [AuthorizeMultiplePolicy(UserAuthory.Patienttype_Update)]
+        [AuthorizeMultiplePolicy((UserAuthory.Stations_Update + "," + UserAuthory.Stations_Screen))]
         [HttpPost]
         public IActionResult Update(PatienttypeModel model)
         {
-            var claimsIdentity = this.User.Identity as ClaimsIdentity;
-            var username = claimsIdentity.FindFirst(ClaimTypes.Name)?.Value;
-            if (!Utilities.CheckAuth(UserAuthory.Patienttype_ManageAll, this.User.Identity))
-            {
-                if (model.CreatedUser == this.User.Identity.Name)
-                {
-                    return StatusCode(403);
-                }
-            }
+            var username = GetSessionUser();
             model.UpdatedUser = username;
             model.UpdateTime = DateTime.Now;
             unitOfWork.PatienttypeRepository.update(unitOfWork.PatienttypeRepository.Getbyid(model.Id), model);
             unitOfWork.Complate();
-            return Ok();
+            return Ok(FetchList());
         }
 
         [Route("Delete")]
-        [AuthorizeMultiplePolicy(UserAuthory.Patienttype_Delete)]
-        [HttpDelete]
+        [AuthorizeMultiplePolicy(UserAuthory.Stations_Delete)]
+        [HttpPost]
         public IActionResult Delete(PatienttypeModel model)
         {
-            var claimsIdentity = this.User.Identity as ClaimsIdentity;
-            var username = claimsIdentity.FindFirst(ClaimTypes.Name)?.Value;
-            if (!Utilities.CheckAuth(UserAuthory.Patienttype_ManageAll, this.User.Identity))
-            {
-                if (model.CreatedUser == this.User.Identity.Name)
-                {
-                    return StatusCode(403);
-                }
-            }
+            var username = GetSessionUser();
             model.DeleteUser = username;
             model.IsActive = false;
             model.DeleteTime = DateTime.Now;
             unitOfWork.PatienttypeRepository.update(unitOfWork.PatienttypeRepository.Getbyid(model.Id), model);
             unitOfWork.Complate();
-            return Ok();
+            return Ok(FetchList());
         }
 
         [Route("DeleteFromDB")]

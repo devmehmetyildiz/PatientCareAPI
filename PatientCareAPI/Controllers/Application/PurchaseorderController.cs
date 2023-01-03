@@ -106,7 +106,7 @@ namespace PatientCareAPI.Controllers.Application
                 unitOfWork.StockRepository.Add(stock);
                 unitOfWork.StockmovementRepository.Add(new StockmovementModel
                 {
-                    Activestockid = guid,
+                    Activestockid = stockguid,
                     Amount = stock.Amount,
                     Movementdate = DateTime.Now,
                     Movementtype = ((int)Constants.Movementtypes.Create),
@@ -120,56 +120,52 @@ namespace PatientCareAPI.Controllers.Application
             return Ok(FetchList());
         }
 
+
+
+        [Route("Update")]
+        [AuthorizeMultiplePolicy(UserAuthory.Stock_Update)]
+        [HttpPost]
+        public IActionResult Update(PurchaseorderModel model)
+        {
+            var username = GetSessionUser();
+            unitOfWork.PurchaseorderRepository.update(unitOfWork.PurchaseorderRepository.GetSingleRecord<PurchaseorderModel>(u => u.ConcurrencyStamp == model.ConcurrencyStamp), model);
+            model.UpdatedUser = username;
+            model.UpdateTime = DateTime.Now;
+            foreach (var stock in model.Stocks)
+            {
+                if (stock.ConcurrencyStamp!=null && stock.ConcurrencyStamp!="")
+                {
+                    StockModel oldmodel = unitOfWork.StockRepository.GetSingleRecord<StockModel>(u => u.ConcurrencyStamp == stock.ConcurrencyStamp);
+                    stock.UpdatedUser = username;
+                    stock.UpdateTime = DateTime.Now;
+                    unitOfWork.StockRepository.update(oldmodel, stock);
+                }
+                else
+                {
+                    string stockguid = Guid.NewGuid().ToString();
+                    unitOfWork.PurchaseorderToStockRepository.Add(new PurchaseorderToStockModel { PurchaseID = model.ConcurrencyStamp, StockID = stockguid });
+                    stock.CreatedUser = username;
+                    stock.CreateTime = DateTime.Now;
+                    stock.IsActive = true;
+                    stock.ConcurrencyStamp = stockguid;
+                    unitOfWork.StockRepository.Add(stock);
+                    unitOfWork.StockmovementRepository.Add(new StockmovementModel
+                    {
+                        Activestockid = stockguid,
+                        Amount = stock.Amount,
+                        Movementdate = DateTime.Now,
+                        Movementtype = ((int)Constants.Movementtypes.Create),
+                        Prevvalue = 0,
+                        Newvalue = stock.Amount,
+                        UserID = unitOfWork.UsersRepository.FindUserByName(username).ConcurrencyStamp,
+                    });
+                }
+            }
+            unitOfWork.Complate();
+            return Ok(FetchList());
+        }
+
        
-
-        //[Route("Update")]
-        //[AuthorizeMultiplePolicy(UserAuthory.Stock_Update)]
-        //[HttpPost]
-        //public IActionResult Update(PurchaseorderModel model)
-        //{
-        //    var username = GetSessionUser();
-        //    StockModel oldmodel = unitOfWork.StockRepository.GetSingleRecord<StockModel>(u => u.ConcurrencyStamp == model.ConcurrencyStamp);
-        //    unitOfWork.StockmovementRepository.Add(new StockmovementModel
-        //    {
-        //        Activestockid = model.ConcurrencyStamp,
-        //        Amount = model.Amount - oldmodel.Amount,
-        //        Movementdate = DateTime.Now,
-        //        Movementtype = Getmovementtype(oldmodel.Amount, model.Amount),
-        //        Prevvalue = oldmodel.Amount,
-        //        Newvalue = model.Amount,
-        //        UserID = unitOfWork.UsersRepository.FindUserByName(username).ConcurrencyStamp
-        //    });
-        //    model.Stockid = model.Stockdefine.ConcurrencyStamp;
-        //    model.UpdatedUser = username;
-        //    model.UpdateTime = DateTime.Now;
-        //    unitOfWork.StockRepository.update(unitOfWork.StockRepository.Getbyid(model.Id), model);
-        //    unitOfWork.Complate();
-        //    return Ok(FetchList());
-        //}
-
-        //[Route("Delete")]
-        //[AuthorizeMultiplePolicy(UserAuthory.Stock_Delete)]
-        //[HttpDelete]
-        //public IActionResult Delete(PurchaseorderModel model)
-        //{
-        //    var username = (this.User.Identity as ClaimsIdentity).FindFirst(ClaimTypes.Name)?.Value;
-        //    StockModel oldmodel = unitOfWork.StockRepository.Getbyid(model.Id);
-        //    unitOfWork.StockmovementRepository.Add(new StockmovementModel
-        //    {
-        //        Activestockid = model.ConcurrencyStamp,
-        //        Amount = model.Amount,
-        //        Movementdate = DateTime.Now,
-        //        Movementtype = (int)Constants.Movementtypes.Delete,
-        //        Prevvalue = model.Amount,
-        //        Newvalue = model.Amount,
-        //        UserID = unitOfWork.UsersRepository.FindUserByName(username).ConcurrencyStamp
-        //    });
-        //    model.DeleteUser = username;
-        //    model.DeleteTime = DateTime.Now;
-        //    unitOfWork.StockRepository.update(unitOfWork.StockRepository.Getbyid(model.Id), model);
-        //    unitOfWork.Complate();
-        //    return Ok(FetchList());
-        //}
 
         [Route("DeleteFromDB")]
         [AuthorizeMultiplePolicy(UserAuthory.Admin)]

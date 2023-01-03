@@ -39,14 +39,21 @@ namespace PatientCareAPI.Controllers.Application
         public IActionResult GetAll()
         {
             List<StockmovementModel> Data = new List<StockmovementModel>();
-            Data = unitOfWork.StockmovementRepository.GetAll();
-            foreach (var item in Data)
+            try
             {
-                item.Stock = unitOfWork.StockRepository.GetSingleRecord<StockModel>(u=>u.ConcurrencyStamp==item.Activestockid);
-                item.Stock.Stockdefine = unitOfWork.StockdefineRepository.GetSingleRecord<StockdefineModel>(u => u.ConcurrencyStamp == item.Stock.Stockid);
-                item.Stock.Stockdefine.Unit = unitOfWork.UnitRepository.GetSingleRecord<UnitModel>(u => u.ConcurrencyStamp == item.Stock.Stockdefine.Unitid);
-                item.Stock.Department = unitOfWork.DepartmentRepository.GetSingleRecord<DepartmentModel>(u => u.ConcurrencyStamp == item.Stock.Stockdefine.Departmentid);
-                item.Username = unitOfWork.UsersRepository.GetUsertByGuid(item.UserID).Username;
+                Data = unitOfWork.StockmovementRepository.GetAll();
+                foreach (var item in Data)
+                {
+                    item.Stock = unitOfWork.StockRepository.GetSingleRecord<StockModel>(u => u.ConcurrencyStamp == item.Activestockid);
+                    item.Stock.Stockdefine = unitOfWork.StockdefineRepository.GetSingleRecord<StockdefineModel>(u => u.ConcurrencyStamp == item.Stock.Stockid);
+                    item.Stock.Stockdefine.Unit = unitOfWork.UnitRepository.GetSingleRecord<UnitModel>(u => u.ConcurrencyStamp == item.Stock.Stockdefine.Unitid);
+                    item.Stock.Department = unitOfWork.DepartmentRepository.GetSingleRecord<DepartmentModel>(u => u.ConcurrencyStamp == item.Stock.Stockdefine.Departmentid);
+                    item.Username = unitOfWork.UsersRepository.GetUsertByGuid(item.UserID).Username;
+                }
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
             }
             return Ok(Data);
         }
@@ -57,17 +64,26 @@ namespace PatientCareAPI.Controllers.Application
         public IActionResult GetAllSelected(string guid)
         {
             List<StockmovementModel> Data = new List<StockmovementModel>();
-            Data = unitOfWork.StockmovementRepository.GetRecords<StockmovementModel>(u=>u.Activestockid==guid);
-            foreach (var item in Data)
+            try
             {
-                item.Stock = unitOfWork.StockRepository.GetSingleRecord<StockModel>(u => u.ConcurrencyStamp == item.Activestockid);
-                item.Stock.Stockdefine = unitOfWork.StockdefineRepository.GetSingleRecord<StockdefineModel>(u => u.ConcurrencyStamp == item.Stock.Stockid);
-                item.Stock.Department = unitOfWork.DepartmentRepository.GetSingleRecord<DepartmentModel>(u => u.ConcurrencyStamp == item.Stock.Stockdefine.Departmentid);
-                item.Stock.Stockdefine.Unit = unitOfWork.UnitRepository.GetSingleRecord<UnitModel>(u => u.ConcurrencyStamp == item.Stock.Stockdefine.Unitid);
-                item.Username = unitOfWork.UsersRepository.GetUsertByGuid(item.UserID).Username;
+                Data = unitOfWork.StockmovementRepository.GetRecords<StockmovementModel>(u => u.Activestockid == guid);
+                foreach (var item in Data)
+                {
+                    item.Stock = unitOfWork.StockRepository.GetSingleRecord<StockModel>(u => u.ConcurrencyStamp == item.Activestockid);
+                    item.Stock.Stockdefine = unitOfWork.StockdefineRepository.GetSingleRecord<StockdefineModel>(u => u.ConcurrencyStamp == item.Stock.Stockid);
+                    item.Stock.Department = unitOfWork.DepartmentRepository.GetSingleRecord<DepartmentModel>(u => u.ConcurrencyStamp == item.Stock.Stockdefine.Departmentid);
+                    item.Stock.Stockdefine.Unit = unitOfWork.UnitRepository.GetSingleRecord<UnitModel>(u => u.ConcurrencyStamp == item.Stock.Stockdefine.Unitid);
+                    item.Username = unitOfWork.UsersRepository.GetUsertByGuid(item.UserID).Username;
+                }
+            }
+            catch (Exception)
+            {
+                return StatusCode(500);
             }
             return Ok(Data);
         }
 
     }
 }
+
+
