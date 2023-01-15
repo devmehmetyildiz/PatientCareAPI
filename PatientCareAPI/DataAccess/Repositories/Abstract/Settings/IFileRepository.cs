@@ -9,5 +9,7 @@ namespace PatientCareAPI.DataAccess.Repositories.Abstract.Settings
     public interface IFileRepository : IRepository<FileModel>
     {
         FileModel GetFilebyGuid(string guid);
+
+        void Removefilesbyguid(string guid);
     }
 }

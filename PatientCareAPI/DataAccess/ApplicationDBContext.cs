@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using PatientCareAPI.Models.Authentication;
 using PatientCareAPI.Models.Settings;
 using PatientCareAPI.Models.Application;
+using PatientCareAPI.Models.Warehouse;
 
 namespace PatientCareAPI.DataAccess
 {
@@ -17,15 +18,21 @@ namespace PatientCareAPI.DataAccess
         }
 
         //Application
-        public DbSet<PurchaseorderModel> Purchaseorders { get; set; }
-        public DbSet<PurchaseorderToStockModel> PurchaseorderToStocks { get; set; }
         public DbSet<PatientModel> Patients { get; set; }
-        public DbSet<PatientToStockModel> PatientToStocks { get; set; }
-        public DbSet<StockModel> Stocks { get; set; }
-        public DbSet<DeactivestockModel> Deactivestocks { get; set; }
         public DbSet<PatientmovementModel> Patientmovements { get; set; }
-        public DbSet<StockmovementModel> Stockmovements { get; set; }
         public DbSet<PatientdefineModel> Patientdefines { get; set; }
+
+        //Warehouse
+        public DbSet<DeactivestockModel> Warehouses { get; set; }
+        public DbSet<PatientstocksModel> Patientstocks { get; set; }
+        public DbSet<PatientstocksmovementModel> Patientstocksmovements { get; set; }
+        public DbSet<PurchaseorderModel> Purchaseorders { get; set; }
+        public DbSet<PurchaseorderstocksModel> Purchaseorderstocks { get; set; }
+        public DbSet<PurchaseorderstocksmovementModel> Purchaseorderstocksmovements { get; set; }
+        public DbSet<StockdefineModel> Stockdefines { get; set; }
+        public DbSet<StockModel> Stocks { get; set; }
+        public DbSet<StockmovementModel> Stockmovements { get; set; }
+        public DbSet<DeactivestockModel> Deactivestocks { get; set; }
         //Auth
         public DbSet<AuthoryModel> Authories { get; set; }
         public DbSet<UsersModel> Users { get; set; }
@@ -41,7 +48,6 @@ namespace PatientCareAPI.DataAccess
         public DbSet<CasetoDepartmentModel> CasetoDepartments { get; set; }
         public DbSet<FileModel> Files { get; set; }
         public DbSet<RemindingModel> Remindings { get; set; }
-        public DbSet<StockdefineModel> Stockdefines { get; set; }
         public DbSet<UnitModel> Units { get; set; }
         public DbSet<UnittoDepartmentModel> UnittoDepartments { get; set; }
         public DbSet<StationsModel> Stations { get; set; }

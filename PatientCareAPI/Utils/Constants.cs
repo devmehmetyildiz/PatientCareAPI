@@ -9,13 +9,9 @@ namespace PatientCareAPI.Utils
     {
         public enum Movementtypes
         {
-            Create = 0,
-            Add = 1,
-            Reduce = 2,
-            Update = 3,
-            Transfer = 4,
-            Kill = 5,
-            Delete = 6
+           income = 1,
+           outcome = -1,
+           transfer = 0
         }
 
         public enum Casetypes

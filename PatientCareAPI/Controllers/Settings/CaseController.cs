@@ -33,7 +33,7 @@ namespace PatientCareAPI.Controllers.Settings
             Utilities = new Utilities(context);
             unitOfWork = new UnitOfWork(context);
         }
-
+        // TODO: Sadece 1 tane tamamlandı ve 1 tane iptal edildi durumu eklenecek  
         private string GetSessionUser()
         {
             return (this.User.Identity as ClaimsIdentity).FindFirst(ClaimTypes.Name)?.Value;

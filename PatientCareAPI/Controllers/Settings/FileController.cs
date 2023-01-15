@@ -17,6 +17,7 @@ using System.Net;
 using System.IO;
 using Newtonsoft.Json.Linq;
 using Newtonsoft.Json;
+using PatientCareAPI.Models.Application;
 
 namespace PatientCareAPI.Controllers.Settings
 {
@@ -65,11 +66,24 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("GetFile")]
-        [AuthorizeMultiplePolicy((UserAuthory.File_Screen + "," + UserAuthory.File_Update))]
+        [AllowAnonymous]
         [HttpGet]
         public IActionResult GetFile(string guid)
         {
             FileModel Data = unitOfWork.FileRepository.GetFilebyGuid(guid);
+            if (Data != null)
+                return File(Utilities.GetFile(Data), Data.Filetype, Data.Filename);
+            else
+                return NotFound();
+        }
+
+        [AllowAnonymous]
+        [Route("GetImage")]
+        [HttpGet]
+        public IActionResult GetImage(string guid)
+        {
+            var files = unitOfWork.FileRepository.GetRecords<FileModel>(u => u.Parentid== guid);
+            FileModel Data = files.FirstOrDefault(u => u.Name == "PP");
             if (Data != null)
                 return File(Utilities.GetFile(Data), Data.Filetype);
             else
@@ -112,28 +126,76 @@ namespace PatientCareAPI.Controllers.Settings
         [AuthorizeMultiplePolicy(UserAuthory.File_Update)]
         [RequestFormLimits(ValueLengthLimit = int.MaxValue, MultipartBodyLengthLimit = int.MaxValue)]
         [HttpPost]
-        public IActionResult Update([FromForm]FileModel model)
+        public IActionResult Update([FromForm]List<FileModel> list)
         {
             var username = GetSessionUser();
-            if (!Utilities.CheckAuth(UserAuthory.File_ManageAll, this.User.Identity))
+            foreach (var model in list)
             {
-                if (model.CreatedUser == this.User.Identity.Name)
+                if (string.IsNullOrWhiteSpace(model.ConcurrencyStamp))
                 {
-                    return StatusCode(403);
+                    if (string.IsNullOrWhiteSpace(model.Filefolder))
+                    {
+                        model.Filefolder = Guid.NewGuid().ToString();
+                    }
+                    model.CreatedUser = username;
+                    model.IsActive = true;
+                    model.CreateTime = DateTime.Now;
+                    model.ConcurrencyStamp = Guid.NewGuid().ToString();
+                    model.Filename = model.File.FileName;
+                    model.Filetype = model.File.ContentType;
+                    if (Utilities.UploadFile(model))
+                    {
+                        unitOfWork.FileRepository.Add(model);
+                    }
+                    else
+                    {
+                        return BadRequest();
+                    }
+                }
+                else
+                {
+                    if (model.WillDelete)
+                    {
+                        model.DeleteUser = username;
+                        model.IsActive = false;
+                        model.DeleteTime = DateTime.Now;
+                        if (Utilities.DeleteFile(model))
+                        {
+                            unitOfWork.FileRepository.update(unitOfWork.FileRepository.GetFilebyGuid(model.ConcurrencyStamp), model);
+                        }
+                        else
+                        {
+                            return BadRequest();
+                        }
+                    }
+                    else
+                    {
+                        model.UpdatedUser = username;
+                        model.UpdateTime = DateTime.Now;
+                        FileModel oldData = unitOfWork.FileRepository.GetFilebyGuid(model.ConcurrencyStamp);
+                        if (model.File != null)
+                        {
+                            if (Utilities.DeleteFile(oldData))
+                            {
+                                model.Filename = model.File.FileName;
+                                if (Utilities.UploadFile(model))
+                                {
+                                    unitOfWork.FileRepository.update(unitOfWork.FileRepository.Getbyid(model.Id), model);
+                                }
+                                else
+                                {
+                                    return BadRequest();
+                                }
+                            }
+                        }
+                        else
+                        {
+                            unitOfWork.FileRepository.update(unitOfWork.FileRepository.Getbyid(model.Id), model);
+                        }
+                    }
                 }
             }
-            model.UpdatedUser = username;
-            model.UpdateTime = DateTime.Now;
-            FileModel oldData = unitOfWork.FileRepository.GetFilebyGuid(model.ConcurrencyStamp);
-            if (Utilities.DeleteFile(oldData))
-            {
-                model.Filename = model.File.FileName;
-                if (Utilities.UploadFile(model))
-                {
-                    unitOfWork.FileRepository.update(unitOfWork.FileRepository.Getbyid(model.Id), model);
-                    unitOfWork.Complate();
-                }
-            }
+            unitOfWork.Complate();
             return Ok();
         }
 

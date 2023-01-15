@@ -8,6 +8,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using PatientCareAPI.DataAccess.Repositories.Abstract.Warehouse;
+using PatientCareAPI.DataAccess.Repositories.Concrete.Warehouse;
 
 namespace PatientCareAPI.DataAccess
 {
@@ -20,14 +22,19 @@ namespace PatientCareAPI.DataAccess
             //Application
             PatientRepository = new PatientRepository(_dBContext);
             PatientdefineRepository = new PatientdefineRepository(_dBContext);
-            PatientToStockRepostiyory = new PatientToStockRepository(_dBContext);
             PatientmovementRepository = new PatientmovementRepository(_dBContext);
 
-            StockRepository = new StockRepository(_dBContext);
+            //Warehouse
             DeactivestockRepository = new DeactivestockRepository(_dBContext);
-            StockmovementRepository = new StockmovementRepository(_dBContext);
+            PatientstocksRepository = new PatientstocksRepository(_dBContext);
+            PatientstocksmovementRepository = new PatientstocksmovementRepository(_dBContext);
             PurchaseorderRepository = new PurchaseorderRepository(_dBContext);
-            PurchaseorderToStockRepository = new PurchaseorderToStockRepository(_dBContext);
+            PurchaseorderstocksmovementRepository = new PurchaseorderstocksmovementRepository(_dBContext);
+            PurchaseorderstocksRepository = new PurchaseorderstocksRepository(_dBContext);
+            StockdefineRepository = new StockdefineRepository(_dBContext);
+            StockmovementRepository = new StockmovementRepository(_dBContext);
+            StockRepository = new StockRepository(_dBContext);
+            WarehouseRepository = new WarehouseRepository(_dBContext);
             //Auth
             AuthoryRepository = new AuthoryRepository(_dBContext);
             UsersRepository = new UsersRepository(_dBContext);
@@ -46,7 +53,6 @@ namespace PatientCareAPI.DataAccess
             DepartmenttoStationRepository = new DepartmenttoStationRepository(_dBContext);
             FileRepository = new FileRepository(_dBContext);
             RemindingRepository = new RemindingRepository(_dBContext);
-            StockdefineRepository = new StockdefineRepository(_dBContext);
             UnittodepartmentRepository = new UnittodepartmentRepository(_dBContext);
             PatienttypeRepository = new PatienttypeRepository(_dBContext);
             CostumertypeRepository = new CostumertypeRepository(_dBContext);
@@ -82,10 +88,6 @@ namespace PatientCareAPI.DataAccess
 
         public IPatientRepository PatientRepository { get; private set; }
 
-        public IPatientToStockRepostiyory PatientToStockRepostiyory { get; private set; }
-
-        public IStockRepository StockRepository { get; private set; }
-
         public ICasetodepartmentRepository CasetodepartmentRepository { get; private set; }
 
         public IFileRepository FileRepository { get; private set; }
@@ -93,8 +95,6 @@ namespace PatientCareAPI.DataAccess
         public IPatientdefineRepository PatientdefineRepository { get; private set; }
 
         public IRemindingRepository RemindingRepository { get; private set; }
-
-        public IStockdefineRepository StockdefineRepository { get; private set; }
 
         public IUnittodepartmentRepository UnittodepartmentRepository { get; private set; }
 
@@ -104,17 +104,29 @@ namespace PatientCareAPI.DataAccess
 
         public ICostumertypetoDepartmentRepository CostumertypetoDepartmentRepository { get; private set; }
 
-        public IDeactivestockRepository DeactivestockRepository { get; private set; }
-
         public IPatientmovementRepository PatientmovementRepository { get; private set; }
-
-        public IStockmovementRepository StockmovementRepository { get; private set; }
 
         public IDatatableRepository DatatableRepository { get; private set; }
 
+        public IDeactivestockRepository DeactivestockRepository { get; private set; }
+
+        public IPatientstocksRepository PatientstocksRepository { get; private set; }
+
+        public IPatientstocksmovementRepository PatientstocksmovementRepository { get; private set; }
+
         public IPurchaseorderRepository PurchaseorderRepository { get; private set; }
 
-        public IPurchaseorderToStockRepository PurchaseorderToStockRepository { get; private set; }
+        public IPurchaseorderstocksmovementRepository PurchaseorderstocksmovementRepository { get; private set; }
+
+        public IPurchaseorderstocksRepository PurchaseorderstocksRepository { get; private set; }
+
+        public IStockdefineRepository StockdefineRepository { get; private set; }
+
+        public IStockmovementRepository StockmovementRepository { get; private set; }
+
+        public IStockRepository StockRepository { get; private set; }
+
+        public IWarehouseRepository WarehouseRepository { get; private set; }
 
         public int Complate()
         {

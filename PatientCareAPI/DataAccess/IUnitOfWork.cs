@@ -5,21 +5,28 @@ using System.Threading.Tasks;
 using PatientCareAPI.DataAccess.Repositories.Abstract.Auth;
 using PatientCareAPI.DataAccess.Repositories.Abstract.Settings;
 using PatientCareAPI.DataAccess.Repositories.Abstract.Application;
+using PatientCareAPI.DataAccess.Repositories.Abstract.Warehouse;
+
 namespace PatientCareAPI.DataAccess
 {
     public interface IUnitOfWork : IDisposable
     {
         //Application
         IPatientRepository PatientRepository { get; }
-        IPatientToStockRepostiyory PatientToStockRepostiyory { get; }
-        IStockRepository StockRepository { get; }
-        IDeactivestockRepository DeactivestockRepository { get; }
         IPatientmovementRepository PatientmovementRepository { get; }
-        IStockmovementRepository StockmovementRepository { get; }
         IPatientdefineRepository PatientdefineRepository { get; }
+
+        //Warehouse
+        IDeactivestockRepository DeactivestockRepository { get; }
+        IPatientstocksRepository PatientstocksRepository { get; }
+        IPatientstocksmovementRepository PatientstocksmovementRepository { get; }
         IPurchaseorderRepository PurchaseorderRepository { get; }
-        IPurchaseorderToStockRepository PurchaseorderToStockRepository { get; }
-        
+        IPurchaseorderstocksmovementRepository PurchaseorderstocksmovementRepository { get; }
+        IPurchaseorderstocksRepository PurchaseorderstocksRepository { get; }
+        IStockdefineRepository StockdefineRepository { get; }
+        IStockmovementRepository StockmovementRepository { get; }
+        IStockRepository StockRepository { get; }
+        IWarehouseRepository WarehouseRepository { get; }
 
         //Auth
         IAuthoryRepository AuthoryRepository { get; }
@@ -34,7 +41,6 @@ namespace PatientCareAPI.DataAccess
         ICasetodepartmentRepository CasetodepartmentRepository { get; }
         IFileRepository FileRepository { get; }
         IRemindingRepository RemindingRepository { get; }
-        IStockdefineRepository StockdefineRepository { get; }
         IUnittodepartmentRepository UnittodepartmentRepository { get; }
         IUnitRepository UnitRepository { get; }
         IDepartmentRepository DepartmentRepository { get; }

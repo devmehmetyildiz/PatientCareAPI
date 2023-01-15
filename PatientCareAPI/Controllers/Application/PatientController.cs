@@ -13,6 +13,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Security.Claims;
 using PatientCareAPI.Models.Settings;
+using PatientCareAPI.Models.Warehouse;
 
 namespace PatientCareAPI.Controllers.Application
 {
@@ -50,6 +51,11 @@ namespace PatientCareAPI.Controllers.Application
                 item.Patientdefine = unitOfWork.PatientdefineRepository.GetSingleRecord<PatientdefineModel>(u => u.ConcurrencyStamp == item.PatientdefineID);
                 var usedstocks = unitOfWork.PatientToStockRepostiyory.GetRecords<PatientToStockModel>(u => u.PatientID == item.ConcurrencyStamp).Select(u => u.StockID).ToList();
                 item.Stocks = unitOfWork.StockRepository.GetStocksbyGuids(usedstocks);
+                foreach (var stock in item.Stocks)
+                {
+                    stock.Stockdefine = unitOfWork.StockdefineRepository.GetStockByGuid(stock.Stockid);
+                }
+                item.Files = unitOfWork.FileRepository.GetRecords<FileModel>(u => u.Parentid == item.ConcurrencyStamp);
             }
             return List;
         }
@@ -81,6 +87,7 @@ namespace PatientCareAPI.Controllers.Application
             model.Patientdefine = unitOfWork.PatientdefineRepository.GetSingleRecord<PatientdefineModel>(u => u.ConcurrencyStamp == model.PatientdefineID);
             var usedstocks = unitOfWork.PatientToStockRepostiyory.GetRecords<PatientToStockModel>(u => u.PatientID == model.ConcurrencyStamp).Select(u => u.StockID).ToList();
             model.Stocks = unitOfWork.StockRepository.GetStocksbyGuids(usedstocks);
+            model.Files = unitOfWork.FileRepository.GetRecords<FileModel>(u => u.Parentid == model.ConcurrencyStamp);
             return Ok(model);
         }
 
@@ -90,13 +97,16 @@ namespace PatientCareAPI.Controllers.Application
         public IActionResult Add(PatientModel model)
         {
             var username = GetSessionUser();
-            string patientguid = Guid.NewGuid().ToString();
-            model.Patientdefine.ConcurrencyStamp = patientguid;
-            model.Patientdefine.CreatedUser = username;
-            model.Patientdefine.IsActive = true;
-            model.Patientdefine.CreateTime = DateTime.Now;
-            unitOfWork.PatientdefineRepository.Add(model.Patientdefine);
-            model.PatientdefineID = patientguid;
+            if (string.IsNullOrWhiteSpace(model.Patientdefine.ConcurrencyStamp))
+            {
+                string patientguid = Guid.NewGuid().ToString();
+                model.Patientdefine.ConcurrencyStamp = patientguid;
+                model.Patientdefine.CreatedUser = username;
+                model.Patientdefine.IsActive = true;
+                model.Patientdefine.CreateTime = DateTime.Now;
+                model.PatientdefineID = patientguid;
+                unitOfWork.PatientdefineRepository.Add(model.Patientdefine);
+            }
             string guid = Guid.NewGuid().ToString();
             model.ConcurrencyStamp = guid;
             model.CreatedUser = username;
@@ -155,58 +165,79 @@ namespace PatientCareAPI.Controllers.Application
         //}
 
 
-        //[Route("Update")]
-        //[AuthorizeMultiplePolicy(UserAuthory.Patients_Update)]
-        //[HttpPost]
-        //public IActionResult Update(PatientModel model)
-        //{
-        //    var claimsIdentity = this.User.Identity as ClaimsIdentity;
-        //    var username = claimsIdentity.FindFirst(ClaimTypes.Name)?.Value;
-        //    model.UpdatedUser = username;
-        //    model.UpdateTime = DateTime.Now;
-        //    model.PatientID = model.Patient.ConcurrencyStamp;
-        //    if (!Utilities.CheckAuth(UserAuthory.Patients_ManageAll, this.User.Identity))
-        //    {
-        //        if (model.CreatedUser == this.User.Identity.Name)
-        //        {
-        //            return StatusCode(403);
-        //        }
-        //    }
-        //    unitOfWork.ActivepatientRepository.update(unitOfWork.ActivepatientRepository.Getbyid(model.Id), model);
-        //    unitOfWork.Complate();
-        //    return Ok();
-        //}
+        [Route("Updatestocks")]
+        [AuthorizeMultiplePolicy(UserAuthory.Patients_Update)]
+        [HttpPost]
+        public IActionResult Updatestocks(PatientModel model)
+        {
+            var claimsIdentity = this.User.Identity as ClaimsIdentity;
+            var username = claimsIdentity.FindFirst(ClaimTypes.Name)?.Value;
+            model.UpdatedUser = username;
+            model.UpdateTime = DateTime.Now;
+            foreach (var stock in model.Stocks)
+            {
+                if (stock.ConcurrencyStamp != null && stock.ConcurrencyStamp != "")
+                {
+                    StockModel oldmodel = unitOfWork.StockRepository.GetSingleRecord<StockModel>(u => u.ConcurrencyStamp == stock.ConcurrencyStamp);
+                    stock.UpdatedUser = username;
+                    stock.UpdateTime = DateTime.Now;
+                    unitOfWork.StockRepository.update(oldmodel, stock);
+                }
+                else
+                {
+                    string stockguid = Guid.NewGuid().ToString();
+                    unitOfWork.PatientToStockRepostiyory.Add(new PatientToStockModel { PatientID = model.ConcurrencyStamp, StockID = stockguid });
+                    stock.CreatedUser = username;
+                    stock.CreateTime = DateTime.Now;
+                    stock.IsActive = true;
+                    stock.ConcurrencyStamp = stockguid;
+                    unitOfWork.StockRepository.Add(stock);
+                    unitOfWork.StockmovementRepository.Add(new StockmovementModel
+                    {
+                        Activestockid = stockguid,
+                        Amount = stock.Amount,
+                        Movementdate = DateTime.Now,
+                        Movementtype = ((int)Constants.Movementtypes.Create),
+                        Prevvalue = 0,
+                        Newvalue = stock.Amount,
+                        UserID = unitOfWork.UsersRepository.FindUserByName(username).ConcurrencyStamp,
+                    });
+                }
+            }
 
-        //[Route("Delete")]
-        //[AuthorizeMultiplePolicy(UserAuthory.Patients_Delete)]
-        //[HttpDelete]
-        //public IActionResult Delete(PatientModel model)
-        //{
-        //    var claimsIdentity = this.User.Identity as ClaimsIdentity;
-        //    var username = claimsIdentity.FindFirst(ClaimTypes.Name)?.Value;
-        //    model.DeleteUser = username;
-        //    model.IsActive = false;
-        //    model.DeleteTime = DateTime.Now;
-        //    if (!Utilities.CheckAuth(UserAuthory.Patients_ManageAll, this.User.Identity))
-        //    {
-        //        if (model.CreatedUser == this.User.Identity.Name)
-        //        {
-        //            return StatusCode(403);
-        //        }
-        //    }
-        //    unitOfWork.ActivepatientRepository.update(unitOfWork.ActivepatientRepository.Getbyid(model.Id), model);
-        //    unitOfWork.Complate();
-        //    return Ok();
-        //}
+            unitOfWork.Complate();
+            return Ok();
+        }
 
-        //[Route("DeleteFromDB")]
-        //[AuthorizeMultiplePolicy(UserAuthory.Admin)]
-        //[HttpDelete]
-        //public IActionResult DeleteFromDB(PatientModel model)
-        //{
-        //    unitOfWork.ActivepatientRepository.Remove(model.Id);
-        //    unitOfWork.Complate();
-        //    return Ok();
-        //}
+        [Route("Delete")]
+        [AuthorizeMultiplePolicy(UserAuthory.Patients_Delete)]
+        [HttpPost]
+        public IActionResult Delete(PatientModel model)
+        {
+            var claimsIdentity = this.User.Identity as ClaimsIdentity;
+            var username = claimsIdentity.FindFirst(ClaimTypes.Name)?.Value;
+            model.DeleteUser = username;
+            model.IsActive = false;
+            model.DeleteTime = DateTime.Now;
+            unitOfWork.PatientRepository.Remove(model.Id);
+            unitOfWork.FileRepository.Removefilesbyguid(model.ConcurrencyStamp);
+            var definesstocks = unitOfWork.PatientToStockRepostiyory.GetRecords<PatientToStockModel>(u => u.PatientID == model.ConcurrencyStamp).Select(u=>u.StockID).ToList();
+            if (definesstocks.Count > 0)
+            {
+                 unitOfWork.StockRepository.RemoveStocksbyGuids(definesstocks);
+            }
+            unitOfWork.Complate();
+            return Ok(FetchList(!model.Iswaitingactivation));
+        }
+
+        [Route("DeleteFromDB")]
+        [AuthorizeMultiplePolicy(UserAuthory.Admin)]
+        [HttpDelete]
+        public IActionResult DeleteFromDB(PatientModel model)
+        {
+            unitOfWork.PatientRepository.Remove(model.Id);
+            unitOfWork.Complate();
+            return Ok();
+        }
     }
 }

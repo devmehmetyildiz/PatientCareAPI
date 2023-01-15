@@ -1,5 +1,6 @@
 ﻿using PatientCareAPI.Models.Authentication;
 using PatientCareAPI.Models.Settings;
+using PatientCareAPI.Models.Warehouse;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -15,7 +16,7 @@ namespace PatientCareAPI.Models.Application
         [NotMapped]
         public PatientdefineModel Patientdefine { get; set; }
         [NotMapped]
-        public List<StockModel> Stocks { get; set; }
+        public List<PatientstocksModel> Stocks { get; set; }
         [NotMapped]
         public int Patientstatus { get; set; }
         public List<FileModel> Files { get; set; }

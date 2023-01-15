@@ -21,5 +21,11 @@ namespace PatientCareAPI.DataAccess.Repositories.Concrete.Settings
         {
             return _dbSet.FirstOrDefault(u => u.ConcurrencyStamp == guid);
         }
+
+        public void Removefilesbyguid(string guid)
+        {
+            string query = $"DELETE FROM `files` WHERE `Parentid` = '{guid}'";
+            var result = dbcontext.Database.ExecuteSqlRaw(query);
+        }
     }
 }
