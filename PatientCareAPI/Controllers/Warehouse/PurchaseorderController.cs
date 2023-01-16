@@ -25,6 +25,8 @@ namespace PatientCareAPI.Controllers.Warehouse
         private readonly ApplicationDBContext _context;
         Utilities Utilities;
         UnitOfWork unitOfWork;
+        // TODO: deactive durumlarında bağlı movement ve stoklarında deactive olması lazım
+
         public PurchaseorderController(IConfiguration configuration, ILogger<PurchaseorderController> logger, ApplicationDBContext context)
         {
             _configuration = configuration;
@@ -48,6 +50,13 @@ namespace PatientCareAPI.Controllers.Warehouse
                 purchaseorder.Case = unitOfWork.CaseRepository.GetSingleRecord<CaseModel>(u => u.ConcurrencyStamp == purchaseorder.CaseID);
                 foreach (var item in purchaseorder.Stocks)
                 {
+                    double amount = 0;
+                    var movements = unitOfWork.PurchaseorderstocksmovementRepository.GetRecords<PurchaseorderstocksmovementModel>(u => u.StockID == item.ConcurrencyStamp);
+                    foreach (var movement in movements)
+                    {
+                        amount += (movement.Amount * movement.Movementtype);
+                    }
+                    item.Amount = amount;
                     item.Stockdefine = unitOfWork.StockdefineRepository.GetSingleRecord<StockdefineModel>(u => u.ConcurrencyStamp == item.StockdefineID);
                     item.Department = unitOfWork.DepartmentRepository.GetSingleRecord<DepartmentModel>(u => u.ConcurrencyStamp == item.Departmentid);
                     item.Stockdefine.Unit = unitOfWork.UnitRepository.GetSingleRecord<UnitModel>(u => u.ConcurrencyStamp == item.Stockdefine.Unitid);
@@ -74,6 +83,13 @@ namespace PatientCareAPI.Controllers.Warehouse
             Data.Case = unitOfWork.CaseRepository.GetSingleRecord<CaseModel>(u => u.ConcurrencyStamp == Data.CaseID);
             foreach (var item in Data.Stocks)
             {
+                double amount = 0;
+                var movements = unitOfWork.PurchaseorderstocksmovementRepository.GetRecords<PurchaseorderstocksmovementModel>(u => u.StockID == item.ConcurrencyStamp);
+                foreach (var movement in movements)
+                {
+                    amount += (movement.Amount * movement.Movementtype);
+                }
+                item.Amount = amount;
                 item.Stockdefine = unitOfWork.StockdefineRepository.GetSingleRecord<StockdefineModel>(u => u.ConcurrencyStamp == item.StockdefineID);
                 item.Department = unitOfWork.DepartmentRepository.GetSingleRecord<DepartmentModel>(u => u.ConcurrencyStamp == item.Departmentid);
                 item.Stockdefine.Unit = unitOfWork.UnitRepository.GetSingleRecord<UnitModel>(u => u.ConcurrencyStamp == item.Stockdefine.Unitid);
@@ -117,15 +133,12 @@ namespace PatientCareAPI.Controllers.Warehouse
             return Ok(FetchList());
         }
 
-
-
         [Route("Update")]
         [AuthorizeMultiplePolicy(UserAuthory.Stock_Update)]
         [HttpPost]
         public IActionResult Update(PurchaseorderModel model)
         {
             var username = GetSessionUser();
-            unitOfWork.PurchaseorderRepository.update(unitOfWork.PurchaseorderRepository.GetSingleRecord<PurchaseorderModel>(u => u.ConcurrencyStamp == model.ConcurrencyStamp), model);
             model.UpdatedUser = username;
             model.UpdateTime = DateTime.Now;
             foreach (var stock in model.Stocks)
@@ -158,6 +171,7 @@ namespace PatientCareAPI.Controllers.Warehouse
                     });
                 }
             }
+            unitOfWork.PurchaseorderRepository.update(unitOfWork.PurchaseorderRepository.GetSingleRecord<PurchaseorderModel>(u => u.ConcurrencyStamp == model.ConcurrencyStamp), model);
             unitOfWork.Complate();
             return Ok(FetchList());
         }
@@ -168,7 +182,6 @@ namespace PatientCareAPI.Controllers.Warehouse
         public IActionResult Complete(PurchaseorderModel model)
         {
             var username = GetSessionUser();
-            unitOfWork.PurchaseorderRepository.update(unitOfWork.PurchaseorderRepository.GetSingleRecord<PurchaseorderModel>(u => u.ConcurrencyStamp == model.ConcurrencyStamp), model);
             model.UpdatedUser = username;
             model.UpdateTime = DateTime.Now;
             var caseID = unitOfWork.CaseRepository.GetRecords<CaseModel>(u => u.IsActive && u.CaseStatus == 1).FirstOrDefault()?.ConcurrencyStamp;
@@ -185,30 +198,81 @@ namespace PatientCareAPI.Controllers.Warehouse
                 u.StockdefineID == stock.StockdefineID &&
                 u.Departmentid == stock.Departmentid &&
                 u.WarehouseID == model.WarehouseID);
+                double amount = 0;
+                var movements = unitOfWork.PurchaseorderstocksmovementRepository.GetRecords<PurchaseorderstocksmovementModel>(u => u.StockID == stock.ConcurrencyStamp);
+                foreach (var movement in movements)
+                {
+                    amount += (movement.Amount * movement.Movementtype);
+                }
                 if (foundedstock == null)
                 {
                     string newStockguid = Guid.NewGuid().ToString();
-
-                    unitOfWork.StockRepository.Add(new StockModel { 
-                    CreatedUser = GetSessionUser(),
-                    CreateTime = DateTime.Now,
-                    Barcodeno = stock.Barcodeno,
-                    ConcurrencyStamp = newStockguid,
-                    Departmentid = stock.Departmentid,
-                    Info = stock.Info,
-                    Skt = stock.Skt,
-                    StockdefineID = stock.StockdefineID,
-                    WarehouseID = model.WarehouseID,
-                    Amount = 
-
+                    unitOfWork.StockRepository.Add(new StockModel
+                    {
+                        CreatedUser = GetSessionUser(),
+                        CreateTime = DateTime.Now,
+                        Barcodeno = stock.Barcodeno,
+                        ConcurrencyStamp = newStockguid,
+                        Departmentid = stock.Departmentid,
+                        Info = stock.Info,
+                        Skt = stock.Skt,
+                        StockdefineID = stock.StockdefineID,
+                        WarehouseID = model.WarehouseID,
+                    });
+                    unitOfWork.StockmovementRepository.Add(new StockmovementModel
+                    {
+                        StockID = newStockguid,
+                        Amount = amount,
+                        Movementdate = DateTime.Now,
+                        Movementtype = ((int)Constants.Movementtypes.income),
+                        Prevvalue = 0,
+                        Newvalue = amount,
+                        CreatedUser = GetSessionUser(),
+                        CreateTime = DateTime.Now
                     });
                 }
                 else
                 {
-
+                    double previousamount = 0;
+                    var oldmovements = unitOfWork.StockmovementRepository.GetRecords<StockmovementModel>(u => u.StockID == foundedstock.ConcurrencyStamp);
+                    foreach (var movement in oldmovements)
+                    {
+                        previousamount += (movement.Amount * movement.Movementtype);
+                    }
+                    unitOfWork.StockmovementRepository.Add(new StockmovementModel
+                    {
+                        StockID = foundedstock.ConcurrencyStamp,
+                        Amount = amount,
+                        Movementdate = DateTime.Now,
+                        Movementtype = ((int)Constants.Movementtypes.income),
+                        Prevvalue = previousamount,
+                        Newvalue = previousamount+amount,
+                        CreatedUser = GetSessionUser(),
+                        CreateTime = DateTime.Now
+                    });
                 }
             }
-           
+            unitOfWork.PurchaseorderRepository.update(unitOfWork.PurchaseorderRepository.GetSingleRecord<PurchaseorderModel>(u => u.ConcurrencyStamp == model.ConcurrencyStamp), model);
+            unitOfWork.Complate();
+            return Ok(FetchList());
+        }
+
+
+        [Route("Deactive")]
+        [AuthorizeMultiplePolicy(UserAuthory.Stock_Update)]
+        [HttpPost]
+        public IActionResult Deactive(PurchaseorderModel model)
+        {
+            var username = GetSessionUser();
+            model.UpdatedUser = username;
+            model.UpdateTime = DateTime.Now;
+            var caseID = unitOfWork.CaseRepository.GetRecords<CaseModel>(u => u.IsActive && u.CaseStatus == -1).FirstOrDefault()?.ConcurrencyStamp;
+            if (caseID == null)
+            {
+                return new ObjectResult(new ResponseModel { Status = "Can't Complete", Massage = "Sisteme tanımlı İptal etme durumu bulunamadı" }) { StatusCode = 403 };
+            }
+            model.CaseID = caseID;
+            unitOfWork.PurchaseorderRepository.update(unitOfWork.PurchaseorderRepository.GetSingleRecord<PurchaseorderModel>(u => u.ConcurrencyStamp == model.ConcurrencyStamp), model);
             unitOfWork.Complate();
             return Ok(FetchList());
         }

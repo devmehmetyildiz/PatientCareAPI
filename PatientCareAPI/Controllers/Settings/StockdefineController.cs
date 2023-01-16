@@ -13,6 +13,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using PatientCareAPI.Utils;
 using PatientCareAPI.Models.Application;
+using PatientCareAPI.Models.Warehouse;
 
 namespace PatientCareAPI.Controllers.Settings
 {

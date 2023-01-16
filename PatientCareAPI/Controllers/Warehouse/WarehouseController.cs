@@ -24,6 +24,7 @@ namespace PatientCareAPI.Controllers.Warehouse
         private readonly ApplicationDBContext _context;
         UnitOfWork unitOfWork;
         Utilities Utilities;
+        // TODO: update ve delete durumları işlenecek
         public WarehouseController(IConfiguration configuration, ILogger<WarehouseController> logger, ApplicationDBContext context)
         {
             _configuration = configuration;

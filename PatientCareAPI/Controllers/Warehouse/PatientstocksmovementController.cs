@@ -1,10 +1,8 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using PatientCareAPI.DataAccess;
-using PatientCareAPI.Models.Application;
 using PatientCareAPI.Models.Authentication;
 using PatientCareAPI.Models.Settings;
 using PatientCareAPI.Models.Warehouse;
@@ -19,14 +17,14 @@ namespace PatientCareAPI.Controllers.Warehouse
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class StockmovementController : ControllerBase
+    public class PatientstocksmovementController : ControllerBase
     {
         private IConfiguration _configuration;
-        private readonly ILogger<StockmovementController> _logger;
+        private readonly ILogger<PatientstocksmovementController> _logger;
         private readonly ApplicationDBContext _context;
         Utilities Utilities;
         UnitOfWork unitOfWork;
-        public StockmovementController(IConfiguration configuration, ILogger<StockmovementController> logger, ApplicationDBContext context)
+        public PatientstocksmovementController(IConfiguration configuration, ILogger<PatientstocksmovementController> logger, ApplicationDBContext context)
         {
             _configuration = configuration;
             _logger = logger;
@@ -40,12 +38,12 @@ namespace PatientCareAPI.Controllers.Warehouse
             return (this.User.Identity as ClaimsIdentity).FindFirst(ClaimTypes.Name)?.Value;
         }
 
-        private List<StockmovementModel> FetchList()
+        private List<PatientstocksmovementModel> FetchList()
         {
-            var List = unitOfWork.StockmovementRepository.GetRecords<StockmovementModel>(u => u.IsActive);
+            var List = unitOfWork.PatientstocksmovementRepository.GetRecords<PatientstocksmovementModel>(u => u.IsActive);
             foreach (var item in List)
             {
-                item.Stock = unitOfWork.StockRepository.GetSingleRecord<StockModel>(u => u.ConcurrencyStamp == item.StockID);
+                item.Stock = unitOfWork.PatientstocksRepository.GetSingleRecord<PatientstocksModel>(u => u.ConcurrencyStamp == item.StockID);
                 item.Stock.Stockdefine = unitOfWork.StockdefineRepository.GetSingleRecord<StockdefineModel>(u => u.ConcurrencyStamp == item.Stock.StockdefineID);
                 item.Stock.Department = unitOfWork.DepartmentRepository.GetSingleRecord<DepartmentModel>(u => u.ConcurrencyStamp == item.Stock.Departmentid);
                 item.Stock.Stockdefine.Unit = unitOfWork.UnitRepository.GetSingleRecord<UnitModel>(u => u.ConcurrencyStamp == item.Stock.Stockdefine.Unitid);
@@ -66,8 +64,8 @@ namespace PatientCareAPI.Controllers.Warehouse
         [HttpGet]
         public IActionResult GetSelected(string guid)
         {
-            StockmovementModel Data = unitOfWork.StockmovementRepository.GetSingleRecord<StockmovementModel>(u => u.ConcurrencyStamp == guid);
-            Data.Stock = unitOfWork.StockRepository.GetSingleRecord<StockModel>(u => u.ConcurrencyStamp == Data.StockID);
+            PatientstocksmovementModel Data = unitOfWork.PatientstocksmovementRepository.GetSingleRecord<PatientstocksmovementModel>(u => u.ConcurrencyStamp == guid);
+            Data.Stock = unitOfWork.PatientstocksRepository.GetSingleRecord<PatientstocksModel>(u => u.ConcurrencyStamp == Data.StockID);
             Data.Stock.Stockdefine = unitOfWork.StockdefineRepository.GetSingleRecord<StockdefineModel>(u => u.ConcurrencyStamp == Data.Stock.StockdefineID);
             Data.Stock.Department = unitOfWork.DepartmentRepository.GetSingleRecord<DepartmentModel>(u => u.ConcurrencyStamp == Data.Stock.Departmentid);
             Data.Stock.Stockdefine.Unit = unitOfWork.UnitRepository.GetSingleRecord<UnitModel>(u => u.ConcurrencyStamp == Data.Stock.Stockdefine.Unitid);
@@ -77,18 +75,15 @@ namespace PatientCareAPI.Controllers.Warehouse
         [Route("Update")]
         [AuthorizeMultiplePolicy(UserAuthory.Stock_Update)]
         [HttpPost]
-        public IActionResult Update(StockmovementModel model)
+        public IActionResult Update(PatientstocksmovementModel model)
         {
             var username = GetSessionUser();
-            StockmovementModel oldmodel = unitOfWork.StockmovementRepository.GetSingleRecord<StockmovementModel>(u => u.ConcurrencyStamp == model.ConcurrencyStamp);
+            PatientstocksmovementModel oldmodel = unitOfWork.PatientstocksmovementRepository.GetSingleRecord<PatientstocksmovementModel>(u => u.ConcurrencyStamp == model.ConcurrencyStamp);
             model.UpdatedUser = username;
             model.UpdateTime = DateTime.Now;
-            unitOfWork.StockmovementRepository.update(oldmodel, model);
+            unitOfWork.PatientstocksmovementRepository.update(oldmodel, model);
             unitOfWork.Complate();
             return Ok(FetchList());
         }
-
     }
 }
-
-

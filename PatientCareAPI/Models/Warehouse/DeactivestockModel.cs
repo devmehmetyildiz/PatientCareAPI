@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PatientCareAPI.Models.Settings;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -11,15 +12,15 @@ namespace PatientCareAPI.Models.Warehouse
     {
         [Key]
         public int Id { get; set; }
+        public string DepartmentID { get; set; }
         [NotMapped]
-        public string Stockname { get; set; }
+        public DepartmentModel Department { get; set; }
         [NotMapped]
-        public string Departmentname { get; set; }
-        [NotMapped]
-        public StockModel Activestock { get; set; }
-        public string Activestockid { get; set; }
+        public StockModel Stock { get; set; }
+        public string StockID { get; set; }
         public DateTime? Createtime { get; set; }
         public string Createduser { get; set; }
         public double Amount { get; set; }
+        public string Info { get; set; }
     }
 }
