@@ -119,19 +119,21 @@ namespace PatientCareAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Deactivestocks",
+                name: "DeactivestockModel",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    Activestockid = table.Column<string>(type: "text", nullable: true),
+                    DepartmentID = table.Column<string>(type: "text", nullable: true),
+                    StockID = table.Column<string>(type: "text", nullable: true),
                     Createtime = table.Column<DateTime>(type: "datetime", nullable: true),
                     Createduser = table.Column<string>(type: "text", nullable: true),
-                    Amount = table.Column<double>(type: "double", nullable: false)
+                    Amount = table.Column<double>(type: "double", nullable: false),
+                    Info = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Deactivestocks", x => x.Id);
+                    table.PrimaryKey("PK_DeactivestockModel", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -279,19 +281,56 @@ namespace PatientCareAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PatientToStocks",
+                name: "Patientstocks",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    PatientID = table.Column<string>(type: "varchar(85)", maxLength: 85, nullable: true),
-                    StockID = table.Column<string>(type: "varchar(85)", maxLength: 85, nullable: true),
-                    ParentstockID = table.Column<string>(type: "text", nullable: true),
-                    Creatingamount = table.Column<double>(type: "double", nullable: false)
+                    PatientID = table.Column<string>(type: "text", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "varchar(85)", maxLength: 85, nullable: true),
+                    CreatedUser = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true),
+                    UpdatedUser = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true),
+                    DeleteUser = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true),
+                    CreateTime = table.Column<DateTime>(type: "datetime", nullable: true),
+                    UpdateTime = table.Column<DateTime>(type: "datetime", nullable: true),
+                    DeleteTime = table.Column<DateTime>(type: "datetime", nullable: true),
+                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    StockdefineID = table.Column<string>(type: "text", nullable: true),
+                    Departmentid = table.Column<string>(type: "text", nullable: true),
+                    Skt = table.Column<DateTime>(type: "datetime", nullable: true),
+                    Barcodeno = table.Column<string>(type: "text", nullable: true),
+                    Info = table.Column<string>(type: "text", nullable: true),
+                    Willdelete = table.Column<bool>(type: "tinyint(1)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PatientToStocks", x => x.Id);
+                    table.PrimaryKey("PK_Patientstocks", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Patientstocksmovements",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    ConcurrencyStamp = table.Column<string>(type: "varchar(85)", maxLength: 85, nullable: true),
+                    CreatedUser = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true),
+                    UpdatedUser = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true),
+                    DeleteUser = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true),
+                    CreateTime = table.Column<DateTime>(type: "datetime", nullable: true),
+                    UpdateTime = table.Column<DateTime>(type: "datetime", nullable: true),
+                    DeleteTime = table.Column<DateTime>(type: "datetime", nullable: true),
+                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    StockID = table.Column<string>(type: "text", nullable: true),
+                    Movementtype = table.Column<int>(type: "int", nullable: false),
+                    Amount = table.Column<double>(type: "double", nullable: false),
+                    Prevvalue = table.Column<double>(type: "double", nullable: false),
+                    Newvalue = table.Column<double>(type: "double", nullable: false),
+                    Movementdate = table.Column<DateTime>(type: "datetime", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Patientstocksmovements", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -325,7 +364,12 @@ namespace PatientCareAPI.Migrations
                     Company = table.Column<string>(type: "text", nullable: true),
                     Username = table.Column<string>(type: "text", nullable: true),
                     Purchaseprice = table.Column<double>(type: "double", nullable: false),
+                    Purchasenumber = table.Column<string>(type: "text", nullable: true),
+                    Companypersonelname = table.Column<string>(type: "text", nullable: true),
+                    Personelname = table.Column<string>(type: "text", nullable: true),
                     Purchasedate = table.Column<DateTime>(type: "datetime", nullable: true),
+                    WarehouseID = table.Column<string>(type: "text", nullable: true),
+                    CaseID = table.Column<string>(type: "text", nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "varchar(85)", maxLength: 85, nullable: true),
                     CreatedUser = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true),
                     UpdatedUser = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true),
@@ -341,17 +385,56 @@ namespace PatientCareAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "PurchaseorderToStocks",
+                name: "Purchaseorderstocks",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    PurchaseID = table.Column<string>(type: "text", nullable: true),
-                    StockID = table.Column<string>(type: "text", nullable: true)
+                    PurchaseorderID = table.Column<string>(type: "text", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "varchar(85)", maxLength: 85, nullable: true),
+                    CreatedUser = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true),
+                    UpdatedUser = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true),
+                    DeleteUser = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true),
+                    CreateTime = table.Column<DateTime>(type: "datetime", nullable: true),
+                    UpdateTime = table.Column<DateTime>(type: "datetime", nullable: true),
+                    DeleteTime = table.Column<DateTime>(type: "datetime", nullable: true),
+                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    StockdefineID = table.Column<string>(type: "text", nullable: true),
+                    Departmentid = table.Column<string>(type: "text", nullable: true),
+                    Skt = table.Column<DateTime>(type: "datetime", nullable: true),
+                    Barcodeno = table.Column<string>(type: "text", nullable: true),
+                    Info = table.Column<string>(type: "text", nullable: true),
+                    Willdelete = table.Column<bool>(type: "tinyint(1)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_PurchaseorderToStocks", x => x.Id);
+                    table.PrimaryKey("PK_Purchaseorderstocks", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Purchaseorderstocksmovements",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    ConcurrencyStamp = table.Column<string>(type: "varchar(85)", maxLength: 85, nullable: true),
+                    CreatedUser = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true),
+                    UpdatedUser = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true),
+                    DeleteUser = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true),
+                    CreateTime = table.Column<DateTime>(type: "datetime", nullable: true),
+                    UpdateTime = table.Column<DateTime>(type: "datetime", nullable: true),
+                    DeleteTime = table.Column<DateTime>(type: "datetime", nullable: true),
+                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    StockID = table.Column<string>(type: "text", nullable: true),
+                    Movementtype = table.Column<int>(type: "int", nullable: false),
+                    Amount = table.Column<double>(type: "double", nullable: false),
+                    Prevvalue = table.Column<double>(type: "double", nullable: false),
+                    Newvalue = table.Column<double>(type: "double", nullable: false),
+                    Movementdate = table.Column<DateTime>(type: "datetime", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Purchaseorderstocksmovements", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -437,7 +520,7 @@ namespace PatientCareAPI.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(type: "text", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: true),
                     Description = table.Column<string>(type: "text", nullable: true),
                     Unitid = table.Column<string>(type: "text", nullable: true),
                     Departmentid = table.Column<string>(type: "text", nullable: true),
@@ -461,8 +544,15 @@ namespace PatientCareAPI.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    UserID = table.Column<string>(type: "text", nullable: true),
-                    Activestockid = table.Column<string>(type: "text", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "varchar(85)", maxLength: 85, nullable: true),
+                    CreatedUser = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true),
+                    UpdatedUser = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true),
+                    DeleteUser = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true),
+                    CreateTime = table.Column<DateTime>(type: "datetime", nullable: true),
+                    UpdateTime = table.Column<DateTime>(type: "datetime", nullable: true),
+                    DeleteTime = table.Column<DateTime>(type: "datetime", nullable: true),
+                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    StockID = table.Column<string>(type: "text", nullable: true),
                     Movementtype = table.Column<int>(type: "int", nullable: false),
                     Amount = table.Column<double>(type: "double", nullable: false),
                     Prevvalue = table.Column<double>(type: "double", nullable: false),
@@ -480,17 +570,11 @@ namespace PatientCareAPI.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    Stockid = table.Column<string>(type: "text", nullable: true),
-                    Departmentid = table.Column<string>(type: "text", nullable: true),
-                    Skt = table.Column<DateTime>(type: "datetime", nullable: true),
-                    Barcodeno = table.Column<string>(type: "text", nullable: true),
-                    Usageamount = table.Column<double>(type: "double", nullable: false),
-                    Amount = table.Column<double>(type: "double", nullable: false),
-                    Maxamount = table.Column<double>(type: "double", nullable: false),
+                    WarehouseID = table.Column<string>(type: "text", nullable: true),
+                    Order = table.Column<int>(type: "int", nullable: false),
                     Isonusage = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     Isdeactive = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     Deactivetime = table.Column<DateTime>(type: "datetime", nullable: true),
-                    Info = table.Column<string>(type: "text", nullable: true),
                     Source = table.Column<string>(type: "text", nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "varchar(85)", maxLength: 85, nullable: true),
                     CreatedUser = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true),
@@ -499,7 +583,13 @@ namespace PatientCareAPI.Migrations
                     CreateTime = table.Column<DateTime>(type: "datetime", nullable: true),
                     UpdateTime = table.Column<DateTime>(type: "datetime", nullable: true),
                     DeleteTime = table.Column<DateTime>(type: "datetime", nullable: true),
-                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: false)
+                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    StockdefineID = table.Column<string>(type: "text", nullable: true),
+                    Departmentid = table.Column<string>(type: "text", nullable: true),
+                    Skt = table.Column<DateTime>(type: "datetime", nullable: true),
+                    Barcodeno = table.Column<string>(type: "text", nullable: true),
+                    Info = table.Column<string>(type: "text", nullable: true),
+                    Willdelete = table.Column<bool>(type: "tinyint(1)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -684,6 +774,7 @@ namespace PatientCareAPI.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "text", nullable: true),
+                    Order = table.Column<int>(type: "int", nullable: false),
                     Parentid = table.Column<string>(type: "text", nullable: true),
                     Filename = table.Column<string>(type: "text", nullable: true),
                     Filefolder = table.Column<string>(type: "text", nullable: true),
@@ -739,7 +830,7 @@ namespace PatientCareAPI.Migrations
                 name: "Datatables");
 
             migrationBuilder.DropTable(
-                name: "Deactivestocks");
+                name: "DeactivestockModel");
 
             migrationBuilder.DropTable(
                 name: "Departments");
@@ -757,7 +848,10 @@ namespace PatientCareAPI.Migrations
                 name: "Patientmovements");
 
             migrationBuilder.DropTable(
-                name: "PatientToStocks");
+                name: "Patientstocks");
+
+            migrationBuilder.DropTable(
+                name: "Patientstocksmovements");
 
             migrationBuilder.DropTable(
                 name: "Patienttypes");
@@ -766,7 +860,10 @@ namespace PatientCareAPI.Migrations
                 name: "Purchaseorders");
 
             migrationBuilder.DropTable(
-                name: "PurchaseorderToStocks");
+                name: "Purchaseorderstocks");
+
+            migrationBuilder.DropTable(
+                name: "Purchaseorderstocksmovements");
 
             migrationBuilder.DropTable(
                 name: "Remindings");

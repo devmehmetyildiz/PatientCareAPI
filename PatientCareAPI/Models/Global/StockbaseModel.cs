@@ -21,6 +21,6 @@ namespace PatientCareAPI.Models.Global
         [NotMapped]
         public double Amount { get; set; }
         public string Info { get; set; }
-
+        public bool Willdelete { get; set; }
     }
 }

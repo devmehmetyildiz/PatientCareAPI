@@ -17,14 +17,14 @@ namespace PatientCareAPI.Controllers.Warehouse
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PatientstocksController : ControllerBase
+    public class PatientstockController : ControllerBase
     {
         private IConfiguration _configuration;
-        private readonly ILogger<PatientstocksController> _logger;
+        private readonly ILogger<PatientstockController> _logger;
         private readonly ApplicationDBContext _context;
         Utilities Utilities;
         UnitOfWork unitOfWork;
-        public PatientstocksController(IConfiguration configuration, ILogger<PatientstocksController> logger, ApplicationDBContext context)
+        public PatientstockController(IConfiguration configuration, ILogger<PatientstockController> logger, ApplicationDBContext context)
         {
             _configuration = configuration;
             _logger = logger;

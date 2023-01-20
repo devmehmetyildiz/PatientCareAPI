@@ -198,29 +198,42 @@ namespace PatientCareAPI.Controllers.Application
             {
                 if (stock.ConcurrencyStamp != null && stock.ConcurrencyStamp != "")
                 {
-                    StockModel oldmodel = unitOfWork.StockRepository.GetSingleRecord<StockModel>(u => u.ConcurrencyStamp == stock.ConcurrencyStamp);
-                    stock.UpdatedUser = username;
-                    stock.UpdateTime = DateTime.Now;
-                    unitOfWork.StockRepository.update(oldmodel, stock);
+                    if (!stock.Willdelete)
+                    {
+                        PatientstocksModel oldmodel = unitOfWork.PatientstocksRepository.GetSingleRecord<PatientstocksModel>(u => u.ConcurrencyStamp == stock.ConcurrencyStamp);
+                        stock.UpdatedUser = username;
+                        stock.UpdateTime = DateTime.Now;
+                        unitOfWork.PatientstocksRepository.update(oldmodel, stock);
+                    }
+                    else
+                    {
+                        PatientstocksModel oldmodel = unitOfWork.PatientstocksRepository.GetSingleRecord<PatientstocksModel>(u => u.ConcurrencyStamp == stock.ConcurrencyStamp);
+                        unitOfWork.PatientstocksRepository.Remove(oldmodel.Id);
+                        var movements = unitOfWork.PatientmovementRepository.GetRecords<PatientstocksmovementModel>(u => u.StockID == stock.ConcurrencyStamp);
+                        foreach (var item in movements)
+                        {
+                            unitOfWork.PatientstocksmovementRepository.Remove(item.Id);
+                        }
+                    }
                 }
                 else
                 {
                     string stockguid = Guid.NewGuid().ToString();
-                    unitOfWork.PatientToStockRepostiyory.Add(new PatientToStockModel { PatientID = model.ConcurrencyStamp, StockID = stockguid });
-                    stock.CreatedUser = username;
+                    stock.CreatedUser = GetSessionUser();
                     stock.CreateTime = DateTime.Now;
                     stock.IsActive = true;
                     stock.ConcurrencyStamp = stockguid;
-                    unitOfWork.StockRepository.Add(stock);
-                    unitOfWork.StockmovementRepository.Add(new StockmovementModel
+                    unitOfWork.PatientstocksRepository.Add(stock);
+                    unitOfWork.PatientstocksmovementRepository.Add(new PatientstocksmovementModel
                     {
-                        Activestockid = stockguid,
+                        StockID = stockguid,
                         Amount = stock.Amount,
                         Movementdate = DateTime.Now,
-                        Movementtype = ((int)Constants.Movementtypes.Create),
+                        Movementtype = ((int)Constants.Movementtypes.income),
                         Prevvalue = 0,
                         Newvalue = stock.Amount,
-                        UserID = unitOfWork.UsersRepository.FindUserByName(username).ConcurrencyStamp,
+                        CreatedUser = GetSessionUser(),
+                        CreateTime = DateTime.Now
                     });
                 }
             }
@@ -241,10 +254,16 @@ namespace PatientCareAPI.Controllers.Application
             model.DeleteTime = DateTime.Now;
             unitOfWork.PatientRepository.Remove(model.Id);
             unitOfWork.FileRepository.Removefilesbyguid(model.ConcurrencyStamp);
-            var definesstocks = unitOfWork.PatientToStockRepostiyory.GetRecords<PatientToStockModel>(u => u.PatientID == model.ConcurrencyStamp).Select(u=>u.StockID).ToList();
-            if (definesstocks.Count > 0)
+            var stocks = unitOfWork.PatientstocksRepository.GetRecords<PatientstocksModel>(u => u.PatientID == model.ConcurrencyStamp);
+            foreach (var stock in stocks)
             {
-                 unitOfWork.StockRepository.RemoveStocksbyGuids(definesstocks);
+                var oldmodel = unitOfWork.PatientstocksRepository.GetSingleRecord<PatientstocksModel>(u => u.ConcurrencyStamp == stock.ConcurrencyStamp);
+                unitOfWork.PatientstocksRepository.Remove(oldmodel.Id);
+                var movements = unitOfWork.PatientmovementRepository.GetRecords<PatientstocksmovementModel>(u => u.StockID == stock.ConcurrencyStamp);
+                foreach (var item in movements)
+                {
+                    unitOfWork.PatientstocksmovementRepository.Remove(item.Id);
+                }
             }
             unitOfWork.Complate();
             return Ok(FetchList(!model.Iswaitingactivation));

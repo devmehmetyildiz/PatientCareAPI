@@ -116,7 +116,7 @@ namespace PatientCareAPI.Controllers.Settings
         [HttpPost]
         public IActionResult Delete(StockdefineModel model)
         {
-            var stocklist = unitOfWork.StockRepository.GetRecords<StockModel>(u=>u.IsActive&&u.Stockid==model.ConcurrencyStamp);
+            var stocklist = unitOfWork.StockRepository.GetRecords<StockModel>(u=>u.IsActive&&u.StockdefineID==model.ConcurrencyStamp);
             if (stocklist.Count > 0)
             {
                 return new ObjectResult(new ResponseModel { Status = "Can't Delete", Massage = model.Name + " ürününe bağlı aktif ürün var" }) { StatusCode = 403 };
