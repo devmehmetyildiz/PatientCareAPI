@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using PatientCareAPI.DataAccess;
+using PatientCareAPI.Models.Application;
 using PatientCareAPI.Models.Authentication;
 using PatientCareAPI.Models.Settings;
 using PatientCareAPI.Models.Warehouse;
@@ -76,6 +77,7 @@ namespace PatientCareAPI.Controllers.Warehouse
             {
                 amount += (movement.Amount * movement.Movementtype);
             }
+            Data.Patient = unitOfWork.PatientRepository.GetSingleRecord<PatientModel>(u => u.ConcurrencyStamp == Data.PatientID);
             Data.Stockdefine = unitOfWork.StockdefineRepository.GetSingleRecord<StockdefineModel>(u => u.ConcurrencyStamp == Data.StockdefineID);
             Data.Department = unitOfWork.DepartmentRepository.GetSingleRecord<DepartmentModel>(u => u.ConcurrencyStamp == Data.Departmentid);
             Data.Stockdefine.Unit = unitOfWork.UnitRepository.GetSingleRecord<UnitModel>(u => u.ConcurrencyStamp == Data.Stockdefine.Unitid);

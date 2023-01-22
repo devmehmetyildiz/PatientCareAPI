@@ -17,14 +17,14 @@ namespace PatientCareAPI.Controllers.Warehouse
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class PurchaseorderstocksmovementController : ControllerBase
+    public class PurchaseorderstockmovementController : ControllerBase
     {
         private IConfiguration _configuration;
-        private readonly ILogger<PurchaseorderstocksmovementController> _logger;
+        private readonly ILogger<PurchaseorderstockmovementController> _logger;
         private readonly ApplicationDBContext _context;
         Utilities Utilities;
         UnitOfWork unitOfWork;
-        public PurchaseorderstocksmovementController(IConfiguration configuration, ILogger<PurchaseorderstocksmovementController> logger, ApplicationDBContext context)
+        public PurchaseorderstockmovementController(IConfiguration configuration, ILogger<PurchaseorderstockmovementController> logger, ApplicationDBContext context)
         {
             _configuration = configuration;
             _logger = logger;
@@ -71,6 +71,32 @@ namespace PatientCareAPI.Controllers.Warehouse
             return Ok(Data);
         }
 
+        [Route("Add")]
+        [AuthorizeMultiplePolicy(UserAuthory.Stock_Update)]
+        [HttpPost]
+        public IActionResult Add(PurchaseorderstocksmovementModel model)
+        {
+            var username = GetSessionUser();
+            string guid = Guid.NewGuid().ToString();
+            model.CreatedUser = username;
+            model.CreateTime = DateTime.Now;
+            model.IsActive = true;
+            model.ConcurrencyStamp = guid;
+
+            double amount = 0;
+            var movements = unitOfWork.PurchaseorderstocksmovementRepository.GetRecords<PurchaseorderstocksmovementModel>(u => u.StockID == model.StockID&& u.IsActive);
+            foreach (var movement in movements)
+            {
+                amount += (movement.Amount * movement.Movementtype);
+            }
+            model.Prevvalue = amount;
+            model.Newvalue = amount + (model.Amount * model.Movementtype);
+            model.Movementdate = DateTime.Now;
+            unitOfWork.PurchaseorderstocksmovementRepository.Add(model);
+            unitOfWork.Complate();
+            return Ok(FetchList());
+        }
+
         [Route("Update")]
         [AuthorizeMultiplePolicy(UserAuthory.Stock_Update)]
         [HttpPost]
@@ -81,6 +107,21 @@ namespace PatientCareAPI.Controllers.Warehouse
             model.UpdatedUser = username;
             model.UpdateTime = DateTime.Now;
             unitOfWork.PurchaseorderstocksmovementRepository.update(oldmodel, model);
+            unitOfWork.Complate();
+            return Ok(FetchList());
+        }
+
+        [Route("Delete")]
+        [AuthorizeMultiplePolicy(UserAuthory.Stock_Update)]
+        [HttpPost]
+        public IActionResult Delete(string guid)
+        {
+            var username = GetSessionUser();
+            PurchaseorderstocksmovementModel oldmodel = unitOfWork.PurchaseorderstocksmovementRepository.GetSingleRecord<PurchaseorderstocksmovementModel>(u => u.ConcurrencyStamp == guid);
+            oldmodel.DeleteUser = username;
+            oldmodel.DeleteTime = DateTime.Now;
+            oldmodel.IsActive = false;
+            unitOfWork.PurchaseorderstocksmovementRepository.update(unitOfWork.PurchaseorderstocksmovementRepository.Getbyid(oldmodel.Id), oldmodel);
             unitOfWork.Complate();
             return Ok(FetchList());
         }

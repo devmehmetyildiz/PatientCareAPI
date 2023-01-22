@@ -44,8 +44,8 @@ namespace PatientCareAPI.Controllers.Warehouse
             var List = unitOfWork.WarehouseRepository.GetRecords<WarehouseModel>(u => u.IsActive);
             foreach (var item in List)
             {
-                item.Items = unitOfWork.StockRepository.GetRecords<StockModel>(u => u.IsActive && u.WarehouseID == item.ConcurrencyStamp);
-                foreach (var stockitem in item.Items)
+                item.Stocks = unitOfWork.StockRepository.GetRecords<StockModel>(u => u.IsActive && u.WarehouseID == item.ConcurrencyStamp);
+                foreach (var stockitem in item.Stocks)
                 {
                     double amount = 0;
                     var movements = unitOfWork.StockmovementRepository.GetRecords<StockmovementModel>(u => u.StockID == stockitem.ConcurrencyStamp);
@@ -76,8 +76,8 @@ namespace PatientCareAPI.Controllers.Warehouse
         public IActionResult GetSelected(string guid)
         {
             var Data = unitOfWork.WarehouseRepository.GetSingleRecord<WarehouseModel>(u => u.IsActive && u.ConcurrencyStamp == guid);
-            Data.Items = unitOfWork.StockRepository.GetRecords<StockModel>(u => u.IsActive && u.WarehouseID == Data.ConcurrencyStamp);
-            foreach (var stockitem in Data.Items)
+            Data.Stocks = unitOfWork.StockRepository.GetRecords<StockModel>(u => u.IsActive && u.WarehouseID == Data.ConcurrencyStamp);
+            foreach (var stockitem in Data.Stocks)
             {
                 double amount = 0;
                 var movements = unitOfWork.StockmovementRepository.GetRecords<StockmovementModel>(u => u.StockID == stockitem.ConcurrencyStamp);

@@ -17,6 +17,7 @@ namespace PatientCareAPI.DataAccess.Repositories.Concrete.Auth
             _dbSet = dbcontext.Set<AuthoryModel>();
         }
 
+       
         public AuthoryModel FindAuthoryByName(string yetkiName)
         {
             return _dbSet.FirstOrDefault(u => u.Name== yetkiName);

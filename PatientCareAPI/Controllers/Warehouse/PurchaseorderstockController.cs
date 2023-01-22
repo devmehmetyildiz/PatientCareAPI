@@ -43,11 +43,12 @@ namespace PatientCareAPI.Controllers.Warehouse
             foreach (var item in List)
             {
                 double amount = 0;
-                var movements = unitOfWork.PurchaseorderstocksmovementRepository.GetRecords<StockmovementModel>(u => u.StockID == item.ConcurrencyStamp);
+                var movements = unitOfWork.PurchaseorderstocksmovementRepository.GetRecords<PurchaseorderstocksmovementModel>(u => u.StockID == item.ConcurrencyStamp && u.IsActive);
                 foreach (var movement in movements)
                 {
                     amount += (movement.Amount * movement.Movementtype);
                 }
+                item.Amount = amount;
                 item.Stockdefine = unitOfWork.StockdefineRepository.GetSingleRecord<StockdefineModel>(u => u.ConcurrencyStamp == item.StockdefineID);
                 item.Department = unitOfWork.DepartmentRepository.GetSingleRecord<DepartmentModel>(u => u.ConcurrencyStamp == item.Departmentid);
                 item.Stockdefine.Unit = unitOfWork.UnitRepository.GetSingleRecord<UnitModel>(u => u.ConcurrencyStamp == item.Stockdefine.Unitid);
@@ -70,11 +71,12 @@ namespace PatientCareAPI.Controllers.Warehouse
         {
             PurchaseorderstocksModel Data = unitOfWork.PurchaseorderstocksRepository.GetSingleRecord<PurchaseorderstocksModel>(u => u.ConcurrencyStamp == guid);
             double amount = 0;
-            var movements = unitOfWork.PurchaseorderstocksmovementRepository.GetRecords<StockmovementModel>(u => u.StockID == Data.ConcurrencyStamp);
+            var movements = unitOfWork.PurchaseorderstocksmovementRepository.GetRecords<PurchaseorderstocksmovementModel>(u => u.StockID == Data.ConcurrencyStamp && u.IsActive);
             foreach (var movement in movements)
             {
                 amount += (movement.Amount * movement.Movementtype);
             }
+            Data.Amount = amount;
             Data.Stockdefine = unitOfWork.StockdefineRepository.GetSingleRecord<StockdefineModel>(u => u.ConcurrencyStamp == Data.StockdefineID);
             Data.Department = unitOfWork.DepartmentRepository.GetSingleRecord<DepartmentModel>(u => u.ConcurrencyStamp == Data.Departmentid);
             Data.Stockdefine.Unit = unitOfWork.UnitRepository.GetSingleRecord<UnitModel>(u => u.ConcurrencyStamp == Data.Stockdefine.Unitid);
@@ -101,7 +103,9 @@ namespace PatientCareAPI.Controllers.Warehouse
                 Prevvalue = 0,
                 Newvalue = model.Amount,
                 CreatedUser = GetSessionUser(),
-                CreateTime = DateTime.Now
+                CreateTime = DateTime.Now,
+                IsActive = true,
+                ConcurrencyStamp = Guid.NewGuid().ToString()
             });
             unitOfWork.Complate();
             return Ok(FetchList());

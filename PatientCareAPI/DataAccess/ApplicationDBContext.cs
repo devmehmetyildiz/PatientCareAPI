@@ -23,7 +23,7 @@ namespace PatientCareAPI.DataAccess
         public DbSet<PatientdefineModel> Patientdefines { get; set; }
 
         //Warehouse
-        public DbSet<DeactivestockModel> Warehouses { get; set; }
+        public DbSet<WarehouseModel> Warehouses { get; set; }
         public DbSet<PatientstocksModel> Patientstocks { get; set; }
         public DbSet<PatientstocksmovementModel> Patientstocksmovements { get; set; }
         public DbSet<PurchaseorderModel> Purchaseorders { get; set; }
@@ -58,8 +58,7 @@ namespace PatientCareAPI.DataAccess
         public DbSet<PatienttypeModel> Patienttypes { get; set; }
         public DbSet<CostumertypeModel> Costumertypes { get; set; }
         public DbSet<CostumertypetoDepartmentModel> CostumertypetoDepartments{ get; set; }
-        public DbSet<DatatableModel> Datatables { get; set; }
-
+        public DbSet<TablemetaconfigModel> Tablemetaconfigs { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -57,7 +57,7 @@ namespace PatientCareAPI.DataAccess
             PatienttypeRepository = new PatienttypeRepository(_dBContext);
             CostumertypeRepository = new CostumertypeRepository(_dBContext);
             CostumertypetoDepartmentRepository = new CostumertypetoDepartmentRepository(_dBContext);
-            DatatableRepository = new DatatableRepository(_dBContext);
+            TablemetaconfigRepository = new TablemetaconfigRepository(_dBContext);
         }
 
         public IAuthoryRepository AuthoryRepository { get; private set; }
@@ -106,8 +106,6 @@ namespace PatientCareAPI.DataAccess
 
         public IPatientmovementRepository PatientmovementRepository { get; private set; }
 
-        public IDatatableRepository DatatableRepository { get; private set; }
-
         public IDeactivestockRepository DeactivestockRepository { get; private set; }
 
         public IPatientstocksRepository PatientstocksRepository { get; private set; }
@@ -127,6 +125,8 @@ namespace PatientCareAPI.DataAccess
         public IStockRepository StockRepository { get; private set; }
 
         public IWarehouseRepository WarehouseRepository { get; private set; }
+
+        public ITablemetaconfigRepository TablemetaconfigRepository { get; private set; }
 
         public int Complate()
         {

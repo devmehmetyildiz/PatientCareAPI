@@ -41,6 +41,10 @@ namespace PatientCareAPI.Controllers.Auth
             securityutils = new CryptographyProcessor();
            
         }
+        private string GetSessionUser()
+        {
+            return (this.User.Identity as ClaimsIdentity).FindFirst(ClaimTypes.Name)?.Value;
+        }
 
         [AllowAnonymous]
         [HttpGet]
@@ -194,7 +198,34 @@ namespace PatientCareAPI.Controllers.Auth
             return Ok(roles);
         }
 
-     
+        [Authorize]
+        [HttpGet]
+        [Route("GetTableMeta")]
+        public async Task<IActionResult> GetTableMeta()
+        {
+            return Ok(unitOfWork.TablemetaconfigRepository.GetRecords<TablemetaconfigModel>(u=>u.Username == GetSessionUser()));
+        }
+
+        [Authorize]
+        [HttpPost]
+        [Route("SaveTableMeta")]
+        public async Task<IActionResult> SaveTableMeta(TablemetaconfigModel model)
+        {
+            var data = unitOfWork.TablemetaconfigRepository.GetSingleRecord<TablemetaconfigModel>(u => u.Username == model.Username && u.Meta == model.Meta);
+            if (data == null)
+            {
+                model.Username = GetSessionUser();
+                unitOfWork.TablemetaconfigRepository.Add(model);
+            }
+            else
+            {
+                unitOfWork.TablemetaconfigRepository.update(unitOfWork.TablemetaconfigRepository.Getbyid(model.Id), model);
+            }
+            unitOfWork.Complate();
+            return Ok(unitOfWork.TablemetaconfigRepository.GetRecords<TablemetaconfigModel>(u => u.Username == GetSessionUser()));
+        }
+
+
         public async Task<IActionResult> CheckCredentials(LoginModel model)
         {
            

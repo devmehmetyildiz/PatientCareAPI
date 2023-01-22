@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PatientCareAPI.DataAccess;
 
 namespace PatientCareAPI.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20230120204125_b2")]
+    partial class b2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -356,26 +358,6 @@ namespace PatientCareAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("RoletoAuthories");
-                });
-
-            modelBuilder.Entity("PatientCareAPI.Models.Authentication.TablemetaconfigModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<string>("Config")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Meta")
-                        .HasColumnType("text");
-
-                    b.Property<string>("Username")
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Tablemetaconfigs");
                 });
 
             modelBuilder.Entity("PatientCareAPI.Models.Authentication.UsersModel", b =>
@@ -1107,7 +1089,7 @@ namespace PatientCareAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Deactivestocks");
+                    b.ToTable("DeactivestockModel");
                 });
 
             modelBuilder.Entity("PatientCareAPI.Models.Warehouse.PatientstocksModel", b =>
@@ -1594,51 +1576,6 @@ namespace PatientCareAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Stockmovements");
-                });
-
-            modelBuilder.Entity("PatientCareAPI.Models.Warehouse.WarehouseModel", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .HasMaxLength(85)
-                        .HasColumnType("varchar(85)");
-
-                    b.Property<DateTime?>("CreateTime")
-                        .HasColumnType("datetime");
-
-                    b.Property<string>("CreatedUser")
-                        .HasMaxLength(30)
-                        .HasColumnType("varchar(30)");
-
-                    b.Property<DateTime?>("DeleteTime")
-                        .HasColumnType("datetime");
-
-                    b.Property<string>("DeleteUser")
-                        .HasMaxLength(30)
-                        .HasColumnType("varchar(30)");
-
-                    b.Property<string>("Info")
-                        .HasColumnType("text");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("tinyint(1)");
-
-                    b.Property<string>("Name")
-                        .HasColumnType("text");
-
-                    b.Property<DateTime?>("UpdateTime")
-                        .HasColumnType("datetime");
-
-                    b.Property<string>("UpdatedUser")
-                        .HasMaxLength(30)
-                        .HasColumnType("varchar(30)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Warehouses");
                 });
 
             modelBuilder.Entity("PatientCareAPI.Models.Settings.FileModel", b =>

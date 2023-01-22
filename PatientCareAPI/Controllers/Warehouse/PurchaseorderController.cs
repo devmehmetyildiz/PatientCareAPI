@@ -46,12 +46,12 @@ namespace PatientCareAPI.Controllers.Warehouse
             var List = unitOfWork.PurchaseorderRepository.GetRecords<PurchaseorderModel>(u => u.IsActive);
             foreach (var purchaseorder in List)
             {
-                purchaseorder.Stocks = unitOfWork.PurchaseorderstocksRepository.GetRecords<PurchaseorderstocksModel>(u => u.PurchaseorderID == purchaseorder.ConcurrencyStamp);
-                purchaseorder.Case = unitOfWork.CaseRepository.GetSingleRecord<CaseModel>(u => u.ConcurrencyStamp == purchaseorder.CaseID);
+                purchaseorder.Stocks = unitOfWork.PurchaseorderstocksRepository.GetRecords<PurchaseorderstocksModel>(u => u.PurchaseorderID == purchaseorder.ConcurrencyStamp && u.IsActive);
+                purchaseorder.Case = unitOfWork.CaseRepository.GetSingleRecord<CaseModel>(u => u.ConcurrencyStamp == purchaseorder.CaseID && u.IsActive);
                 foreach (var item in purchaseorder.Stocks)
                 {
                     double amount = 0;
-                    var movements = unitOfWork.PurchaseorderstocksmovementRepository.GetRecords<PurchaseorderstocksmovementModel>(u => u.StockID == item.ConcurrencyStamp);
+                    var movements = unitOfWork.PurchaseorderstocksmovementRepository.GetRecords<PurchaseorderstocksmovementModel>(u => u.StockID == item.ConcurrencyStamp && u.IsActive);
                     foreach (var movement in movements)
                     {
                         amount += (movement.Amount * movement.Movementtype);
@@ -79,12 +79,12 @@ namespace PatientCareAPI.Controllers.Warehouse
         public IActionResult GetSelectedActivestock(string guid)
         {
             PurchaseorderModel Data = unitOfWork.PurchaseorderRepository.GetSingleRecord<PurchaseorderModel>(u => u.ConcurrencyStamp == guid);
-            Data.Stocks = unitOfWork.PurchaseorderstocksRepository.GetRecords<PurchaseorderstocksModel>(u => u.PurchaseorderID == Data.ConcurrencyStamp);
-            Data.Case = unitOfWork.CaseRepository.GetSingleRecord<CaseModel>(u => u.ConcurrencyStamp == Data.CaseID);
+            Data.Stocks = unitOfWork.PurchaseorderstocksRepository.GetRecords<PurchaseorderstocksModel>(u => u.PurchaseorderID == Data.ConcurrencyStamp && u.IsActive);
+            Data.Case = unitOfWork.CaseRepository.GetSingleRecord<CaseModel>(u => u.ConcurrencyStamp == Data.CaseID && u.IsActive);
             foreach (var item in Data.Stocks)
             {
                 double amount = 0;
-                var movements = unitOfWork.PurchaseorderstocksmovementRepository.GetRecords<PurchaseorderstocksmovementModel>(u => u.StockID == item.ConcurrencyStamp);
+                var movements = unitOfWork.PurchaseorderstocksmovementRepository.GetRecords<PurchaseorderstocksmovementModel>(u => u.StockID == item.ConcurrencyStamp && u.IsActive);
                 foreach (var movement in movements)
                 {
                     amount += (movement.Amount * movement.Movementtype);
@@ -115,6 +115,7 @@ namespace PatientCareAPI.Controllers.Warehouse
                 stock.CreateTime = DateTime.Now;
                 stock.IsActive = true;
                 stock.ConcurrencyStamp = stockguid;
+                stock.PurchaseorderID = guid;
                 unitOfWork.PurchaseorderstocksRepository.Add(stock);
                 unitOfWork.PurchaseorderstocksmovementRepository.Add(new PurchaseorderstocksmovementModel
                 {
@@ -125,8 +126,10 @@ namespace PatientCareAPI.Controllers.Warehouse
                     Prevvalue = 0,
                     Newvalue = stock.Amount,
                     CreatedUser = GetSessionUser(),
-                    CreateTime = DateTime.Now
-                });
+                    CreateTime = DateTime.Now,
+                    IsActive=true,
+                     ConcurrencyStamp = Guid.NewGuid().ToString()
+            });
             }
             unitOfWork.PurchaseorderRepository.Add(model);
             unitOfWork.Complate();
@@ -199,7 +202,7 @@ namespace PatientCareAPI.Controllers.Warehouse
                 u.Departmentid == stock.Departmentid &&
                 u.WarehouseID == model.WarehouseID);
                 double amount = 0;
-                var movements = unitOfWork.PurchaseorderstocksmovementRepository.GetRecords<PurchaseorderstocksmovementModel>(u => u.StockID == stock.ConcurrencyStamp);
+                var movements = unitOfWork.PurchaseorderstocksmovementRepository.GetRecords<PurchaseorderstocksmovementModel>(u => u.StockID == stock.ConcurrencyStamp && u.IsActive);
                 foreach (var movement in movements)
                 {
                     amount += (movement.Amount * movement.Movementtype);
@@ -211,6 +214,7 @@ namespace PatientCareAPI.Controllers.Warehouse
                     {
                         CreatedUser = GetSessionUser(),
                         CreateTime = DateTime.Now,
+                        IsActive=true,
                         Barcodeno = stock.Barcodeno,
                         ConcurrencyStamp = newStockguid,
                         Departmentid = stock.Departmentid,
@@ -228,7 +232,9 @@ namespace PatientCareAPI.Controllers.Warehouse
                         Prevvalue = 0,
                         Newvalue = amount,
                         CreatedUser = GetSessionUser(),
-                        CreateTime = DateTime.Now
+                        CreateTime = DateTime.Now,
+                        IsActive = true,
+                        ConcurrencyStamp = Guid.NewGuid().ToString()
                     });
                 }
                 else
@@ -248,7 +254,9 @@ namespace PatientCareAPI.Controllers.Warehouse
                         Prevvalue = previousamount,
                         Newvalue = previousamount+amount,
                         CreatedUser = GetSessionUser(),
-                        CreateTime = DateTime.Now
+                        CreateTime = DateTime.Now,
+                        IsActive = true,
+                        ConcurrencyStamp = Guid.NewGuid().ToString()
                     });
                 }
             }

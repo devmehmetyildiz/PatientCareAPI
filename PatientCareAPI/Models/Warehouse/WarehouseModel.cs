@@ -11,7 +11,7 @@ namespace PatientCareAPI.Models.Warehouse
     {
         public string Name { get; set; }
         [NotMapped]
-        public List<StockModel> Items { get; set; }
+        public List<StockModel> Stocks { get; set; }
         public string Info { get; set; }
     }
 }

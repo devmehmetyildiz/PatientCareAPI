@@ -223,6 +223,7 @@ namespace PatientCareAPI.Controllers.Application
                     stock.CreateTime = DateTime.Now;
                     stock.IsActive = true;
                     stock.ConcurrencyStamp = stockguid;
+                    stock.PatientID = model.ConcurrencyStamp;
                     unitOfWork.PatientstocksRepository.Add(stock);
                     unitOfWork.PatientstocksmovementRepository.Add(new PatientstocksmovementModel
                     {
@@ -233,8 +234,10 @@ namespace PatientCareAPI.Controllers.Application
                         Prevvalue = 0,
                         Newvalue = stock.Amount,
                         CreatedUser = GetSessionUser(),
-                        CreateTime = DateTime.Now
-                    });
+                        CreateTime = DateTime.Now,
+                        IsActive = true,
+                        ConcurrencyStamp = Guid.NewGuid().ToString()
+                    }); ;
                 }
             }
 
