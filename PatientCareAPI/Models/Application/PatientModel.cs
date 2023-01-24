@@ -29,6 +29,7 @@ namespace PatientCareAPI.Models.Application
         public string Departmentname { get; set; }
         public string Departmentid { get; set; }
         public bool Iswaitingactivation { get; set; }
+        public string WarehouseID { get; set; }
         public string ImageID { get; set; }
         [NotMapped]
         public DepartmentModel Department { get; set; }

@@ -11,5 +11,7 @@ namespace PatientCareAPI.Models.Warehouse
     public class PurchaseorderstocksModel : StockbaseModel
     {
         public string PurchaseorderID { get; set; }
+        [NotMapped]
+        public PurchaseorderModel Purchaseorder { get; set; }
     }
 }

@@ -128,7 +128,7 @@ namespace PatientCareAPI.Controllers.Warehouse
                     CreatedUser = GetSessionUser(),
                     CreateTime = DateTime.Now,
                     IsActive=true,
-                     ConcurrencyStamp = Guid.NewGuid().ToString()
+                    ConcurrencyStamp = Guid.NewGuid().ToString()
             });
             }
             unitOfWork.PurchaseorderRepository.Add(model);
@@ -259,6 +259,15 @@ namespace PatientCareAPI.Controllers.Warehouse
                         ConcurrencyStamp = Guid.NewGuid().ToString()
                     });
                 }
+                stock.Status = (int)Constants.Stockstatus.IsCompleted;
+                stock.UpdatedUser = GetSessionUser();
+                stock.UpdateTime = DateTime.Now;
+                foreach (var movement in movements)
+                {
+                    movement.UpdatedUser = GetSessionUser();
+                    movement.UpdateTime = DateTime.Now;
+                    movement.Status = (int)Constants.Stockstatus.IsCompleted;
+                }
             }
             unitOfWork.PurchaseorderRepository.update(unitOfWork.PurchaseorderRepository.GetSingleRecord<PurchaseorderModel>(u => u.ConcurrencyStamp == model.ConcurrencyStamp), model);
             unitOfWork.Complate();
@@ -281,6 +290,20 @@ namespace PatientCareAPI.Controllers.Warehouse
             }
             model.CaseID = caseID;
             unitOfWork.PurchaseorderRepository.update(unitOfWork.PurchaseorderRepository.GetSingleRecord<PurchaseorderModel>(u => u.ConcurrencyStamp == model.ConcurrencyStamp), model);
+            var stocks = unitOfWork.PurchaseorderstocksRepository.GetRecords<PurchaseorderstocksModel>(u => u.IsActive && u.PurchaseorderID == model.ConcurrencyStamp);
+            foreach (var stock in stocks)
+            {
+                stock.UpdatedUser = GetSessionUser();
+                stock.UpdateTime = DateTime.Now;
+                stock.Status = (int)Constants.Stockstatus.IsDeactivated;
+                var movements = unitOfWork.PurchaseorderstocksmovementRepository.GetRecords<PurchaseorderstocksmovementModel>(u => u.IsActive && u.StockID == stock.ConcurrencyStamp);
+                foreach (var movement in movements)
+                {
+                    movement.UpdatedUser = GetSessionUser();
+                    movement.UpdateTime = DateTime.Now;
+                    movement.Status = (int)Constants.Stockstatus.IsDeactivated;
+                }
+            }
             unitOfWork.Complate();
             return Ok(FetchList());
         }

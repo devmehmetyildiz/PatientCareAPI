@@ -29,5 +29,12 @@ namespace PatientCareAPI.Utils
             Ölüm=5,
             Kontrol=6
         }
+        public enum Stockstatus
+        {
+            IsActive = 0,
+            IsCompleted = 1,
+            IsTransfered = 2,
+            IsDeactivated = 3
+        }
     }
 }

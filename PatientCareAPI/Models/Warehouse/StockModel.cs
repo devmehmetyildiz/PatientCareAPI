@@ -15,7 +15,6 @@ namespace PatientCareAPI.Models.Warehouse
         public string WarehouseID { get; set; }
         [NotMapped]
         public WarehouseModel Warehouse { get; set; }
-        public int Order { get; set; }
         public bool Isonusage { get; set; }
         public bool Isdeactive { get; set; }
         public DateTime? Deactivetime { get; set; }

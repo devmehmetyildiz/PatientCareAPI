@@ -44,8 +44,13 @@ namespace PatientCareAPI.Controllers.Warehouse
             var List = unitOfWork.PatientstocksRepository.GetRecords<PatientstocksModel>(u => u.IsActive);
             foreach (var item in List)
             {
+                item.Patient = unitOfWork.PatientRepository.GetSingleRecord<PatientModel>(u => u.ConcurrencyStamp == item.PatientID);
+                if (item.Patient != null)
+                {
+                    item.Patient.Patientdefine = unitOfWork.PatientdefineRepository.GetSingleRecord<PatientdefineModel>(u => u.ConcurrencyStamp == item.Patient.PatientdefineID);
+                }
                 double amount = 0;
-                var movements = unitOfWork.PatientstocksmovementRepository.GetRecords<PatientstocksmovementModel>(u => u.StockID == item.ConcurrencyStamp);
+                var movements = unitOfWork.PatientstocksmovementRepository.GetRecords<PatientstocksmovementModel>(u => u.StockID == item.ConcurrencyStamp && u.IsActive);
                 foreach (var movement in movements)
                 {
                     amount += (movement.Amount * movement.Movementtype);
@@ -72,12 +77,16 @@ namespace PatientCareAPI.Controllers.Warehouse
         {
             PatientstocksModel Data = unitOfWork.PatientstocksRepository.GetSingleRecord<PatientstocksModel>(u => u.ConcurrencyStamp == guid);
             double amount = 0;
-            var movements = unitOfWork.PatientstocksmovementRepository.GetRecords<PatientstocksmovementModel>(u => u.StockID == Data.ConcurrencyStamp);
+            var movements = unitOfWork.PatientstocksmovementRepository.GetRecords<PatientstocksmovementModel>(u => u.StockID == Data.ConcurrencyStamp && u.IsActive);
             foreach (var movement in movements)
             {
                 amount += (movement.Amount * movement.Movementtype);
             }
             Data.Patient = unitOfWork.PatientRepository.GetSingleRecord<PatientModel>(u => u.ConcurrencyStamp == Data.PatientID);
+            if (Data.Patient != null)
+            {
+                Data.Patient.Patientdefine = unitOfWork.PatientdefineRepository.GetSingleRecord<PatientdefineModel>(u => u.ConcurrencyStamp == Data.Patient.PatientdefineID);
+            }
             Data.Stockdefine = unitOfWork.StockdefineRepository.GetSingleRecord<StockdefineModel>(u => u.ConcurrencyStamp == Data.StockdefineID);
             Data.Department = unitOfWork.DepartmentRepository.GetSingleRecord<DepartmentModel>(u => u.ConcurrencyStamp == Data.Departmentid);
             Data.Stockdefine.Unit = unitOfWork.UnitRepository.GetSingleRecord<UnitModel>(u => u.ConcurrencyStamp == Data.Stockdefine.Unitid);

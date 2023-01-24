@@ -6,10 +6,13 @@ using System.Threading.Tasks;
 
 namespace PatientCareAPI.Models.Settings
 {
-    public class TodogroupModel : BaseModel
+    public class TodogroupdefineModel : BaseModel
     {
         public string Name { get; set; }
+        public string DepartmentID { get; set; }
         [NotMapped]
-        public List<TodoModel> Todos { get; set; }
+        public List<TododefineModel> Todos { get; set; }
+        [NotMapped]
+        public DepartmentModel Department { get; set; }
     }
 }

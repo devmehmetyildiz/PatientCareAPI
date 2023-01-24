@@ -16,5 +16,6 @@ namespace PatientCareAPI.Models.Global
         public double Prevvalue { get; set; }
         public double Newvalue { get; set; }
         public DateTime? Movementdate { get; set; }
+        public int Status { get; set; }
     }
 }

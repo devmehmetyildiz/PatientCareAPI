@@ -42,8 +42,8 @@ namespace PatientCareAPI.DataAccess
         public DbSet<UsertoSaltModel> UsertoSalt { get; set; }
 
         //Settings
-        public DbSet<TodogroupModel> Todogroups { get; set; }
-        public DbSet<TodoModel> Todos { get; set; }
+        public DbSet<TodogroupdefineModel> Todogroups { get; set; }
+        public DbSet<TododefineModel> Todos { get; set; }
         public DbSet<CaseModel> Cases { get; set; }
         public DbSet<CasetoDepartmentModel> CasetoDepartments { get; set; }
         public DbSet<FileModel> Files { get; set; }

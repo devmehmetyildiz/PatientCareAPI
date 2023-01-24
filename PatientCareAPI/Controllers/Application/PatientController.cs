@@ -137,53 +137,95 @@ namespace PatientCareAPI.Controllers.Application
             return Ok(FetchList(false));
         }
 
-        //[Route("GetUserImage")]
-        //[AllowAnonymous]
-        //[HttpGet]
-        //public IActionResult GetUserImage(string Guid)
-        //{
-        //    FileModel Data = unitOfWork.FileRepository.GetFilebyGuid(unitOfWork.ActivepatientRepository.FindByGuid(Guid).ImageID);
-        //    if (Data != null)
-        //        return File(Utilities.GetFile(Data), Data.Filetype);
-        //    else
-        //        return NotFound();
-        //}
+        [Route("Completeprepatient")]
+        [AuthorizeMultiplePolicy(UserAuthory.Patients_Add)]
+        [HttpPost]
+        public IActionResult Completeprepatient(PatientModel model)
+        {
+            var username = GetSessionUser();
+            var patientstocks = unitOfWork.PatientstocksRepository.GetRecords<PatientstocksModel>(u => u.PatientID == model.ConcurrencyStamp);
+            var stocks = new List<StockModel>();
+            foreach (var patientstock in patientstocks)
+            {
+                var foundedstock = unitOfWork.StockRepository.GetSingleRecord<StockModel>(u =>
+                u.Skt == patientstock.Skt &&
+                u.Barcodeno.Trim() == patientstock.Barcodeno.Trim() &&
+                u.StockdefineID == patientstock.StockdefineID &&
+                u.Departmentid == patientstock.Departmentid &&
+                u.WarehouseID == model.WarehouseID
+                );
+                double amount = 0;
+                var movements = unitOfWork.PatientstocksmovementRepository.GetRecords<PatientstocksmovementModel>(u => u.StockID == patientstock.ConcurrencyStamp && u.IsActive);
+                foreach (var movement in movements)
+                {
+                    amount += (movement.Amount * movement.Movementtype);
+                }
+                if (foundedstock == null)
+                {
+                    string newStockguid = Guid.NewGuid().ToString();
+                    unitOfWork.StockRepository.Add(new StockModel
+                    {
+                        CreatedUser = GetSessionUser(),
+                        CreateTime = DateTime.Now,
+                        IsActive = true,
+                        Barcodeno = patientstock.Barcodeno,
+                        ConcurrencyStamp = newStockguid,
+                        Departmentid = patientstock.Departmentid,
+                        Info = patientstock.Info,
+                        Skt = patientstock.Skt,
+                        StockdefineID = patientstock.StockdefineID,
+                        WarehouseID = model.WarehouseID,
+                    });
+                    unitOfWork.StockmovementRepository.Add(new StockmovementModel
+                    {
+                        StockID = newStockguid,
+                        Amount = amount,
+                        Movementdate = DateTime.Now,
+                        Movementtype = ((int)Constants.Movementtypes.income),
+                        Prevvalue = 0,
+                        Newvalue = amount,
+                        CreatedUser = GetSessionUser(),
+                        CreateTime = DateTime.Now,
+                        IsActive = true,
+                        ConcurrencyStamp = Guid.NewGuid().ToString()
+                    });
+                }
+                else
+                {
+                    double previousamount = 0;
+                    var oldmovements = unitOfWork.StockmovementRepository.GetRecords<StockmovementModel>(u => u.StockID == foundedstock.ConcurrencyStamp);
+                    foreach (var movement in oldmovements)
+                    {
+                        previousamount += (movement.Amount * movement.Movementtype);
+                    }
+                    unitOfWork.StockmovementRepository.Add(new StockmovementModel
+                    {
+                        StockID = foundedstock.ConcurrencyStamp,
+                        Amount = amount,
+                        Movementdate = DateTime.Now,
+                        Movementtype = ((int)Constants.Movementtypes.income),
+                        Prevvalue = previousamount,
+                        Newvalue = previousamount + amount,
+                        CreatedUser = GetSessionUser(),
+                        CreateTime = DateTime.Now,
+                        IsActive = true,
+                        ConcurrencyStamp = Guid.NewGuid().ToString()
+                    });
+                }
 
-        //[Route("AddImage")]
-        //[AuthorizeMultiplePolicy(UserAuthory.File_Add)]
-        //[RequestFormLimits(ValueLengthLimit = int.MaxValue, MultipartBodyLengthLimit = int.MaxValue)]
-        //[HttpPost]
-        //public IActionResult AddImage([FromForm] FileModel model)
-        //{
-        //    var username = (this.User.Identity as ClaimsIdentity).FindFirst(ClaimTypes.Name)?.Value;
-        //    if (string.IsNullOrWhiteSpace(model.Filefolder))
-        //    {
-        //        model.Filefolder = Guid.NewGuid().ToString();
-        //    }
-        //    string imageguid = Guid.NewGuid().ToString();
-        //    PatientModel patientmodel = unitOfWork.ActivepatientRepository.FindByGuid(model.ConcurrencyStamp);
-        //    patientmodel.ImageID = imageguid;
-        //    PatientdefineModel patient = unitOfWork.PatientdefineRepository.GetPatientByGuid(patientmodel.PatientID);
-        //    unitOfWork.ActivepatientRepository.update(unitOfWork.ActivepatientRepository.FindByGuid(model.ConcurrencyStamp), patientmodel);
-        //    model.CreatedUser = username;
-        //    model.IsActive = true;
-        //    model.CreateTime = DateTime.Now;
-        //    model.ConcurrencyStamp = imageguid;
-        //    model.Name = patient.Firstname+patient.Lastname;
-        //    model.Filetype = model.File.ContentType;
-        //    model.Filename = model.File.FileName;
-        //    if (Utilities.UploadFile(model))
-        //    {
-        //        unitOfWork.FileRepository.Add(model);
-        //        unitOfWork.Complate();
-        //        return Ok();
-        //    }
-        //    else
-        //    {
-        //        return BadRequest();
-        //    }
-        //}
-
+                patientstock.Status = (int)Constants.Stockstatus.IsCompleted;
+                patientstock.UpdateTime = DateTime.Now;
+                patientstock.UpdatedUser = "System";
+                foreach (var movement in movements)
+                {
+                    movement.Status = (int)Constants.Stockstatus.IsCompleted;
+                    movement.UpdatedUser = "System";
+                    movement.UpdateTime = DateTime.Now;
+                }
+            }
+            unitOfWork.Complate();
+            return Ok(FetchList(true));
+        }
 
         [Route("Preparestocks")]
         [AuthorizeMultiplePolicy(UserAuthory.Patients_Update)]

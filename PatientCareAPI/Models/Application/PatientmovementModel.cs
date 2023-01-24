@@ -7,24 +7,19 @@ using System.Threading.Tasks;
 
 namespace PatientCareAPI.Models.Application
 {
-    public class PatientmovementModel
+    public class PatientmovementModel : BaseModel
     {
-        [Key]
-        public int Id { get; set; }
-        public string Movementid { get; set; }
+        public string PatientID { get; set; }
         [NotMapped]
         public PatientModel Patient { get; set; }
-        public string Activepatientid { get; set; }
-        [NotMapped]
-        public string Movementtypename { get; set; }
-        public int Movementtype { get; set; }
-        public bool Iswaitingactivation { get; set; }
+        public int Patientmovementtype { get; set; }
         public bool IsDeactive { get; set; }
-        public string Oldstatus { get; set; }
-        public string NewStatus { get; set; }
-        public bool IsTodoneeded { get; set; }
-        public string IsComplated { get; set; }
+        public int OldPatientmovementtype { get; set; }
+        public int NewPatientmovementtype { get; set; }
+        public bool IsTodoneed { get; set; }
+        public bool IsTodocompleted { get; set; }
+        public bool IsComplated { get; set; }
+        public bool Iswaitingactivation { get; set; }
         public DateTime? Movementdate { get; set; }
-        public string UserID { get; set; }
     }
 }

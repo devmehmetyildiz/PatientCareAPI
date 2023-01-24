@@ -22,5 +22,7 @@ namespace PatientCareAPI.Models.Global
         public double Amount { get; set; }
         public string Info { get; set; }
         public bool Willdelete { get; set; }
+        public int Status { get; set; }
+        public int Order { get; set; }
     }
 }
