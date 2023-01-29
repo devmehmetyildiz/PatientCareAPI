@@ -5,11 +5,11 @@ using System.Threading.Tasks;
 
 namespace PatientCareAPI.Models.Settings
 {
-    public class TododefineModel : BaseModel
+    public class CheckperiodModel : BaseModel
     {
         public string Name { get; set; }
-        public string Info { get; set; }
-        public bool IsRequired { get; set; }
-        public bool IsNeedactivation { get; set; }
+        public List<PeriodModel> Periods { get; set; }
+        public int Periodtype { get; set; }
+        public string Occureddays { get; set; }
     }
 }

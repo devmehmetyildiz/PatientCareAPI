@@ -52,6 +52,12 @@ namespace PatientCareAPI.DataAccess
         ICostumertypeRepository CostumertypeRepository { get; }
         ICostumertypetoDepartmentRepository CostumertypetoDepartmentRepository { get; }
         ITablemetaconfigRepository TablemetaconfigRepository { get; }
+        ITododefineRepository TododefineRepository { get; }
+        ITodogroupdefineRepository TodogroupdefineRepository { get; }
+        ITodogrouptoTodoRepository TodogrouptoTodoRepository { get; }
+        ICheckperiodRepository CheckperiodRepository { get; }
+        ICheckperiodtoPeriodRepository CheckperiodtoPeriodRepository { get; }
+        IPeriodRepository PeriodRepository { get; }
         int Complate();
     }
 }

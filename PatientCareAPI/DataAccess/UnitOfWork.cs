@@ -23,7 +23,6 @@ namespace PatientCareAPI.DataAccess
             PatientRepository = new PatientRepository(_dBContext);
             PatientdefineRepository = new PatientdefineRepository(_dBContext);
             PatientmovementRepository = new PatientmovementRepository(_dBContext);
-
             //Warehouse
             DeactivestockRepository = new DeactivestockRepository(_dBContext);
             PatientstocksRepository = new PatientstocksRepository(_dBContext);
@@ -58,6 +57,12 @@ namespace PatientCareAPI.DataAccess
             CostumertypeRepository = new CostumertypeRepository(_dBContext);
             CostumertypetoDepartmentRepository = new CostumertypetoDepartmentRepository(_dBContext);
             TablemetaconfigRepository = new TablemetaconfigRepository(_dBContext);
+            TododefineRepository = new TododefineRepository(_dBContext);
+            TodogroupdefineRepository = new TodogroupdefineRepository(_dBContext);
+            TodogrouptoTodoRepository = new TodogrouptoTodoRepository(_dBContext);
+            CheckperiodRepository = new CheckperiodRepository(_dBContext);
+            CheckperiodtoPeriodRepository = new CheckperiodtoPeriodRepository(_dBContext);
+            PeriodRepository = new PeriodRepository(_dBContext);
         }
 
         public IAuthoryRepository AuthoryRepository { get; private set; }
@@ -127,6 +132,18 @@ namespace PatientCareAPI.DataAccess
         public IWarehouseRepository WarehouseRepository { get; private set; }
 
         public ITablemetaconfigRepository TablemetaconfigRepository { get; private set; }
+
+        public ITododefineRepository TododefineRepository { get; private set; }
+
+        public ITodogroupdefineRepository TodogroupdefineRepository { get; private set; }
+
+        public ITodogrouptoTodoRepository TodogrouptoTodoRepository { get; private set; }
+
+        public ICheckperiodRepository CheckperiodRepository { get; private set; }
+
+        public ICheckperiodtoPeriodRepository CheckperiodtoPeriodRepository { get; private set; }
+
+        public IPeriodRepository PeriodRepository { get; private set; }
 
         public int Complate()
         {

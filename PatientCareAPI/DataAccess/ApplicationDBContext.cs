@@ -42,8 +42,6 @@ namespace PatientCareAPI.DataAccess
         public DbSet<UsertoSaltModel> UsertoSalt { get; set; }
 
         //Settings
-        public DbSet<TodogroupdefineModel> Todogroups { get; set; }
-        public DbSet<TododefineModel> Todos { get; set; }
         public DbSet<CaseModel> Cases { get; set; }
         public DbSet<CasetoDepartmentModel> CasetoDepartments { get; set; }
         public DbSet<FileModel> Files { get; set; }
@@ -59,7 +57,12 @@ namespace PatientCareAPI.DataAccess
         public DbSet<CostumertypeModel> Costumertypes { get; set; }
         public DbSet<CostumertypetoDepartmentModel> CostumertypetoDepartments{ get; set; }
         public DbSet<TablemetaconfigModel> Tablemetaconfigs { get; set; }
-
+        public DbSet<TododefineModel> Tododefines { get; set; }
+        public DbSet<TodogroupdefineModel> Todogroupdefines { get; set; }
+        public DbSet<TodogrouptoTodoModel> TodogrouptoTodos { get; set; }
+        public DbSet<CheckperiodModel> Checkperiods { get; set; }
+        public DbSet<CheckperiodtoPeriodModel> CheckperiodsToPeriods { get; set; }
+        public DbSet<PeriodModel> Periods { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
            

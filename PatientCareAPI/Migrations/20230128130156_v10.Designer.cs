@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PatientCareAPI.DataAccess;
 
 namespace PatientCareAPI.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20230128130156_v10")]
+    partial class v10
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -915,8 +917,8 @@ namespace PatientCareAPI.Migrations
                     b.Property<int?>("CheckperiodModelId")
                         .HasColumnType("int");
 
-                    b.Property<string>("Checktime")
-                        .HasColumnType("text");
+                    b.Property<DateTime>("Checktime")
+                        .HasColumnType("datetime");
 
                     b.Property<string>("ConcurrencyStamp")
                         .HasMaxLength(85)
@@ -942,8 +944,8 @@ namespace PatientCareAPI.Migrations
                     b.Property<string>("Name")
                         .HasColumnType("text");
 
-                    b.Property<string>("Occuredtime")
-                        .HasColumnType("text");
+                    b.Property<DateTime>("Occuredtime")
+                        .HasColumnType("datetime");
 
                     b.Property<DateTime?>("UpdateTime")
                         .HasColumnType("datetime");
