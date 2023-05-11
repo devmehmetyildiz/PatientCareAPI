@@ -62,6 +62,43 @@ namespace PatientCareAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Checkperiods",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "text", nullable: true),
+                    Periodtype = table.Column<int>(type: "int", nullable: false),
+                    Occureddays = table.Column<string>(type: "text", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "varchar(85)", maxLength: 85, nullable: true),
+                    CreatedUser = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true),
+                    UpdatedUser = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true),
+                    DeleteUser = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true),
+                    CreateTime = table.Column<DateTime>(type: "datetime", nullable: true),
+                    UpdateTime = table.Column<DateTime>(type: "datetime", nullable: true),
+                    DeleteTime = table.Column<DateTime>(type: "datetime", nullable: true),
+                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Checkperiods", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CheckperiodsToPeriods",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    CheckperiodID = table.Column<string>(type: "text", nullable: true),
+                    PeriodID = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CheckperiodsToPeriods", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Costumertypes",
                 columns: table => new
                 {
@@ -97,29 +134,7 @@ namespace PatientCareAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Datatables",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    Tablename = table.Column<string>(type: "text", nullable: true),
-                    Json = table.Column<string>(type: "text", nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "varchar(85)", maxLength: 85, nullable: true),
-                    CreatedUser = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true),
-                    UpdatedUser = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true),
-                    DeleteUser = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true),
-                    CreateTime = table.Column<DateTime>(type: "datetime", nullable: true),
-                    UpdateTime = table.Column<DateTime>(type: "datetime", nullable: true),
-                    DeleteTime = table.Column<DateTime>(type: "datetime", nullable: true),
-                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Datatables", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "DeactivestockModel",
+                name: "Deactivestocks",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -133,7 +148,7 @@ namespace PatientCareAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_DeactivestockModel", x => x.Id);
+                    table.PrimaryKey("PK_Deactivestocks", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -231,17 +246,24 @@ namespace PatientCareAPI.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    Movementid = table.Column<string>(type: "text", nullable: true),
-                    Activepatientid = table.Column<string>(type: "text", nullable: true),
-                    Movementtype = table.Column<int>(type: "int", nullable: false),
-                    Iswaitingactivation = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    PatientID = table.Column<string>(type: "text", nullable: true),
+                    Patientmovementtype = table.Column<int>(type: "int", nullable: false),
                     IsDeactive = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    Oldstatus = table.Column<string>(type: "text", nullable: true),
-                    NewStatus = table.Column<string>(type: "text", nullable: true),
-                    IsTodoneeded = table.Column<bool>(type: "tinyint(1)", nullable: false),
-                    IsComplated = table.Column<string>(type: "text", nullable: true),
+                    OldPatientmovementtype = table.Column<int>(type: "int", nullable: false),
+                    NewPatientmovementtype = table.Column<int>(type: "int", nullable: false),
+                    IsTodoneed = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    IsTodocompleted = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    IsComplated = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    Iswaitingactivation = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     Movementdate = table.Column<DateTime>(type: "datetime", nullable: true),
-                    UserID = table.Column<string>(type: "text", nullable: true)
+                    ConcurrencyStamp = table.Column<string>(type: "varchar(85)", maxLength: 85, nullable: true),
+                    CreatedUser = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true),
+                    UpdatedUser = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true),
+                    DeleteUser = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true),
+                    CreateTime = table.Column<DateTime>(type: "datetime", nullable: true),
+                    UpdateTime = table.Column<DateTime>(type: "datetime", nullable: true),
+                    DeleteTime = table.Column<DateTime>(type: "datetime", nullable: true),
+                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -264,6 +286,7 @@ namespace PatientCareAPI.Migrations
                     Departmentname = table.Column<string>(type: "text", nullable: true),
                     Departmentid = table.Column<string>(type: "text", nullable: true),
                     Iswaitingactivation = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    WarehouseID = table.Column<string>(type: "text", nullable: true),
                     ImageID = table.Column<string>(type: "text", nullable: true),
                     CaseId = table.Column<string>(type: "text", nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "varchar(85)", maxLength: 85, nullable: true),
@@ -300,7 +323,9 @@ namespace PatientCareAPI.Migrations
                     Skt = table.Column<DateTime>(type: "datetime", nullable: true),
                     Barcodeno = table.Column<string>(type: "text", nullable: true),
                     Info = table.Column<string>(type: "text", nullable: true),
-                    Willdelete = table.Column<bool>(type: "tinyint(1)", nullable: false)
+                    Willdelete = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    Order = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -326,7 +351,8 @@ namespace PatientCareAPI.Migrations
                     Amount = table.Column<double>(type: "double", nullable: false),
                     Prevvalue = table.Column<double>(type: "double", nullable: false),
                     Newvalue = table.Column<double>(type: "double", nullable: false),
-                    Movementdate = table.Column<DateTime>(type: "datetime", nullable: true)
+                    Movementdate = table.Column<DateTime>(type: "datetime", nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -404,7 +430,9 @@ namespace PatientCareAPI.Migrations
                     Skt = table.Column<DateTime>(type: "datetime", nullable: true),
                     Barcodeno = table.Column<string>(type: "text", nullable: true),
                     Info = table.Column<string>(type: "text", nullable: true),
-                    Willdelete = table.Column<bool>(type: "tinyint(1)", nullable: false)
+                    Willdelete = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    Order = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -430,7 +458,8 @@ namespace PatientCareAPI.Migrations
                     Amount = table.Column<double>(type: "double", nullable: false),
                     Prevvalue = table.Column<double>(type: "double", nullable: false),
                     Newvalue = table.Column<double>(type: "double", nullable: false),
-                    Movementdate = table.Column<DateTime>(type: "datetime", nullable: true)
+                    Movementdate = table.Column<DateTime>(type: "datetime", nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -557,7 +586,8 @@ namespace PatientCareAPI.Migrations
                     Amount = table.Column<double>(type: "double", nullable: false),
                     Prevvalue = table.Column<double>(type: "double", nullable: false),
                     Newvalue = table.Column<double>(type: "double", nullable: false),
-                    Movementdate = table.Column<DateTime>(type: "datetime", nullable: true)
+                    Movementdate = table.Column<DateTime>(type: "datetime", nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -571,7 +601,6 @@ namespace PatientCareAPI.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     WarehouseID = table.Column<string>(type: "text", nullable: true),
-                    Order = table.Column<int>(type: "int", nullable: false),
                     Isonusage = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     Isdeactive = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     Deactivetime = table.Column<DateTime>(type: "datetime", nullable: true),
@@ -589,7 +618,9 @@ namespace PatientCareAPI.Migrations
                     Skt = table.Column<DateTime>(type: "datetime", nullable: true),
                     Barcodeno = table.Column<string>(type: "text", nullable: true),
                     Info = table.Column<string>(type: "text", nullable: true),
-                    Willdelete = table.Column<bool>(type: "tinyint(1)", nullable: false)
+                    Willdelete = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    Order = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -597,12 +628,30 @@ namespace PatientCareAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Todogroups",
+                name: "Tablemetaconfigs",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    Username = table.Column<string>(type: "text", nullable: true),
+                    Meta = table.Column<string>(type: "text", nullable: true),
+                    Config = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tablemetaconfigs", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Tododefines",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
                     Name = table.Column<string>(type: "text", nullable: true),
+                    Info = table.Column<string>(type: "text", nullable: true),
+                    IsRequired = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    IsNeedactivation = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     ConcurrencyStamp = table.Column<string>(type: "varchar(85)", maxLength: 85, nullable: true),
                     CreatedUser = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true),
                     UpdatedUser = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true),
@@ -614,17 +663,17 @@ namespace PatientCareAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Todogroups", x => x.Id);
+                    table.PrimaryKey("PK_Tododefines", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Todos",
+                name: "Todogroupdefines",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
-                    Todoname = table.Column<string>(type: "text", nullable: true),
-                    IsRequired = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: true),
+                    DepartmentID = table.Column<string>(type: "text", nullable: true),
                     ConcurrencyStamp = table.Column<string>(type: "varchar(85)", maxLength: 85, nullable: true),
                     CreatedUser = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true),
                     UpdatedUser = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true),
@@ -636,7 +685,21 @@ namespace PatientCareAPI.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Todos", x => x.Id);
+                    table.PrimaryKey("PK_Todogroupdefines", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "TodogrouptoTodos",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    GroupID = table.Column<string>(type: "text", nullable: true),
+                    TodoID = table.Column<string>(type: "text", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_TodogrouptoTodos", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -768,6 +831,58 @@ namespace PatientCareAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Warehouses",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "text", nullable: true),
+                    Info = table.Column<string>(type: "text", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "varchar(85)", maxLength: 85, nullable: true),
+                    CreatedUser = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true),
+                    UpdatedUser = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true),
+                    DeleteUser = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true),
+                    CreateTime = table.Column<DateTime>(type: "datetime", nullable: true),
+                    UpdateTime = table.Column<DateTime>(type: "datetime", nullable: true),
+                    DeleteTime = table.Column<DateTime>(type: "datetime", nullable: true),
+                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Warehouses", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Periods",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("MySQL:ValueGenerationStrategy", MySQLValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(type: "text", nullable: true),
+                    Occuredtime = table.Column<string>(type: "text", nullable: true),
+                    Checktime = table.Column<string>(type: "text", nullable: true),
+                    CheckperiodModelId = table.Column<int>(type: "int", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "varchar(85)", maxLength: 85, nullable: true),
+                    CreatedUser = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true),
+                    UpdatedUser = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true),
+                    DeleteUser = table.Column<string>(type: "varchar(30)", maxLength: 30, nullable: true),
+                    CreateTime = table.Column<DateTime>(type: "datetime", nullable: true),
+                    UpdateTime = table.Column<DateTime>(type: "datetime", nullable: true),
+                    DeleteTime = table.Column<DateTime>(type: "datetime", nullable: true),
+                    IsActive = table.Column<bool>(type: "tinyint(1)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Periods", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Periods_Checkperiods_CheckperiodModelId",
+                        column: x => x.CheckperiodModelId,
+                        principalTable: "Checkperiods",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Files",
                 columns: table => new
                 {
@@ -807,6 +922,11 @@ namespace PatientCareAPI.Migrations
                 name: "IX_Files_PatientModelId",
                 table: "Files",
                 column: "PatientModelId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Periods_CheckperiodModelId",
+                table: "Periods",
+                column: "CheckperiodModelId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -821,16 +941,16 @@ namespace PatientCareAPI.Migrations
                 name: "CasetoDepartments");
 
             migrationBuilder.DropTable(
+                name: "CheckperiodsToPeriods");
+
+            migrationBuilder.DropTable(
                 name: "Costumertypes");
 
             migrationBuilder.DropTable(
                 name: "CostumertypetoDepartments");
 
             migrationBuilder.DropTable(
-                name: "Datatables");
-
-            migrationBuilder.DropTable(
-                name: "DeactivestockModel");
+                name: "Deactivestocks");
 
             migrationBuilder.DropTable(
                 name: "Departments");
@@ -855,6 +975,9 @@ namespace PatientCareAPI.Migrations
 
             migrationBuilder.DropTable(
                 name: "Patienttypes");
+
+            migrationBuilder.DropTable(
+                name: "Periods");
 
             migrationBuilder.DropTable(
                 name: "Purchaseorders");
@@ -887,10 +1010,16 @@ namespace PatientCareAPI.Migrations
                 name: "Stocks");
 
             migrationBuilder.DropTable(
-                name: "Todogroups");
+                name: "Tablemetaconfigs");
 
             migrationBuilder.DropTable(
-                name: "Todos");
+                name: "Tododefines");
+
+            migrationBuilder.DropTable(
+                name: "Todogroupdefines");
+
+            migrationBuilder.DropTable(
+                name: "TodogrouptoTodos");
 
             migrationBuilder.DropTable(
                 name: "Units");
@@ -914,7 +1043,13 @@ namespace PatientCareAPI.Migrations
                 name: "UsertoStations");
 
             migrationBuilder.DropTable(
+                name: "Warehouses");
+
+            migrationBuilder.DropTable(
                 name: "Patients");
+
+            migrationBuilder.DropTable(
+                name: "Checkperiods");
         }
     }
 }
