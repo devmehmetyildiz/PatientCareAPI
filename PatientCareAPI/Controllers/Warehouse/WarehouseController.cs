@@ -54,16 +54,16 @@ namespace PatientCareAPI.Controllers.Warehouse
                         amount += (movement.Amount * movement.Movementtype);
                     }
                     stockitem.Amount = amount;
-                    stockitem.Stockdefine = unitOfWork.StockdefineRepository.GetSingleRecord<StockdefineModel>(u => u.ConcurrencyStamp == stockitem.StockdefineID);
-                    stockitem.Department = unitOfWork.DepartmentRepository.GetSingleRecord<DepartmentModel>(u => u.ConcurrencyStamp == stockitem.Departmentid);
-                    stockitem.Stockdefine.Unit = unitOfWork.UnitRepository.GetSingleRecord<UnitModel>(u => u.ConcurrencyStamp == stockitem.Stockdefine.Unitid);
+                    stockitem.Stockdefine = unitOfWork.StockdefineRepository.GetRecord<StockdefineModel>(u => u.ConcurrencyStamp == stockitem.StockdefineID);
+                    stockitem.Department = unitOfWork.DepartmentRepository.GetRecord<DepartmentModel>(u => u.ConcurrencyStamp == stockitem.Departmentid);
+                    stockitem.Stockdefine.Unit = unitOfWork.UnitRepository.GetRecord<UnitModel>(u => u.ConcurrencyStamp == stockitem.Stockdefine.Unitid);
                 }
             }
             return List;
         }
 
         [HttpGet]
-        [AuthorizeMultiplePolicy(UserAuthory.Patients_Screen)]
+        [AuthorizeMultiplePolicy(UserAuthory.Warehouse_Screen)]
         [Route("GetAll")]
         public IActionResult GetAll()
         {
@@ -71,11 +71,11 @@ namespace PatientCareAPI.Controllers.Warehouse
         }
 
         [Route("GetSelected")]
-        [AuthorizeMultiplePolicy((UserAuthory.Patients_Screen + "," + UserAuthory.Patients_Update))]
+        [AuthorizeMultiplePolicy((UserAuthory.Warehouse_Getselected))]
         [HttpGet]
         public IActionResult GetSelected(string guid)
         {
-            var Data = unitOfWork.WarehouseRepository.GetSingleRecord<WarehouseModel>(u => u.IsActive && u.ConcurrencyStamp == guid);
+            var Data = unitOfWork.WarehouseRepository.GetRecord<WarehouseModel>(u => u.IsActive && u.ConcurrencyStamp == guid);
             Data.Stocks = unitOfWork.StockRepository.GetRecords<StockModel>(u => u.IsActive && u.WarehouseID == Data.ConcurrencyStamp);
             foreach (var stockitem in Data.Stocks)
             {
@@ -85,15 +85,15 @@ namespace PatientCareAPI.Controllers.Warehouse
                 {
                     amount += (movement.Amount * movement.Movementtype);
                 }
-                stockitem.Stockdefine = unitOfWork.StockdefineRepository.GetSingleRecord<StockdefineModel>(u => u.ConcurrencyStamp == stockitem.StockdefineID);
-                stockitem.Department = unitOfWork.DepartmentRepository.GetSingleRecord<DepartmentModel>(u => u.ConcurrencyStamp == stockitem.Departmentid);
-                stockitem.Stockdefine.Unit = unitOfWork.UnitRepository.GetSingleRecord<UnitModel>(u => u.ConcurrencyStamp == stockitem.Stockdefine.Unitid);
+                stockitem.Stockdefine = unitOfWork.StockdefineRepository.GetRecord<StockdefineModel>(u => u.ConcurrencyStamp == stockitem.StockdefineID);
+                stockitem.Department = unitOfWork.DepartmentRepository.GetRecord<DepartmentModel>(u => u.ConcurrencyStamp == stockitem.Departmentid);
+                stockitem.Stockdefine.Unit = unitOfWork.UnitRepository.GetRecord<UnitModel>(u => u.ConcurrencyStamp == stockitem.Stockdefine.Unitid);
             }
             return Ok(Data);
         }
 
         [Route("Add")]
-        [AuthorizeMultiplePolicy(UserAuthory.Patients_Add)]
+        [AuthorizeMultiplePolicy(UserAuthory.Warehouse_Add)]
         [HttpPost]
         public IActionResult Add(WarehouseModel model)
         {
@@ -108,7 +108,7 @@ namespace PatientCareAPI.Controllers.Warehouse
         }
 
         [Route("Update")]
-        [AuthorizeMultiplePolicy(UserAuthory.Patients_Update)]
+        [AuthorizeMultiplePolicy(UserAuthory.Warehouse_Edit)]
         [HttpPost]
         public IActionResult Update(WarehouseModel model)
         {
@@ -121,7 +121,7 @@ namespace PatientCareAPI.Controllers.Warehouse
         }
 
         [Route("Delete")]
-        [AuthorizeMultiplePolicy(UserAuthory.Patients_Delete)]
+        [AuthorizeMultiplePolicy(UserAuthory.Warehouse_Delete)]
         [HttpPost]
         public IActionResult Delete(WarehouseModel model)
         {

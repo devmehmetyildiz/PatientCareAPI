@@ -13,6 +13,7 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using PatientCareAPI.Utils;
 using PatientCareAPI.Models.Settings;
+using Faker;
 
 namespace PatientCareAPI.Controllers.Application
 {
@@ -45,14 +46,14 @@ namespace PatientCareAPI.Controllers.Application
             var List = unitOfWork.PatientdefineRepository.GetRecords<PatientdefineModel>(u => u.IsActive);
             foreach (var item in List)
             {
-                item.Patienttype = unitOfWork.PatienttypeRepository.GetSingleRecord<PatienttypeModel>(u => u.ConcurrencyStamp == item.Patienttypeid);
-                item.Costumertype = unitOfWork.CostumertypeRepository.GetSingleRecord<CostumertypeModel>(u => u.ConcurrencyStamp == item.Costumertypeid);
+                item.Patienttype = unitOfWork.PatienttypeRepository.GetRecord<PatienttypeModel>(u => u.ConcurrencyStamp == item.Patienttypeid);
+                item.Costumertype = unitOfWork.CostumertypeRepository.GetRecord<CostumertypeModel>(u => u.ConcurrencyStamp == item.Costumertypeid);
             }
             return List;
         }
 
         [HttpGet]
-        [AuthorizeMultiplePolicy(UserAuthory.Patients_Screen)]
+        [AuthorizeMultiplePolicy(UserAuthory.Patientdefine_Screen)]
         [Route("GetAll")]
         public IActionResult GetAll()
         {
@@ -60,18 +61,18 @@ namespace PatientCareAPI.Controllers.Application
         }
 
         [Route("GetSelected")]
-        [AuthorizeMultiplePolicy((UserAuthory.Patients_Screen + "," + UserAuthory.Patients_Update))]
+        [AuthorizeMultiplePolicy(UserAuthory.Patientdefine_Getselected)]
         [HttpGet]
         public IActionResult GetSelectedPatient(string guid)
         {
-            var data = unitOfWork.PatientdefineRepository.GetSingleRecord<PatientdefineModel>(u => u.ConcurrencyStamp == guid);
-            data.Patienttype = unitOfWork.PatienttypeRepository.GetSingleRecord<PatienttypeModel>(u => u.ConcurrencyStamp == data.Patienttypeid);
-            data.Costumertype = unitOfWork.CostumertypeRepository.GetSingleRecord<CostumertypeModel>(u => u.ConcurrencyStamp == data.Costumertypeid);
+            var data = unitOfWork.PatientdefineRepository.GetRecord<PatientdefineModel>(u => u.ConcurrencyStamp == guid);
+            data.Patienttype = unitOfWork.PatienttypeRepository.GetRecord<PatienttypeModel>(u => u.ConcurrencyStamp == data.Patienttypeid);
+            data.Costumertype = unitOfWork.CostumertypeRepository.GetRecord<CostumertypeModel>(u => u.ConcurrencyStamp == data.Costumertypeid);
             return Ok(data);
         }
 
         [Route("Add")]
-        [AuthorizeMultiplePolicy(UserAuthory.Patients_Add)]
+        [AuthorizeMultiplePolicy(UserAuthory.Patientdefine_Add)]
         [HttpPost]
         public IActionResult Add(PatientdefineModel model)
         {
@@ -86,7 +87,7 @@ namespace PatientCareAPI.Controllers.Application
         }
 
         [Route("Update")]
-        [AuthorizeMultiplePolicy(UserAuthory.Patients_Update)]
+        [AuthorizeMultiplePolicy(UserAuthory.Patientdefine_Edit)]
         [HttpPost]
         public IActionResult Update(PatientdefineModel model)
         {
@@ -99,7 +100,7 @@ namespace PatientCareAPI.Controllers.Application
         }
 
         [Route("Delete")]
-        [AuthorizeMultiplePolicy(UserAuthory.Patients_Delete)]
+        [AuthorizeMultiplePolicy(UserAuthory.Patientdefine_Delete)]
         [HttpPost]
         public IActionResult Delete(PatientdefineModel model)
         {
@@ -120,6 +121,48 @@ namespace PatientCareAPI.Controllers.Application
             unitOfWork.PatientdefineRepository.Remove(model.Id);
             unitOfWork.Complate();
             return Ok();
+        }
+
+        [Route("Createfakedata")]
+        [AuthorizeMultiplePolicy(UserAuthory.Admin)]
+        [HttpGet]
+        public IActionResult Createfakedata()
+        {
+
+            for (int i = 0; i < 1000; i++)
+            {
+                unitOfWork.PatientdefineRepository.Add(new PatientdefineModel
+                {
+                    CreatedUser="Fakedata",
+                    CreateTime=DateTime.Now,
+                    IsActive=true,
+                    ConcurrencyStamp=Guid.NewGuid().ToString(),
+                    Firstname = Name.First(),
+                    Lastname = Name.Last(),
+                    Fathername = Name.FullName(),
+                    Mothername = Name.FullName(),
+                    Motherbiologicalaffinity = "ÖZ",
+                    Ismotheralive = true,
+                    Fatherbiologicalaffinity = "ÖZ",
+                    Isfatheralive = true,
+                    CountryID = Guid.NewGuid().ToString().Substring(0, 11),
+                    Dateofbirth = DateTime.Now.AddYears(-30),
+                    Placeofbirth = Address.City(),
+                    Dateofdeath = null,
+                    Placeofdeath = "",
+                    Deathinfo="",
+                    Gender="ERKEK",
+                    Childnumber=3,
+                    Costumertypeid = "d396336d-3b41-44af-a996-f1a2c0009474",
+                    Patienttypeid = "0e411752-9739-47fd-9387-4e29ccb53e26",
+                    Address1 = Address.StreetAddress(),
+                    City = Address.City(),
+                    Town = Address.StreetName(),
+                    Country = Address.Country(),
+                });;
+            }
+            unitOfWork.Complate();
+            return Ok(FetchList());
         }
     }
 }

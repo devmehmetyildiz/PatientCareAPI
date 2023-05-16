@@ -51,12 +51,12 @@ namespace PatientCareAPI.Controllers.Auth
             return Ok(roles);
         }
 
-        [AuthorizeMultiplePolicy(UserAuthory.Roles_Screen)]
+        [AuthorizeMultiplePolicy(UserAuthory.Roles_Getselected)]
         [Route("Getselected")]
         [HttpGet]
         public IActionResult RolesGetselected(string guid)
         {
-            var role = unitOfWork.RoleRepository.GetSingleRecord<RoleModel>(u=>u.ConcurrencyStamp==guid);
+            var role = unitOfWork.RoleRepository.GetRecord<RoleModel>(u => u.ConcurrencyStamp == guid);
             List<string> authories = unitOfWork.RoletoAuthoryRepository.GetRecords<RoletoAuthory>(u => u.RoleID == role.ConcurrencyStamp).Select(u => u.AuthoryID).ToList();
             role.Authories.AddRange(unitOfWork.AuthoryRepository.GetAuthoriesbyGuids(authories));
             return Ok(role);
@@ -75,10 +75,10 @@ namespace PatientCareAPI.Controllers.Auth
         [HttpGet]
         public IActionResult RolesGetAllAuthoryGroups()
         {
-            return Ok(unitOfWork.AuthoryRepository.GetRecords<AuthoryModel>(u => u.Name != UserAuthory.Admin).OrderBy(u => u.Group).Select(u=>u.Group).Distinct());
+            return Ok(unitOfWork.AuthoryRepository.GetRecords<AuthoryModel>(u => u.Name != UserAuthory.Admin).OrderBy(u => u.Group).Select(u => u.Group).Distinct());
         }
 
-        [AuthorizeMultiplePolicy(UserAuthory.Roles_Screen + "," + UserAuthory.Roles_Add)]
+        [AuthorizeMultiplePolicy(UserAuthory.Roles_Add)]
         [Route("Add")]
         [HttpPost]
         public IActionResult RolesAdd(RoleModel model)
@@ -102,7 +102,7 @@ namespace PatientCareAPI.Controllers.Auth
             return Ok(roles);
         }
 
-        [AuthorizeMultiplePolicy(UserAuthory.Roles_Screen+","+UserAuthory.Roles_Update)]
+        [AuthorizeMultiplePolicy(UserAuthory.Roles_Edit)]
         [Route("Update")]
         [HttpPost]
         public IActionResult RolesUpdate(RoleModel model)
@@ -125,7 +125,7 @@ namespace PatientCareAPI.Controllers.Auth
             return Ok(roles);
         }
 
-        [AuthorizeMultiplePolicy(UserAuthory.Roles_Screen + "," + UserAuthory.Roles_Delete)]
+        [AuthorizeMultiplePolicy(UserAuthory.Roles_Delete)]
         [Route("Delete")]
         [HttpPost]
         public IActionResult RolesDelete(RoleModel model)

@@ -10,9 +10,13 @@ namespace PatientCareAPI.Models.Application
     public class TodoModel: BaseModel
     {
         public string MovementID { get; set; }
-        public string TodoID { get; set; }
+        public string TododefineID { get; set; }
         [NotMapped]
-        public TododefineModel Todo { get; set; }
+        public PatientmovementModel Movement { get; set; }
+        [NotMapped]
+        public PatientModel Patient { get; set; }
+        [NotMapped]
+        public TododefineModel Tododefine { get; set; }
         public int Order { get; set; }
         public bool IsCompleted { get; set; }
     }

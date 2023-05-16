@@ -43,7 +43,11 @@ namespace PatientCareAPI.Controllers.Application
             var List = unitOfWork.PatientmovementRepository.GetRecords<PatientmovementModel>(u => u.IsActive);
             foreach (var item in List)
             {
-                item.Patient = unitOfWork.PatientRepository.GetSingleRecord<PatientModel>(u => u.ConcurrencyStamp == item.PatientID);
+                item.Patient = unitOfWork.PatientRepository.GetRecord<PatientModel>(u => u.ConcurrencyStamp == item.PatientID);
+                if (item.Patient != null)
+                {
+                    item.Patient.Patientdefine = unitOfWork.PatientdefineRepository.GetRecord<PatientdefineModel>(u => u.ConcurrencyStamp == item.Patient.PatientdefineID);
+                }
             }
             return List;
         }
@@ -57,17 +61,21 @@ namespace PatientCareAPI.Controllers.Application
         }
 
         [Route("GetSelected")]
-        [AuthorizeMultiplePolicy((UserAuthory.Patients_Screen + "," + UserAuthory.Patients_Update))]
+        [AuthorizeMultiplePolicy(UserAuthory.Patients_Screen)]
         [HttpGet]
         public IActionResult GetSelected(string guid)
         {
-            var data = unitOfWork.PatientmovementRepository.GetSingleRecord<PatientmovementModel>(u => u.ConcurrencyStamp == guid);
-            data.Patient = unitOfWork.PatientRepository.GetSingleRecord<PatientModel>(u => u.ConcurrencyStamp == data.PatientID);
+            var data = unitOfWork.PatientmovementRepository.GetRecord<PatientmovementModel>(u => u.ConcurrencyStamp == guid);
+            data.Patient = unitOfWork.PatientRepository.GetRecord<PatientModel>(u => u.ConcurrencyStamp == data.PatientID);
+            if (data.Patient != null)
+            {
+                data.Patient.Patientdefine = unitOfWork.PatientdefineRepository.GetRecord<PatientdefineModel>(u => u.ConcurrencyStamp == data.Patient.PatientdefineID);
+            }
             return Ok(data);
         }
 
         [Route("Add")]
-        [AuthorizeMultiplePolicy(UserAuthory.Patients_Add)]
+        [AuthorizeMultiplePolicy(UserAuthory.Patients_Screen)]
         [HttpPost]
         public IActionResult Add(PatientmovementModel model)
         {
@@ -82,7 +90,7 @@ namespace PatientCareAPI.Controllers.Application
         }
 
         [Route("Update")]
-        [AuthorizeMultiplePolicy(UserAuthory.Patients_Update)]
+        [AuthorizeMultiplePolicy(UserAuthory.Patients_Screen)]
         [HttpPost]
         public IActionResult Update(PatientmovementModel model)
         {
@@ -95,7 +103,7 @@ namespace PatientCareAPI.Controllers.Application
         }
 
         [Route("Delete")]
-        [AuthorizeMultiplePolicy(UserAuthory.Patients_Delete)]
+        [AuthorizeMultiplePolicy(UserAuthory.Patients_Screen)]
         [HttpPost]
         public IActionResult Delete(PatientmovementModel model)
         {

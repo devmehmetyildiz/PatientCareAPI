@@ -45,16 +45,16 @@ namespace PatientCareAPI.Controllers.Warehouse
             var List = unitOfWork.StockmovementRepository.GetRecords<StockmovementModel>(u => u.IsActive);
             foreach (var item in List)
             {
-                item.Stock = unitOfWork.StockRepository.GetSingleRecord<StockModel>(u => u.ConcurrencyStamp == item.StockID);
-                item.Stock.Stockdefine = unitOfWork.StockdefineRepository.GetSingleRecord<StockdefineModel>(u => u.ConcurrencyStamp == item.Stock.StockdefineID);
-                item.Stock.Department = unitOfWork.DepartmentRepository.GetSingleRecord<DepartmentModel>(u => u.ConcurrencyStamp == item.Stock.Departmentid);
-                item.Stock.Stockdefine.Unit = unitOfWork.UnitRepository.GetSingleRecord<UnitModel>(u => u.ConcurrencyStamp == item.Stock.Stockdefine.Unitid);
+                item.Stock = unitOfWork.StockRepository.GetRecord<StockModel>(u => u.ConcurrencyStamp == item.StockID);
+                item.Stock.Stockdefine = unitOfWork.StockdefineRepository.GetRecord<StockdefineModel>(u => u.ConcurrencyStamp == item.Stock.StockdefineID);
+                item.Stock.Department = unitOfWork.DepartmentRepository.GetRecord<DepartmentModel>(u => u.ConcurrencyStamp == item.Stock.Departmentid);
+                item.Stock.Stockdefine.Unit = unitOfWork.UnitRepository.GetRecord<UnitModel>(u => u.ConcurrencyStamp == item.Stock.Stockdefine.Unitid);
             }
             return List;
         }
 
         [Route("GetAll")]
-        [AuthorizeMultiplePolicy(UserAuthory.Stock_Screen)]
+        [AuthorizeMultiplePolicy(UserAuthory.Stockmovement_Screen)]
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -62,25 +62,25 @@ namespace PatientCareAPI.Controllers.Warehouse
         }
 
         [Route("GetSelected")]
-        [AuthorizeMultiplePolicy((UserAuthory.Stock_Screen + "," + UserAuthory.Stock_Update))]
+        [AuthorizeMultiplePolicy((UserAuthory.Stockmovement_Getselected))]
         [HttpGet]
         public IActionResult GetSelected(string guid)
         {
-            StockmovementModel Data = unitOfWork.StockmovementRepository.GetSingleRecord<StockmovementModel>(u => u.ConcurrencyStamp == guid);
-            Data.Stock = unitOfWork.StockRepository.GetSingleRecord<StockModel>(u => u.ConcurrencyStamp == Data.StockID);
-            Data.Stock.Stockdefine = unitOfWork.StockdefineRepository.GetSingleRecord<StockdefineModel>(u => u.ConcurrencyStamp == Data.Stock.StockdefineID);
-            Data.Stock.Department = unitOfWork.DepartmentRepository.GetSingleRecord<DepartmentModel>(u => u.ConcurrencyStamp == Data.Stock.Departmentid);
-            Data.Stock.Stockdefine.Unit = unitOfWork.UnitRepository.GetSingleRecord<UnitModel>(u => u.ConcurrencyStamp == Data.Stock.Stockdefine.Unitid);
+            StockmovementModel Data = unitOfWork.StockmovementRepository.GetRecord<StockmovementModel>(u => u.ConcurrencyStamp == guid);
+            Data.Stock = unitOfWork.StockRepository.GetRecord<StockModel>(u => u.ConcurrencyStamp == Data.StockID);
+            Data.Stock.Stockdefine = unitOfWork.StockdefineRepository.GetRecord<StockdefineModel>(u => u.ConcurrencyStamp == Data.Stock.StockdefineID);
+            Data.Stock.Department = unitOfWork.DepartmentRepository.GetRecord<DepartmentModel>(u => u.ConcurrencyStamp == Data.Stock.Departmentid);
+            Data.Stock.Stockdefine.Unit = unitOfWork.UnitRepository.GetRecord<UnitModel>(u => u.ConcurrencyStamp == Data.Stock.Stockdefine.Unitid);
             return Ok(Data);
         }
 
         [Route("Update")]
-        [AuthorizeMultiplePolicy(UserAuthory.Stock_Update)]
+        [AuthorizeMultiplePolicy(UserAuthory.Stockmovement_Edit)]
         [HttpPost]
         public IActionResult Update(StockmovementModel model)
         {
             var username = GetSessionUser();
-            StockmovementModel oldmodel = unitOfWork.StockmovementRepository.GetSingleRecord<StockmovementModel>(u => u.ConcurrencyStamp == model.ConcurrencyStamp);
+            StockmovementModel oldmodel = unitOfWork.StockmovementRepository.GetRecord<StockmovementModel>(u => u.ConcurrencyStamp == model.ConcurrencyStamp);
             model.UpdatedUser = username;
             model.UpdateTime = DateTime.Now;
             unitOfWork.StockmovementRepository.update(oldmodel, model);

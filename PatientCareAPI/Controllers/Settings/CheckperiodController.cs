@@ -48,16 +48,8 @@ namespace PatientCareAPI.Controllers.Settings
             return List;
         }
 
-        [Route("GetAllSettings")]
-        [AuthorizeMultiplePolicy(UserAuthory.Department_Screen)]
-        [HttpGet]
-        public IActionResult GetAllSettings()
-        {
-            return Ok(FetchList());
-        }
-
         [Route("GetAll")]
-        [AuthorizeMultiplePolicy(UserAuthory.Department_Screen)]
+        [AuthorizeMultiplePolicy(UserAuthory.Checkperiod_Screen)]
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -66,11 +58,11 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("GetSelected")]
-        [AuthorizeMultiplePolicy((UserAuthory.Department_Screen + "," + UserAuthory.Department_Update))]
+        [AuthorizeMultiplePolicy((UserAuthory.Checkperiod_Getselected))]
         [HttpGet]
         public IActionResult GetSelected(string guid)
         {
-            var Data = unitOfWork.CheckperiodRepository.GetSingleRecord<CheckperiodModel>(u => u.ConcurrencyStamp == guid);
+            var Data = unitOfWork.CheckperiodRepository.GetRecord<CheckperiodModel>(u => u.ConcurrencyStamp == guid);
             if (Data == null)
             {
                 return NotFound();
@@ -80,10 +72,8 @@ namespace PatientCareAPI.Controllers.Settings
             return Ok(Data);
         }
 
-
-
         [Route("Add")]
-        [AuthorizeMultiplePolicy(UserAuthory.Department_Add)]
+        [AuthorizeMultiplePolicy(UserAuthory.Checkperiod_Add)]
         [HttpPost]
         public IActionResult Add(CheckperiodModel model)
         {
@@ -93,18 +83,16 @@ namespace PatientCareAPI.Controllers.Settings
             model.CreateTime = DateTime.Now;
             model.ConcurrencyStamp = Guid.NewGuid().ToString();
             unitOfWork.CheckperiodRepository.Add(model);
-            List<CheckperiodtoPeriodModel> list = new List<CheckperiodtoPeriodModel>();
             foreach (var item in model.Periods)
             {
-                list.Add(new CheckperiodtoPeriodModel { CheckperiodID = model.ConcurrencyStamp, PeriodID= item.ConcurrencyStamp });
+                unitOfWork.CheckperiodtoPeriodRepository.Add(new CheckperiodtoPeriodModel { CheckperiodID = model.ConcurrencyStamp, PeriodID= item.ConcurrencyStamp });
             }
-            unitOfWork.CheckperiodtoPeriodRepository.AddRange(list);
             unitOfWork.Complate();
             return Ok(FetchList());
         }
 
         [Route("Update")]
-        [AuthorizeMultiplePolicy(UserAuthory.Department_Update)]
+        [AuthorizeMultiplePolicy(UserAuthory.Checkperiod_Edit)]
         [HttpPost]
         public IActionResult Update(CheckperiodModel model)
         {
@@ -124,16 +112,16 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("Delete")]
-        [AuthorizeMultiplePolicy(UserAuthory.Department_Delete)]
+        [AuthorizeMultiplePolicy(UserAuthory.Checkperiod_Delete)]
         [HttpPost]
         public IActionResult Delete(CheckperiodModel model)
         {
-            var periodsguids = unitOfWork.CheckperiodtoPeriodRepository.GetRecords<CheckperiodtoPeriodModel>(u => u.CheckperiodID == model.ConcurrencyStamp).Select(u => u.PeriodID).ToList();
-            var periods = unitOfWork.PeriodRepository.GetPeriodsbyGuids(periodsguids).Where(u => u.IsActive).ToList();
-            if (periods.Count > 0)
-            {
-                return new ObjectResult(new ResponseModel { Status = "Can't Delete", Massage = model.Name + " kontrol grubuna bağlı kontroller var" }) { StatusCode = 403 };
-            }
+            //var periodsguids = unitOfWork.CheckperiodtoPeriodRepository.GetRecords<CheckperiodtoPeriodModel>(u => u.CheckperiodID == model.ConcurrencyStamp).Select(u => u.PeriodID).ToList();
+            //var periods = unitOfWork.PeriodRepository.GetPeriodsbyGuids(periodsguids).Where(u => u.IsActive).ToList();
+            //if (periods.Count > 0)
+            //{
+            //    return new ObjectResult(new ResponseModel { Status = "Can't Delete", Massage = model.Name + " kontrol grubuna bağlı kontroller var" }) { StatusCode = 403 };
+            //}
             var username = GetSessionUser();
             model.DeleteUser = username;
             model.IsActive = false;

@@ -65,7 +65,7 @@ namespace PatientCareAPI.DataAccess.Repositories.Concrete
             _context.Entry(olditem).CurrentValues.SetValues(newitem);
         }
 
-        public T GetSingleRecord<T>(Expression<Func<T, bool>> predicate) where T : class
+        public T GetRecord<T>(Expression<Func<T, bool>> predicate) where T : class
         {
             T item = _context.Set<T>().FirstOrDefault(predicate);
             return item;

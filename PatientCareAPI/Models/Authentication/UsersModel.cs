@@ -15,6 +15,7 @@ namespace PatientCareAPI.Models.Authentication
             Stations = new List<StationsModel>();
             Departments = new List<DepartmentModel>();
             Roles = new List<RoleModel>();
+            Files = new List<FileModel>();
         }
       
         [StringLength(85)]
@@ -47,5 +48,7 @@ namespace PatientCareAPI.Models.Authentication
         public List<DepartmentModel> Departments { get; set; }
         [NotMapped]
         public List<StationsModel> Stations { get; set; }
+        [NotMapped]
+        public List<FileModel> Files { get; set; }
     }
 }

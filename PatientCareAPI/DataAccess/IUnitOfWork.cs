@@ -6,15 +6,18 @@ using PatientCareAPI.DataAccess.Repositories.Abstract.Auth;
 using PatientCareAPI.DataAccess.Repositories.Abstract.Settings;
 using PatientCareAPI.DataAccess.Repositories.Abstract.Application;
 using PatientCareAPI.DataAccess.Repositories.Abstract.Warehouse;
+using PatientCareAPI.DataAccess.Repositories.Abstract.System;
 
 namespace PatientCareAPI.DataAccess
 {
     public interface IUnitOfWork : IDisposable
     {
+        ApplicationDBContext Context { get; }
         //Application
         IPatientRepository PatientRepository { get; }
         IPatientmovementRepository PatientmovementRepository { get; }
         IPatientdefineRepository PatientdefineRepository { get; }
+        ITodoRepository TodoRepository { get; }
 
         //Warehouse
         IDeactivestockRepository DeactivestockRepository { get; }
@@ -35,6 +38,7 @@ namespace PatientCareAPI.DataAccess
         IUsertoRoleRepository UsertoRoleRepository { get; }
         IRoletoAuthoryRepository RoletoAuthoryRepository { get; }
         IUsertoSaltRepository UsertoSaltRepository { get; }
+        IResetpasswordrequestRepository ResetpasswordrequestRepository { get; }
 
         //Settings
         ICaseRepository CaseRepository { get; }
@@ -58,6 +62,11 @@ namespace PatientCareAPI.DataAccess
         ICheckperiodRepository CheckperiodRepository { get; }
         ICheckperiodtoPeriodRepository CheckperiodtoPeriodRepository { get; }
         IPeriodRepository PeriodRepository { get; }
+        ITododefinetoPeriodRepository TododefinetoPeriodRepository { get; }
+
+        //System
+        IMailsettingRepository MailsettingRepository { get; }
+        IPrinttemplateRepository PrinttemplateRepository { get; }
         int Complate();
     }
 }

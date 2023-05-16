@@ -36,7 +36,6 @@ namespace PatientCareAPI.Controllers.Settings
         {
             return (this.User.Identity as ClaimsIdentity).FindFirst(ClaimTypes.Name)?.Value;
         }
-
         private List<PeriodModel> FetchList()
         {
             var List = unitOfWork.PeriodRepository.GetRecords<PeriodModel>(u => u.IsActive);
@@ -44,7 +43,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("GetAll")]
-        [AuthorizeMultiplePolicy(UserAuthory.Stations_Screen)]
+        [AuthorizeMultiplePolicy(UserAuthory.Period_Screen)]
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -52,11 +51,11 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("GetSelected")]
-        [AuthorizeMultiplePolicy(UserAuthory.Stations_Screen)]
+        [AuthorizeMultiplePolicy(UserAuthory.Period_Getselected)]
         [HttpGet]
         public IActionResult GetSelectedStation(string guid)
         {
-            var Data = unitOfWork.PeriodRepository.GetSingleRecord<PeriodModel>(u => u.ConcurrencyStamp == guid);
+            var Data = unitOfWork.PeriodRepository.GetRecord<PeriodModel>(u => u.ConcurrencyStamp == guid);
             if (Data == null)
             {
                 return NotFound();
@@ -65,7 +64,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("Add")]
-        [AuthorizeMultiplePolicy(UserAuthory.Stations_Add)]
+        [AuthorizeMultiplePolicy(UserAuthory.Period_Add)]
         [HttpPost]
         public IActionResult Add(PeriodModel model)
         {
@@ -80,7 +79,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("Update")]
-        [AuthorizeMultiplePolicy((UserAuthory.Stations_Update + "," + UserAuthory.Stations_Screen))]
+        [AuthorizeMultiplePolicy((UserAuthory.Period_Edit))]
         [HttpPost]
         public IActionResult Update(PeriodModel model)
         {
@@ -93,7 +92,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("Delete")]
-        [AuthorizeMultiplePolicy(UserAuthory.Stations_Delete)]
+        [AuthorizeMultiplePolicy(UserAuthory.Period_Delete)]
         [HttpPost]
         public IActionResult Delete(PeriodModel model)
         {
@@ -101,7 +100,7 @@ namespace PatientCareAPI.Controllers.Settings
             var activelist = unitOfWork.CheckperiodRepository.GetCheckperiodsbyGuids(list).Where(u => u.IsActive).ToList();
             if (activelist.Count > 0)
             {
-                return new ObjectResult(new ResponseModel { Status = "Can't Delete", Massage = model.Name + " kontrol grubu bağlı kontrol var" }) { StatusCode = 403 };
+                return new ObjectResult(new ResponseModel { Status = "Can't Delete", Massage = model.Name + " kontrolüne bağlı kontrol grubu var" }) { StatusCode = 403 };
             }
             var username = GetSessionUser();
             model.DeleteUser = username;

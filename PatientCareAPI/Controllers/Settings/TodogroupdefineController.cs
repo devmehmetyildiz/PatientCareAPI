@@ -44,23 +44,15 @@ namespace PatientCareAPI.Controllers.Settings
             var List = unitOfWork.TodogroupdefineRepository.GetRecords<TodogroupdefineModel>(u => u.IsActive);
             foreach (var item in List)
             {
-                item.Department = unitOfWork.DepartmentRepository.GetSingleRecord<DepartmentModel>(u => u.IsActive && u.ConcurrencyStamp == item.DepartmentID);
+                item.Department = unitOfWork.DepartmentRepository.GetRecord<DepartmentModel>(u => u.IsActive && u.ConcurrencyStamp == item.DepartmentID);
                 var todoguids = unitOfWork.TodogrouptoTodoRepository.GetRecords<TodogrouptoTodoModel>(u => u.GroupID== item.ConcurrencyStamp).Select(u => u.TodoID).ToList();
                 item.Todos = unitOfWork.TododefineRepository.GetTodosbyGuids(todoguids);
             }
             return List;
         }
 
-        [Route("GetAllSettings")]
-        [AuthorizeMultiplePolicy(UserAuthory.Department_Screen)]
-        [HttpGet]
-        public IActionResult GetAllSettings()
-        {
-            return Ok(FetchList());
-        }
-
         [Route("GetAll")]
-        [AuthorizeMultiplePolicy(UserAuthory.Department_Screen)]
+        [AuthorizeMultiplePolicy(UserAuthory.Todogroupdefine_Screen)]
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -69,25 +61,23 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("GetSelected")]
-        [AuthorizeMultiplePolicy((UserAuthory.Department_Screen + "," + UserAuthory.Department_Update))]
+        [AuthorizeMultiplePolicy((UserAuthory.Todogroupdefine_Getselected))]
         [HttpGet]
         public IActionResult GetSelected(string guid)
         {
-            var Data = unitOfWork.TododefineRepository.GetSingleRecord<TodogroupdefineModel>(u => u.ConcurrencyStamp == guid);
+            var Data = unitOfWork.TododefineRepository.GetRecord<TodogroupdefineModel>(u => u.ConcurrencyStamp == guid);
             if (Data == null)
             {
                 return NotFound();
             }
             var todoguids = unitOfWork.TodogrouptoTodoRepository.GetRecords<TodogrouptoTodoModel>(u => u.GroupID == guid).Select(u => u.TodoID).ToList();
             Data.Todos = unitOfWork.TododefineRepository.GetTodosbyGuids(todoguids);
-            Data.Department = unitOfWork.DepartmentRepository.GetSingleRecord<DepartmentModel>(u => u.IsActive && u.ConcurrencyStamp == Data.ConcurrencyStamp);
+            Data.Department = unitOfWork.DepartmentRepository.GetRecord<DepartmentModel>(u => u.IsActive && u.ConcurrencyStamp == Data.ConcurrencyStamp);
             return Ok(Data);
         }
 
-
-
         [Route("Add")]
-        [AuthorizeMultiplePolicy(UserAuthory.Department_Add)]
+        [AuthorizeMultiplePolicy(UserAuthory.Todogroupdefine_Add)]
         [HttpPost]
         public IActionResult Add(TodogroupdefineModel model)
         {
@@ -108,7 +98,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("Update")]
-        [AuthorizeMultiplePolicy(UserAuthory.Department_Update)]
+        [AuthorizeMultiplePolicy(UserAuthory.Todogroupdefine_Edit)]
         [HttpPost]
         public IActionResult Update(TodogroupdefineModel model)
         {
@@ -128,7 +118,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("Delete")]
-        [AuthorizeMultiplePolicy(UserAuthory.Department_Delete)]
+        [AuthorizeMultiplePolicy(UserAuthory.Todogroupdefine_Delete)]
         [HttpPost]
         public IActionResult Delete(TodogroupdefineModel model)
         {

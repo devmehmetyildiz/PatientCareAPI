@@ -52,14 +52,6 @@ namespace PatientCareAPI.Controllers.Settings
 
         [HttpGet]
         [AuthorizeMultiplePolicy(UserAuthory.Case_Screen)]
-        [Route("GetAllSettings")]
-        public IActionResult GetAllSettings()
-        {
-            return Ok(FetchList());
-        }
-
-        [HttpGet]
-        [AuthorizeMultiplePolicy(UserAuthory.Case_Screen)]
         [Route("GetAll")]
         public IActionResult GetAll()
         {
@@ -67,11 +59,11 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("GetSelected")]
-        [AuthorizeMultiplePolicy(UserAuthory.Case_Screen + "," + UserAuthory.Case_Update)]
+        [AuthorizeMultiplePolicy(UserAuthory.Case_Getselected)]
         [HttpGet]
         public IActionResult GetSelectedCase(string guid)
         {
-            var Data = unitOfWork.CaseRepository.GetSingleRecord<CaseModel>(u => u.ConcurrencyStamp == guid);
+            var Data = unitOfWork.CaseRepository.GetRecord<CaseModel>(u => u.ConcurrencyStamp == guid);
             if (Data == null)
             {
                 return NotFound();
@@ -103,7 +95,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("Update")]
-        [AuthorizeMultiplePolicy(UserAuthory.Case_Update)]
+        [AuthorizeMultiplePolicy(UserAuthory.Case_Edit)]
         [HttpPost]
         public IActionResult Update(CaseModel model)
         {

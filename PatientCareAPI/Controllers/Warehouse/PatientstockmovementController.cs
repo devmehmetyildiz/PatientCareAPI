@@ -43,14 +43,14 @@ namespace PatientCareAPI.Controllers.Warehouse
             var List = unitOfWork.PatientstocksmovementRepository.GetRecords<PatientstocksmovementModel>(u => u.IsActive);
             foreach (var item in List)
             {
-                item.Stock = unitOfWork.PatientstocksRepository.GetSingleRecord<PatientstocksModel>(u => u.ConcurrencyStamp == item.StockID);
+                item.Stock = unitOfWork.PatientstocksRepository.GetRecord<PatientstocksModel>(u => u.ConcurrencyStamp == item.StockID);
                 if (item.Stock != null)
                 {
-                    item.Stock.Department = unitOfWork.DepartmentRepository.GetSingleRecord<DepartmentModel>(u => u.ConcurrencyStamp == item.Stock.Departmentid);
-                    item.Stock.Stockdefine = unitOfWork.StockdefineRepository.GetSingleRecord<StockdefineModel>(u => u.ConcurrencyStamp == item.Stock.StockdefineID);
+                    item.Stock.Department = unitOfWork.DepartmentRepository.GetRecord<DepartmentModel>(u => u.ConcurrencyStamp == item.Stock.Departmentid);
+                    item.Stock.Stockdefine = unitOfWork.StockdefineRepository.GetRecord<StockdefineModel>(u => u.ConcurrencyStamp == item.Stock.StockdefineID);
                     if (item.Stock.Stockdefine != null)
                     {
-                        item.Stock.Stockdefine.Unit = unitOfWork.UnitRepository.GetSingleRecord<UnitModel>(u => u.ConcurrencyStamp == item.Stock.Stockdefine.Unitid);
+                        item.Stock.Stockdefine.Unit = unitOfWork.UnitRepository.GetRecord<UnitModel>(u => u.ConcurrencyStamp == item.Stock.Stockdefine.Unitid);
                     }
                 }
             }
@@ -58,7 +58,7 @@ namespace PatientCareAPI.Controllers.Warehouse
         }
 
         [Route("GetAll")]
-        [AuthorizeMultiplePolicy(UserAuthory.Stock_Screen)]
+        [AuthorizeMultiplePolicy(UserAuthory.Patientstockmovement_Screen)]
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -66,26 +66,26 @@ namespace PatientCareAPI.Controllers.Warehouse
         }
 
         [Route("GetSelected")]
-        [AuthorizeMultiplePolicy((UserAuthory.Stock_Screen + "," + UserAuthory.Stock_Update))]
+        [AuthorizeMultiplePolicy(UserAuthory.Patientstockmovement_Getselected )]
         [HttpGet]
         public IActionResult GetSelected(string guid)
         {
-            PatientstocksmovementModel Data = unitOfWork.PatientstocksmovementRepository.GetSingleRecord<PatientstocksmovementModel>(u => u.ConcurrencyStamp == guid);
-            Data.Stock = unitOfWork.PatientstocksRepository.GetSingleRecord<PatientstocksModel>(u => u.ConcurrencyStamp == Data.StockID);
+            PatientstocksmovementModel Data = unitOfWork.PatientstocksmovementRepository.GetRecord<PatientstocksmovementModel>(u => u.ConcurrencyStamp == guid);
+            Data.Stock = unitOfWork.PatientstocksRepository.GetRecord<PatientstocksModel>(u => u.ConcurrencyStamp == Data.StockID);
             if (Data.Stock != null)
             {
-                Data.Stock.Department = unitOfWork.DepartmentRepository.GetSingleRecord<DepartmentModel>(u => u.ConcurrencyStamp == Data.Stock.Departmentid);
-                Data.Stock.Stockdefine = unitOfWork.StockdefineRepository.GetSingleRecord<StockdefineModel>(u => u.ConcurrencyStamp == Data.Stock.StockdefineID);
+                Data.Stock.Department = unitOfWork.DepartmentRepository.GetRecord<DepartmentModel>(u => u.ConcurrencyStamp == Data.Stock.Departmentid);
+                Data.Stock.Stockdefine = unitOfWork.StockdefineRepository.GetRecord<StockdefineModel>(u => u.ConcurrencyStamp == Data.Stock.StockdefineID);
                 if (Data.Stock.Stockdefine != null)
                 {
-                    Data.Stock.Stockdefine.Unit = unitOfWork.UnitRepository.GetSingleRecord<UnitModel>(u => u.ConcurrencyStamp == Data.Stock.Stockdefine.Unitid);
+                    Data.Stock.Stockdefine.Unit = unitOfWork.UnitRepository.GetRecord<UnitModel>(u => u.ConcurrencyStamp == Data.Stock.Stockdefine.Unitid);
                 }
             }
             return Ok(Data);
         }
 
         [Route("Add")]
-        [AuthorizeMultiplePolicy(UserAuthory.Stock_Update)]
+        [AuthorizeMultiplePolicy(UserAuthory.Patientstockmovement_Add)]
         [HttpPost]
         public IActionResult Add(PatientstocksmovementModel model)
         {
@@ -111,12 +111,12 @@ namespace PatientCareAPI.Controllers.Warehouse
         }
 
         [Route("Update")]
-        [AuthorizeMultiplePolicy(UserAuthory.Stock_Update)]
+        [AuthorizeMultiplePolicy(UserAuthory.Patientstockmovement_Edit)]
         [HttpPost]
         public IActionResult Update(PatientstocksmovementModel model)
         {
             var username = GetSessionUser();
-            PatientstocksmovementModel oldmodel = unitOfWork.PatientstocksmovementRepository.GetSingleRecord<PatientstocksmovementModel>(u => u.ConcurrencyStamp == model.ConcurrencyStamp);
+            PatientstocksmovementModel oldmodel = unitOfWork.PatientstocksmovementRepository.GetRecord<PatientstocksmovementModel>(u => u.ConcurrencyStamp == model.ConcurrencyStamp);
             model.UpdatedUser = username;
             model.UpdateTime = DateTime.Now;
             unitOfWork.PatientstocksmovementRepository.update(oldmodel, model);
@@ -125,12 +125,12 @@ namespace PatientCareAPI.Controllers.Warehouse
         }
 
         [Route("Delete")]
-        [AuthorizeMultiplePolicy(UserAuthory.Stock_Update)]
+        [AuthorizeMultiplePolicy(UserAuthory.Patientstockmovement_Delete)]
         [HttpPost]
         public IActionResult Delete(string guid)
         {
             var username = GetSessionUser();
-            PatientstocksmovementModel oldmodel = unitOfWork.PatientstocksmovementRepository.GetSingleRecord<PatientstocksmovementModel>(u => u.ConcurrencyStamp == guid);
+            PatientstocksmovementModel oldmodel = unitOfWork.PatientstocksmovementRepository.GetRecord<PatientstocksmovementModel>(u => u.ConcurrencyStamp == guid);
             oldmodel.DeleteUser = username;
             oldmodel.DeleteTime = DateTime.Now;
             oldmodel.IsActive = false;

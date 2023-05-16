@@ -21,13 +21,14 @@ namespace PatientCareAPI.Utils
         }
         public enum Patienttypes
         {
-            KurumdanCıkıs = 0,
+            Durumsuz = 0,
             KurumaGiriş = 1,
             İlkKayıt = 2,
             HastaneCıkıs = 3,
             HastaneGiris=4,
             Ölüm=5,
-            Kontrol=6
+            Kontrol=6,
+            KurumdanÇıkış = 7
         }
         public enum Stockstatus
         {

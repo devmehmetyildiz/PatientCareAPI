@@ -10,6 +10,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using PatientCareAPI.DataAccess.Repositories.Abstract.Warehouse;
 using PatientCareAPI.DataAccess.Repositories.Concrete.Warehouse;
+using PatientCareAPI.DataAccess.Repositories.Abstract.System;
+using PatientCareAPI.DataAccess.Repositories.Concrete.System;
 
 namespace PatientCareAPI.DataAccess
 {
@@ -23,6 +25,7 @@ namespace PatientCareAPI.DataAccess
             PatientRepository = new PatientRepository(_dBContext);
             PatientdefineRepository = new PatientdefineRepository(_dBContext);
             PatientmovementRepository = new PatientmovementRepository(_dBContext);
+            TodoRepository = new TodoRepository(_dBContext);
             //Warehouse
             DeactivestockRepository = new DeactivestockRepository(_dBContext);
             PatientstocksRepository = new PatientstocksRepository(_dBContext);
@@ -41,6 +44,7 @@ namespace PatientCareAPI.DataAccess
             UsertoRoleRepository = new UsertoRoleRepository(_dBContext);
             RoletoAuthoryRepository = new RoletoAuthoryRepository(_dBContext);
             UsertoSaltRepository = new UsertoSaltRepository(_dBContext);
+            ResetpasswordrequestRepository = new ResetpasswordrequestRepository(_dBContext);
             //Settings
             CaseRepository = new CaseRepository(_dBContext);
             CasetodepartmentRepository = new CasetodepartmentRepository(_dBContext);
@@ -63,6 +67,11 @@ namespace PatientCareAPI.DataAccess
             CheckperiodRepository = new CheckperiodRepository(_dBContext);
             CheckperiodtoPeriodRepository = new CheckperiodtoPeriodRepository(_dBContext);
             PeriodRepository = new PeriodRepository(_dBContext);
+            TododefinetoPeriodRepository = new TododefinetoPeriodRepository(_dBContext);
+            
+            //System
+            MailsettingRepository = new MailsettingRepository(_dBContext);
+            PrinttemplateRepository = new PrinttemplateRepository(_dBContext);
         }
 
         public IAuthoryRepository AuthoryRepository { get; private set; }
@@ -145,6 +154,17 @@ namespace PatientCareAPI.DataAccess
 
         public IPeriodRepository PeriodRepository { get; private set; }
 
+        public IResetpasswordrequestRepository ResetpasswordrequestRepository { get; private set; }
+
+        public IMailsettingRepository MailsettingRepository { get; private set; }
+
+        public IPrinttemplateRepository PrinttemplateRepository { get; private set; }
+
+        public ITododefinetoPeriodRepository TododefinetoPeriodRepository { get; private set; }
+
+        public ITodoRepository TodoRepository { get; private set; }
+
+        public ApplicationDBContext Context => _dBContext;
         public int Complate()
         {
             return _dBContext.SaveChanges();

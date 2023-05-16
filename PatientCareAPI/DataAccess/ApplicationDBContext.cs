@@ -7,6 +7,7 @@ using PatientCareAPI.Models.Authentication;
 using PatientCareAPI.Models.Settings;
 using PatientCareAPI.Models.Application;
 using PatientCareAPI.Models.Warehouse;
+using PatientCareAPI.Models.System;
 
 namespace PatientCareAPI.DataAccess
 {
@@ -21,6 +22,7 @@ namespace PatientCareAPI.DataAccess
         public DbSet<PatientModel> Patients { get; set; }
         public DbSet<PatientmovementModel> Patientmovements { get; set; }
         public DbSet<PatientdefineModel> Patientdefines { get; set; }
+        public DbSet<TodoModel> Todos { get; set; }
 
         //Warehouse
         public DbSet<WarehouseModel> Warehouses { get; set; }
@@ -40,6 +42,7 @@ namespace PatientCareAPI.DataAccess
         public DbSet<UsertoRoleModel> UsertoRoles { get; set; }
         public DbSet<RoletoAuthory> RoletoAuthories { get; set; }
         public DbSet<UsertoSaltModel> UsertoSalt { get; set; }
+        public DbSet<ResetpasswordrequestModel> Resetpasswordrequests { get; set; }
 
         //Settings
         public DbSet<CaseModel> Cases { get; set; }
@@ -63,6 +66,10 @@ namespace PatientCareAPI.DataAccess
         public DbSet<CheckperiodModel> Checkperiods { get; set; }
         public DbSet<CheckperiodtoPeriodModel> CheckperiodsToPeriods { get; set; }
         public DbSet<PeriodModel> Periods { get; set; }
+        public DbSet<TododefinetoPeriodModel> TododefinetoPeriods { get; set; }
+        //System
+        public DbSet<MailsettingModel> Mailsettings { get; set; }
+        public DbSet<PrinttemplateModel> Printtemplates { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
            

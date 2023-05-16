@@ -46,7 +46,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("GetAll")]
-        [AuthorizeMultiplePolicy(UserAuthory.Stations_Screen)]
+        [AuthorizeMultiplePolicy(UserAuthory.Patienttype_Screen)]
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -54,11 +54,11 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("GetSelected")]
-        [AuthorizeMultiplePolicy(UserAuthory.Stations_Screen)]
+        [AuthorizeMultiplePolicy(UserAuthory.Patienttype_Getselected)]
         [HttpGet]
         public IActionResult GetSelectedStation(string guid)
         {
-            var Data = unitOfWork.PatienttypeRepository.GetSingleRecord<PatienttypeModel>(u => u.ConcurrencyStamp == guid);
+            var Data = unitOfWork.PatienttypeRepository.GetRecord<PatienttypeModel>(u => u.ConcurrencyStamp == guid);
             if (Data == null)
             {
                 return NotFound();
@@ -66,9 +66,8 @@ namespace PatientCareAPI.Controllers.Settings
             return Ok(Data);
         }
 
-
         [Route("Add")]
-        [AuthorizeMultiplePolicy(UserAuthory.Stations_Add)]
+        [AuthorizeMultiplePolicy(UserAuthory.Patienttype_Add)]
         [HttpPost]
         public IActionResult Add(PatienttypeModel model)
         {
@@ -83,7 +82,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("Update")]
-        [AuthorizeMultiplePolicy((UserAuthory.Stations_Update + "," + UserAuthory.Stations_Screen))]
+        [AuthorizeMultiplePolicy((UserAuthory.Patienttype_Edit))]
         [HttpPost]
         public IActionResult Update(PatienttypeModel model)
         {
@@ -96,7 +95,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("Delete")]
-        [AuthorizeMultiplePolicy(UserAuthory.Stations_Delete)]
+        [AuthorizeMultiplePolicy(UserAuthory.Patienttype_Delete)]
         [HttpPost]
         public IActionResult Delete(PatienttypeModel model)
         {

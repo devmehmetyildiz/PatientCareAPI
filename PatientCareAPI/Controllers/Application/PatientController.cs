@@ -46,13 +46,13 @@ namespace PatientCareAPI.Controllers.Application
             var List = unitOfWork.PatientRepository.GetRecords<PatientModel>(u => u.IsActive && isactivated? !u.Iswaitingactivation : u.Iswaitingactivation);
             foreach (var item in List)
             {
-                item.Case = unitOfWork.CaseRepository.GetSingleRecord<CaseModel>(u => u.ConcurrencyStamp == item.CaseId);
-                item.Department = unitOfWork.DepartmentRepository.GetSingleRecord<DepartmentModel>(u => u.ConcurrencyStamp == item.Departmentid);
-                item.Patientdefine = unitOfWork.PatientdefineRepository.GetSingleRecord<PatientdefineModel>(u => u.ConcurrencyStamp == item.PatientdefineID);
+                item.Case = unitOfWork.CaseRepository.GetRecord<CaseModel>(u => u.ConcurrencyStamp == item.CaseId);
+                item.Department = unitOfWork.DepartmentRepository.GetRecord<DepartmentModel>(u => u.ConcurrencyStamp == item.Departmentid);
+                item.Patientdefine = unitOfWork.PatientdefineRepository.GetRecord<PatientdefineModel>(u => u.ConcurrencyStamp == item.PatientdefineID);
                 if (item.Patientdefine != null)
                 {
-                    item.Patientdefine.Costumertype = unitOfWork.CostumertypeRepository.GetSingleRecord<CostumertypeModel>(u => u.ConcurrencyStamp == item.Patientdefine.Costumertypeid);
-                    item.Patientdefine.Patienttype = unitOfWork.PatienttypeRepository.GetSingleRecord<PatienttypeModel>(u => u.ConcurrencyStamp == item.Patientdefine.Patienttypeid);
+                    item.Patientdefine.Costumertype = unitOfWork.CostumertypeRepository.GetRecord<CostumertypeModel>(u => u.ConcurrencyStamp == item.Patientdefine.Costumertypeid);
+                    item.Patientdefine.Patienttype = unitOfWork.PatienttypeRepository.GetRecord<PatienttypeModel>(u => u.ConcurrencyStamp == item.Patientdefine.Patienttypeid);
                 }
                 item.Files = unitOfWork.FileRepository.GetRecords<FileModel>(u => u.Parentid == item.ConcurrencyStamp);
                 item.Stocks = unitOfWork.PatientstocksRepository.GetRecords<PatientstocksModel>(u => u.IsActive && u.PatientID == item.ConcurrencyStamp);
@@ -65,9 +65,9 @@ namespace PatientCareAPI.Controllers.Application
                         amount += (movement.Amount * movement.Movementtype);
                     }
                     stock.Amount = amount;
-                    stock.Stockdefine = unitOfWork.StockdefineRepository.GetSingleRecord<StockdefineModel>(u => u.ConcurrencyStamp == stock.StockdefineID);
-                    stock.Department = unitOfWork.DepartmentRepository.GetSingleRecord<DepartmentModel>(u => u.ConcurrencyStamp == stock.Departmentid);
-                    stock.Stockdefine.Unit = unitOfWork.UnitRepository.GetSingleRecord<UnitModel>(u => u.ConcurrencyStamp == stock.Stockdefine.Unitid);
+                    stock.Stockdefine = unitOfWork.StockdefineRepository.GetRecord<StockdefineModel>(u => u.ConcurrencyStamp == stock.StockdefineID);
+                    stock.Department = unitOfWork.DepartmentRepository.GetRecord<DepartmentModel>(u => u.ConcurrencyStamp == stock.Departmentid);
+                    stock.Stockdefine.Unit = unitOfWork.UnitRepository.GetRecord<UnitModel>(u => u.ConcurrencyStamp == stock.Stockdefine.Unitid);
                 }
             }
             return List;
@@ -82,7 +82,7 @@ namespace PatientCareAPI.Controllers.Application
         }
 
         [Route("GetActivationlist")]
-        [AuthorizeMultiplePolicy(UserAuthory.Patients_Screen)]
+        [AuthorizeMultiplePolicy(UserAuthory.Preregistration_Screen)]
         [HttpGet]
         public IActionResult GetActivationlist()
         {
@@ -90,18 +90,18 @@ namespace PatientCareAPI.Controllers.Application
         }
 
         [Route("GetSelected")]
-        [AuthorizeMultiplePolicy((UserAuthory.Patients_Screen + "," + UserAuthory.Patients_Update))]
+        [AuthorizeMultiplePolicy((UserAuthory.Patients_Getselected))]
         [HttpGet]
         public IActionResult GetSelected(string guid)
         {
-            var model = unitOfWork.PatientRepository.GetSingleRecord<PatientModel>(u => u.IsActive && u.ConcurrencyStamp == guid);
-            model.Case = unitOfWork.CaseRepository.GetSingleRecord<CaseModel>(u => u.ConcurrencyStamp == model.CaseId);
-            model.Department = unitOfWork.DepartmentRepository.GetSingleRecord<DepartmentModel>(u => u.ConcurrencyStamp == model.Departmentid);
-            model.Patientdefine = unitOfWork.PatientdefineRepository.GetSingleRecord<PatientdefineModel>(u => u.ConcurrencyStamp == model.PatientdefineID);
+            var model = unitOfWork.PatientRepository.GetRecord<PatientModel>(u => u.IsActive && u.ConcurrencyStamp == guid);
+            model.Case = unitOfWork.CaseRepository.GetRecord<CaseModel>(u => u.ConcurrencyStamp == model.CaseId);
+            model.Department = unitOfWork.DepartmentRepository.GetRecord<DepartmentModel>(u => u.ConcurrencyStamp == model.Departmentid);
+            model.Patientdefine = unitOfWork.PatientdefineRepository.GetRecord<PatientdefineModel>(u => u.ConcurrencyStamp == model.PatientdefineID);
             if (model.Patientdefine != null)
             {
-                model.Patientdefine.Costumertype = unitOfWork.CostumertypeRepository.GetSingleRecord<CostumertypeModel>(u => u.ConcurrencyStamp == model.Patientdefine.Costumertypeid);
-                model.Patientdefine.Patienttype = unitOfWork.PatienttypeRepository.GetSingleRecord<PatienttypeModel>(u => u.ConcurrencyStamp == model.Patientdefine.Patienttypeid);
+                model.Patientdefine.Costumertype = unitOfWork.CostumertypeRepository.GetRecord<CostumertypeModel>(u => u.ConcurrencyStamp == model.Patientdefine.Costumertypeid);
+                model.Patientdefine.Patienttype = unitOfWork.PatienttypeRepository.GetRecord<PatienttypeModel>(u => u.ConcurrencyStamp == model.Patientdefine.Patienttypeid);
             }
             model.Files = unitOfWork.FileRepository.GetRecords<FileModel>(u => u.Parentid == model.ConcurrencyStamp);
             model.Stocks = unitOfWork.PatientstocksRepository.GetRecords<PatientstocksModel>(u => u.IsActive && u.PatientID == model.ConcurrencyStamp);
@@ -114,9 +114,9 @@ namespace PatientCareAPI.Controllers.Application
                     amount += (movement.Amount * movement.Movementtype);
                 }
                 stock.Amount = amount;
-                stock.Stockdefine = unitOfWork.StockdefineRepository.GetSingleRecord<StockdefineModel>(u => u.ConcurrencyStamp == stock.StockdefineID);
-                stock.Department = unitOfWork.DepartmentRepository.GetSingleRecord<DepartmentModel>(u => u.ConcurrencyStamp == stock.Departmentid);
-                stock.Stockdefine.Unit = unitOfWork.UnitRepository.GetSingleRecord<UnitModel>(u => u.ConcurrencyStamp == stock.Stockdefine.Unitid);
+                stock.Stockdefine = unitOfWork.StockdefineRepository.GetRecord<StockdefineModel>(u => u.ConcurrencyStamp == stock.StockdefineID);
+                stock.Department = unitOfWork.DepartmentRepository.GetRecord<DepartmentModel>(u => u.ConcurrencyStamp == stock.Departmentid);
+                stock.Stockdefine.Unit = unitOfWork.UnitRepository.GetRecord<UnitModel>(u => u.ConcurrencyStamp == stock.Stockdefine.Unitid);
             }
             return Ok(model);
         }
@@ -143,12 +143,25 @@ namespace PatientCareAPI.Controllers.Application
             model.IsActive = true;
             model.CreateTime = DateTime.Now;
             unitOfWork.PatientRepository.Add(model);
+           
+            PatientmovementModel movementmodel = new PatientmovementModel();
+            string movementguid = Guid.NewGuid().ToString();
+            movementmodel.ConcurrencyStamp = movementguid;
+            movementmodel.CreatedUser = "ServiceChecker";
+            movementmodel.IsActive = true;
+            movementmodel.CreateTime = DateTime.Now;
+            movementmodel.IsTodoneed = false;
+            movementmodel.Movementdate = DateTime.Now;
+            movementmodel.PatientID = model.ConcurrencyStamp;
+            movementmodel.Patientmovementtype = (int)Constants.Patienttypes.İlkKayıt;
+            unitOfWork.PatientmovementRepository.Add(movementmodel);
+            
             unitOfWork.Complate();
             return Ok(FetchList(false));
         }
 
         [Route("Update")]
-        [AuthorizeMultiplePolicy(UserAuthory.Patients_Add)]
+        [AuthorizeMultiplePolicy(UserAuthory.Patients_Edit)]
         [HttpPost]
         public IActionResult Update(PatientModel model)
         {
@@ -160,8 +173,34 @@ namespace PatientCareAPI.Controllers.Application
             return Ok(model.Iswaitingactivation? FetchList(false):FetchList(true));
         }
 
+        [Route("Updatecheckperiod")]
+        [AuthorizeMultiplePolicy(UserAuthory.Patients_Edit)]
+        [HttpPost]
+        public IActionResult Updatecheckperiod(PatientModel model)
+        {
+            var username = GetSessionUser();
+            model.UpdatedUser = username;
+            model.UpdateTime = DateTime.Now;
+            unitOfWork.PatientRepository.update(unitOfWork.PatientRepository.Getbyid(model.Id), model);
+            unitOfWork.Complate();
+            return Ok(FetchList(true));
+        }
+
+        [Route("Updatetodogroupdefine")]
+        [AuthorizeMultiplePolicy(UserAuthory.Patients_Edit)]
+        [HttpPost]
+        public IActionResult Updatetodogroupdefine(PatientModel model)
+        {
+            var username = GetSessionUser();
+            model.UpdatedUser = username;
+            model.UpdateTime = DateTime.Now;
+            unitOfWork.PatientRepository.update(unitOfWork.PatientRepository.Getbyid(model.Id), model);
+            unitOfWork.Complate();
+            return Ok(FetchList(true));
+        }
+
         [Route("Completeprepatient")]
-        [AuthorizeMultiplePolicy(UserAuthory.Patients_Add)]
+        [AuthorizeMultiplePolicy(UserAuthory.Preregistration_Edit)]
         [HttpPost]
         public IActionResult Completeprepatient(PatientModel model)
         {
@@ -173,7 +212,7 @@ namespace PatientCareAPI.Controllers.Application
             var stocks = new List<StockModel>();
             foreach (var patientstock in patientstocks)
             {
-                var foundedstock = unitOfWork.StockRepository.GetSingleRecord<StockModel>(u =>
+                var foundedstock = unitOfWork.StockRepository.GetRecord<StockModel>(u =>
                 u.Skt == patientstock.Skt &&
                 u.Barcodeno.Trim() == patientstock.Barcodeno.Trim() &&
                 u.StockdefineID == patientstock.StockdefineID &&
@@ -249,23 +288,24 @@ namespace PatientCareAPI.Controllers.Application
                     movement.UpdateTime = DateTime.Now;
                 }
             }
-                unitOfWork.PatientmovementRepository.Add(new PatientmovementModel
-                {
-                    ConcurrencyStamp = Guid.NewGuid().ToString(),
-                    CreatedUser = "System",
-                    CreateTime = DateTime.Now,
-                    IsActive=true,
-                    Movementdate = DateTime.Now,
-                    Patientmovementtype = (int)Constants.Patienttypes.İlkKayıt,
-                    PatientID = model.ConcurrencyStamp,
-                });
-            unitOfWork.PatientRepository.update(unitOfWork.PatientRepository.GetSingleRecord<PatientModel>(u => u.ConcurrencyStamp == model.ConcurrencyStamp), model);
+            PatientmovementModel movementmodel = new PatientmovementModel();
+            string movementguid = Guid.NewGuid().ToString();
+            movementmodel.PatientID = model.ConcurrencyStamp;
+            movementmodel.ConcurrencyStamp = movementguid;
+            movementmodel.CreatedUser = "ServiceChecker";
+            movementmodel.IsActive = true;
+            movementmodel.CreateTime = DateTime.Now;
+            movementmodel.IsTodoneed = false;
+            movementmodel.Movementdate = DateTime.Now;
+            movementmodel.Patientmovementtype = (int)Constants.Patienttypes.KurumaGiriş;
+            unitOfWork.PatientmovementRepository.Add(movementmodel);
+            unitOfWork.PatientRepository.update(unitOfWork.PatientRepository.GetRecord<PatientModel>(u => u.ConcurrencyStamp == model.ConcurrencyStamp), model);
             unitOfWork.Complate();
             return Ok(FetchList(false));
         }
 
         [Route("Preparestocks")]
-        [AuthorizeMultiplePolicy(UserAuthory.Patients_Update)]
+        [AuthorizeMultiplePolicy(UserAuthory.Preregistration_Edit)]
         [HttpPost]
         public IActionResult Updatestocks(PatientModel model)
         {
@@ -279,14 +319,14 @@ namespace PatientCareAPI.Controllers.Application
                 {
                     if (!stock.Willdelete)
                     {
-                        PatientstocksModel oldmodel = unitOfWork.PatientstocksRepository.GetSingleRecord<PatientstocksModel>(u => u.ConcurrencyStamp == stock.ConcurrencyStamp);
+                        PatientstocksModel oldmodel = unitOfWork.PatientstocksRepository.GetRecord<PatientstocksModel>(u => u.ConcurrencyStamp == stock.ConcurrencyStamp);
                         stock.UpdatedUser = username;
                         stock.UpdateTime = DateTime.Now;
                         unitOfWork.PatientstocksRepository.update(oldmodel, stock);
                     }
                     else
                     {
-                        PatientstocksModel oldmodel = unitOfWork.PatientstocksRepository.GetSingleRecord<PatientstocksModel>(u => u.ConcurrencyStamp == stock.ConcurrencyStamp);
+                        PatientstocksModel oldmodel = unitOfWork.PatientstocksRepository.GetRecord<PatientstocksModel>(u => u.ConcurrencyStamp == stock.ConcurrencyStamp);
                         unitOfWork.PatientstocksRepository.Remove(oldmodel.Id);
                         var movements = unitOfWork.PatientmovementRepository.GetRecords<PatientstocksmovementModel>(u => u.StockID == stock.ConcurrencyStamp);
                         foreach (var item in movements)
@@ -339,7 +379,7 @@ namespace PatientCareAPI.Controllers.Application
             var stocks = unitOfWork.PatientstocksRepository.GetRecords<PatientstocksModel>(u => u.PatientID == model.ConcurrencyStamp);
             foreach (var stock in stocks)
             {
-                var oldmodel = unitOfWork.PatientstocksRepository.GetSingleRecord<PatientstocksModel>(u => u.ConcurrencyStamp == stock.ConcurrencyStamp);
+                var oldmodel = unitOfWork.PatientstocksRepository.GetRecord<PatientstocksModel>(u => u.ConcurrencyStamp == stock.ConcurrencyStamp);
                 unitOfWork.PatientstocksRepository.Remove(oldmodel.Id);
                 var movements = unitOfWork.PatientmovementRepository.GetRecords<PatientstocksmovementModel>(u => u.StockID == stock.ConcurrencyStamp);
                 foreach (var item in movements)

@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using PatientCareAPI.Utils;
 using PatientCareAPI.Models.Application;
 using PatientCareAPI.Models.Warehouse;
+using Faker;
 
 namespace PatientCareAPI.Controllers.Settings
 {
@@ -46,22 +47,14 @@ namespace PatientCareAPI.Controllers.Settings
             var List = unitOfWork.StockdefineRepository.GetRecords<StockdefineModel>(u => u.IsActive);
             foreach (var item in List)
             {
-                item.Unit = unitOfWork.UnitRepository.GetSingleRecord<UnitModel>(u => u.ConcurrencyStamp == item.Unitid);
-                item.Department = unitOfWork.DepartmentRepository.GetSingleRecord<DepartmentModel>(u => u.ConcurrencyStamp == item.Departmentid);
+                item.Unit = unitOfWork.UnitRepository.GetRecord<UnitModel>(u => u.ConcurrencyStamp == item.Unitid);
+                item.Department = unitOfWork.DepartmentRepository.GetRecord<DepartmentModel>(u => u.ConcurrencyStamp == item.Departmentid);
             }
             return List;
         }
 
         [HttpGet]
-        [AuthorizeMultiplePolicy(UserAuthory.Stock_Screen)]
-        [Route("GetAllSettings")]
-        public IActionResult GetAllSettings()
-        {
-            return Ok(FetchList());
-        }
-
-        [HttpGet]
-        [AuthorizeMultiplePolicy(UserAuthory.Stock_Screen)]
+        [AuthorizeMultiplePolicy(UserAuthory.Stockdefine_Screen)]
         [Route("GetAll")]
         public IActionResult GetAll()
         {
@@ -69,18 +62,18 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("GetSelected")]
-        [AuthorizeMultiplePolicy((UserAuthory.Stock_Screen + "," + UserAuthory.Stock_Update))]
+        [AuthorizeMultiplePolicy((UserAuthory.Stockdefine_Getselected))]
         [HttpGet]
         public IActionResult GetSelectedStock(string guid)
         {
-            StockdefineModel Data = unitOfWork.StockdefineRepository.GetSingleRecord<StockdefineModel>(u => u.ConcurrencyStamp == guid);
+            StockdefineModel Data = unitOfWork.StockdefineRepository.GetRecord<StockdefineModel>(u => u.ConcurrencyStamp == guid);
             Data.Department = unitOfWork.DepartmentRepository.GetDepartmentByGuid(Data.Departmentid);
             Data.Unit = unitOfWork.UnitRepository.GetUnitByGuid(Data.Unitid);
             return Ok(Data);
         }
 
         [Route("Add")]
-        [AuthorizeMultiplePolicy(UserAuthory.Stock_Add)]
+        [AuthorizeMultiplePolicy(UserAuthory.Stockdefine_Add)]
         [HttpPost]
         public IActionResult Add(StockdefineModel model)
         {
@@ -97,7 +90,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("Update")]
-        [AuthorizeMultiplePolicy(UserAuthory.Stock_Update)]
+        [AuthorizeMultiplePolicy(UserAuthory.Stockdefine_Edit)]
         [HttpPost]
         public IActionResult Update(StockdefineModel model)
         {
@@ -112,7 +105,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("Delete")]
-        [AuthorizeMultiplePolicy(UserAuthory.Stock_Delete)]
+        [AuthorizeMultiplePolicy(UserAuthory.Stockdefine_Delete)]
         [HttpPost]
         public IActionResult Delete(StockdefineModel model)
         {
@@ -138,6 +131,29 @@ namespace PatientCareAPI.Controllers.Settings
             unitOfWork.StockRepository.Remove(model.Id);
             unitOfWork.Complate();
             return Ok();
+        }
+
+        [Route("Createfakedata")]
+        [AuthorizeMultiplePolicy(UserAuthory.Admin)]
+        [HttpGet]
+        public IActionResult Createfakedata()
+        {
+
+            for (int i = 0; i < 2000; i++)
+            {
+                unitOfWork.StockdefineRepository.Add(new StockdefineModel
+                {
+                    CreatedUser = "Fakedata",
+                    CreateTime = DateTime.Now,
+                    IsActive = true,
+                    ConcurrencyStamp = Guid.NewGuid().ToString(),
+                    Departmentid = "fe2c453c-ce9c-47cd-acb9-16fd91c5a959",
+                    Unitid = "76df918c-b078-44c5-9e0a-ac9340aae42a",
+                    Name = Name.First()
+                }); ;
+            }
+            unitOfWork.Complate();
+            return Ok(FetchList());
         }
     }
 }

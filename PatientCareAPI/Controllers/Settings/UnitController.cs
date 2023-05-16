@@ -51,14 +51,6 @@ namespace PatientCareAPI.Controllers.Settings
 
         [HttpGet]
         [AuthorizeMultiplePolicy(UserAuthory.Unit_Screen)]
-        [Route("GetAllSettings")]
-        public IActionResult GetAllSettings()
-        {
-            return Ok(FetchList());
-        }
-
-        [HttpGet]
-        [AuthorizeMultiplePolicy(UserAuthory.Unit_Screen)]
         [Route("GetAll")]
         public IActionResult GetAll()
         {
@@ -66,11 +58,11 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("GetSelected")]
-        [AuthorizeMultiplePolicy((UserAuthory.Unit_Screen + "," +UserAuthory.Unit_Update))]
+        [AuthorizeMultiplePolicy((UserAuthory.Unit_Getselected ))]
         [HttpGet]
         public IActionResult GetSelectedUnit(string guid)
         {
-            var Data = unitOfWork.UnitRepository.GetSingleRecord<UnitModel>(u => u.ConcurrencyStamp == guid);
+            var Data = unitOfWork.UnitRepository.GetRecord<UnitModel>(u => u.ConcurrencyStamp == guid);
             if (Data == null)
             {
                 return NotFound();
@@ -102,7 +94,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("Update")]
-        [AuthorizeMultiplePolicy(UserAuthory.Unit_Update)]
+        [AuthorizeMultiplePolicy(UserAuthory.Unit_Edit)]
         [HttpPost]
         public IActionResult Update(UnitModel model)
         {

@@ -25,7 +25,7 @@ namespace PatientCareAPI.DataAccess.Repositories.Abstract
       
         void RemoveRange(List<Tentity> entities);
 
-        T GetSingleRecord<T>(Expression<Func<T, bool>> predicate) where T : class;
+        T GetRecord<T>(Expression<Func<T, bool>> predicate) where T : class;
         List<T> GetRecords<T>(Expression<Func<T, bool>> predicate) where T : class;
 
     }

@@ -8,6 +8,10 @@ namespace PatientCareAPI.Models.Settings
 {
     public class TodogroupdefineModel : BaseModel
     {
+        public TodogroupdefineModel()
+        {
+            Todos = new List<TododefineModel>();
+        }
         public string Name { get; set; }
         public string DepartmentID { get; set; }
         [NotMapped]

@@ -19,6 +19,11 @@ using Microsoft.AspNetCore.Server.Kestrel.Core;
 using Microsoft.AspNetCore.Http.Features;
 using PatientCareAPI.Utils;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Quartz.Simpl;
+using Quartz.Impl;
+using Quartz;
+using Quartz.Spi;
+using PatientCareAPI.Jobs;
 
 namespace PatientCareAPI
 {
@@ -34,12 +39,15 @@ namespace PatientCareAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+         
+
             services.AddCors(c =>
             {
                 c.AddPolicy("AllowOrigin", options => options.AllowAnyMethod().AllowCredentials()
                  .AllowAnyHeader().WithOrigins("http://localhost:3000"));
             });
             services.AddDbContext<ApplicationDBContext>(options => options.UseMySQL(Configuration.GetConnectionString("Default")));
+
 
             services.ConfigureApplicationCookie(options =>
             {
@@ -84,7 +92,23 @@ namespace PatientCareAPI
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "PatientCareAPI", Version = "v1" });
             });
-         //   services.AddTransient<AuthorizeMultiplePolicyAttribute>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            services.AddSingleton<IJobFactory>(provider =>
+            {
+                var scopeFactory = provider.GetRequiredService<IServiceScopeFactory>();
+                return new SingletonJobFactory(provider, scopeFactory);
+            });
+            services.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();
+
+            services.AddScoped<ServicesChecker>();
+
+            services.AddSingleton(new JobSchedule(
+                jobType: typeof(ServicesChecker),
+                cronExpression: "0 0/1 * * * ?"));
+
+            services.AddHostedService<QuartzHostedService>();
+            //   services.AddTransient<AuthorizeMultiplePolicyAttribute>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -110,3 +134,5 @@ namespace PatientCareAPI
         }
     }
 }
+
+

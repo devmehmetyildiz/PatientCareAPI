@@ -49,16 +49,16 @@ namespace PatientCareAPI.Controllers.Warehouse
                     amount += (movement.Amount * movement.Movementtype);
                 }
                 item.Amount = amount;
-                item.Purchaseorder = unitOfWork.PurchaseorderRepository.GetSingleRecord<PurchaseorderModel>(u => u.ConcurrencyStamp == item.PurchaseorderID);
-                item.Stockdefine = unitOfWork.StockdefineRepository.GetSingleRecord<StockdefineModel>(u => u.ConcurrencyStamp == item.StockdefineID);
-                item.Department = unitOfWork.DepartmentRepository.GetSingleRecord<DepartmentModel>(u => u.ConcurrencyStamp == item.Departmentid);
-                item.Stockdefine.Unit = unitOfWork.UnitRepository.GetSingleRecord<UnitModel>(u => u.ConcurrencyStamp == item.Stockdefine.Unitid);
+                item.Purchaseorder = unitOfWork.PurchaseorderRepository.GetRecord<PurchaseorderModel>(u => u.ConcurrencyStamp == item.PurchaseorderID);
+                item.Stockdefine = unitOfWork.StockdefineRepository.GetRecord<StockdefineModel>(u => u.ConcurrencyStamp == item.StockdefineID);
+                item.Department = unitOfWork.DepartmentRepository.GetRecord<DepartmentModel>(u => u.ConcurrencyStamp == item.Departmentid);
+                item.Stockdefine.Unit = unitOfWork.UnitRepository.GetRecord<UnitModel>(u => u.ConcurrencyStamp == item.Stockdefine.Unitid);
             }
             return List;
         }
 
         [Route("GetAll")]
-        [AuthorizeMultiplePolicy(UserAuthory.Stock_Screen)]
+        [AuthorizeMultiplePolicy(UserAuthory.Purchaseorderstock_Screen)]
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -66,11 +66,11 @@ namespace PatientCareAPI.Controllers.Warehouse
         }
 
         [Route("GetSelected")]
-        [AuthorizeMultiplePolicy((UserAuthory.Stock_Screen + "," + UserAuthory.Stock_Update))]
+        [AuthorizeMultiplePolicy((UserAuthory.Purchaseorderstock_Getselected))]
         [HttpGet]
         public IActionResult GetSelectedActivestock(string guid)
         {
-            PurchaseorderstocksModel Data = unitOfWork.PurchaseorderstocksRepository.GetSingleRecord<PurchaseorderstocksModel>(u => u.ConcurrencyStamp == guid);
+            PurchaseorderstocksModel Data = unitOfWork.PurchaseorderstocksRepository.GetRecord<PurchaseorderstocksModel>(u => u.ConcurrencyStamp == guid);
             double amount = 0;
             var movements = unitOfWork.PurchaseorderstocksmovementRepository.GetRecords<PurchaseorderstocksmovementModel>(u => u.StockID == Data.ConcurrencyStamp && u.IsActive);
             foreach (var movement in movements)
@@ -78,15 +78,15 @@ namespace PatientCareAPI.Controllers.Warehouse
                 amount += (movement.Amount * movement.Movementtype);
             }
             Data.Amount = amount;
-            Data.Purchaseorder = unitOfWork.PurchaseorderRepository.GetSingleRecord<PurchaseorderModel>(u => u.ConcurrencyStamp == Data.PurchaseorderID);
-            Data.Stockdefine = unitOfWork.StockdefineRepository.GetSingleRecord<StockdefineModel>(u => u.ConcurrencyStamp == Data.StockdefineID);
-            Data.Department = unitOfWork.DepartmentRepository.GetSingleRecord<DepartmentModel>(u => u.ConcurrencyStamp == Data.Departmentid);
-            Data.Stockdefine.Unit = unitOfWork.UnitRepository.GetSingleRecord<UnitModel>(u => u.ConcurrencyStamp == Data.Stockdefine.Unitid);
+            Data.Purchaseorder = unitOfWork.PurchaseorderRepository.GetRecord<PurchaseorderModel>(u => u.ConcurrencyStamp == Data.PurchaseorderID);
+            Data.Stockdefine = unitOfWork.StockdefineRepository.GetRecord<StockdefineModel>(u => u.ConcurrencyStamp == Data.StockdefineID);
+            Data.Department = unitOfWork.DepartmentRepository.GetRecord<DepartmentModel>(u => u.ConcurrencyStamp == Data.Departmentid);
+            Data.Stockdefine.Unit = unitOfWork.UnitRepository.GetRecord<UnitModel>(u => u.ConcurrencyStamp == Data.Stockdefine.Unitid);
             return Ok(Data);
         }
 
         [Route("Add")]
-        [AuthorizeMultiplePolicy(UserAuthory.Stock_Add)]
+        [AuthorizeMultiplePolicy(UserAuthory.Purchaseorderstock_Add)]
         [HttpPost]
         public IActionResult Add(PurchaseorderstocksModel model)
         {
@@ -114,12 +114,12 @@ namespace PatientCareAPI.Controllers.Warehouse
         }
 
         [Route("Update")]
-        [AuthorizeMultiplePolicy(UserAuthory.Stock_Update)]
+        [AuthorizeMultiplePolicy(UserAuthory.Purchaseorderstock_Edit)]
         [HttpPost]
         public IActionResult Update(PurchaseorderstocksModel model)
         {
             var username = GetSessionUser();
-            PurchaseorderstocksModel oldmodel = unitOfWork.PurchaseorderstocksRepository.GetSingleRecord<PurchaseorderstocksModel>(u => u.ConcurrencyStamp == model.ConcurrencyStamp);
+            PurchaseorderstocksModel oldmodel = unitOfWork.PurchaseorderstocksRepository.GetRecord<PurchaseorderstocksModel>(u => u.ConcurrencyStamp == model.ConcurrencyStamp);
             model.UpdatedUser = username;
             model.UpdateTime = DateTime.Now;
             unitOfWork.PurchaseorderstocksRepository.update(oldmodel, model);

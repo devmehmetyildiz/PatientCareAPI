@@ -12,6 +12,11 @@ namespace PatientCareAPI.Models.Application
 {
     public class PatientModel : BaseModel
     {
+        public PatientModel()
+        {
+            Stocks = new List<PatientstocksModel>();
+            Files = new List<FileModel>();
+        }
         public string PatientdefineID { get; set; }
         [NotMapped]
         public PatientdefineModel Patientdefine { get; set; }
@@ -31,6 +36,13 @@ namespace PatientCareAPI.Models.Application
         public bool Iswaitingactivation { get; set; }
         public string WarehouseID { get; set; }
         public string ImageID { get; set; }
+
+        public string CheckperiodID { get; set; }
+        [NotMapped]
+        public CheckperiodModel Checkperiod { get; set; }
+        public string TodogroupdefineID { get; set; }
+        [NotMapped]
+        public TodogroupdefineModel Todogroupdefine { get; set; }
         [NotMapped]
         public DepartmentModel Department { get; set; }
         public string CaseId { get; set; }

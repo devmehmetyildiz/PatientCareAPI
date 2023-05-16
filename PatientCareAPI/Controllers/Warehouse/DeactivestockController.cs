@@ -46,9 +46,9 @@ namespace PatientCareAPI.Controllers.Warehouse
             var List = unitOfWork.DeactivestockRepository.GetAll();
             foreach (var item in List)
             {
-                item.Stock = unitOfWork.UnitRepository.GetSingleRecord<StockModel>(u => u.ConcurrencyStamp == item.StockID);
-                item.Stock.Stockdefine = unitOfWork.StockdefineRepository.GetSingleRecord<StockdefineModel>(u => u.ConcurrencyStamp == item.Stock.StockdefineID);
-                item.Department = unitOfWork.DepartmentRepository.GetSingleRecord<DepartmentModel>(u => u.ConcurrencyStamp == item.DepartmentID);
+                item.Stock = unitOfWork.UnitRepository.GetRecord<StockModel>(u => u.ConcurrencyStamp == item.StockID);
+                item.Stock.Stockdefine = unitOfWork.StockdefineRepository.GetRecord<StockdefineModel>(u => u.ConcurrencyStamp == item.Stock.StockdefineID);
+                item.Department = unitOfWork.DepartmentRepository.GetRecord<DepartmentModel>(u => u.ConcurrencyStamp == item.DepartmentID);
             }
             return List;
         }
@@ -63,12 +63,12 @@ namespace PatientCareAPI.Controllers.Warehouse
 
 
         [Route("Update")]
-        [AuthorizeMultiplePolicy(UserAuthory.Stock_Update)]
+        [AuthorizeMultiplePolicy(UserAuthory.Stock_Edit)]
         [HttpPost]
         public IActionResult Update(StockModel model)
         {
             var username = GetSessionUser();
-            StockModel oldmodel = unitOfWork.StockRepository.GetSingleRecord<StockModel>(u => u.ConcurrencyStamp == model.ConcurrencyStamp);
+            StockModel oldmodel = unitOfWork.StockRepository.GetRecord<StockModel>(u => u.ConcurrencyStamp == model.ConcurrencyStamp);
             model.UpdatedUser = username;
             model.UpdateTime = DateTime.Now;
             unitOfWork.StockRepository.update(unitOfWork.StockRepository.Getbyid(model.Id), model);

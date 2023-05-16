@@ -50,7 +50,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [HttpGet]
-        [AuthorizeMultiplePolicy(UserAuthory.File_Screen)]
+        [AuthorizeMultiplePolicy(UserAuthory.Files_Screen)]
         [Route("GetAll")]
         public IActionResult GetAll()
         {
@@ -58,7 +58,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("GetSelected")]
-        [AuthorizeMultiplePolicy((UserAuthory.File_Screen + "," + UserAuthory.File_Update))]
+        [AuthorizeMultiplePolicy((UserAuthory.Files_Getselected))]
         [HttpGet]
         public IActionResult GetSelectedFile(string guid)
         {
@@ -83,7 +83,7 @@ namespace PatientCareAPI.Controllers.Settings
         public IActionResult GetImage(string guid)
         {
             var files = unitOfWork.FileRepository.GetRecords<FileModel>(u => u.Parentid== guid);
-            FileModel Data = files.FirstOrDefault(u => u.Name == "PP");
+            FileModel Data = files.FirstOrDefault(u => u.Usagetype == "PP");
             if (Data != null)
                 return File(Utilities.GetFile(Data), Data.Filetype);
             else
@@ -91,7 +91,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("Add")]
-        [AuthorizeMultiplePolicy(UserAuthory.File_Add)]
+        [AuthorizeMultiplePolicy(UserAuthory.Files_Add)]
         [RequestFormLimits(ValueLengthLimit = int.MaxValue, MultipartBodyLengthLimit = int.MaxValue)]
         [HttpPost]
         public IActionResult Add([FromForm] List<FileModel> list)
@@ -123,7 +123,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("Update")]
-        [AuthorizeMultiplePolicy(UserAuthory.File_Update)]
+        [AuthorizeMultiplePolicy(UserAuthory.Files_Edit)]
         [RequestFormLimits(ValueLengthLimit = int.MaxValue, MultipartBodyLengthLimit = int.MaxValue)]
         [HttpPost]
         public IActionResult Update([FromForm]List<FileModel> list)
@@ -200,18 +200,11 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("Delete")]
-        [AuthorizeMultiplePolicy(UserAuthory.File_Delete)]
+        [AuthorizeMultiplePolicy(UserAuthory.Files_Delete)]
         [HttpDelete]
         public IActionResult Delete(FileModel model)
         {
             var username = GetSessionUser();
-            if (!Utilities.CheckAuth(UserAuthory.File_ManageAll, this.User.Identity))
-            {
-                if (model.CreatedUser == this.User.Identity.Name)
-                {
-                    return StatusCode(403);
-                }
-            }
             model.DeleteUser = username;
             model.IsActive = false;
             model.DeleteTime = DateTime.Now;

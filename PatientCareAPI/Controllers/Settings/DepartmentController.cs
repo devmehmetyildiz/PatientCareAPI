@@ -50,14 +50,6 @@ namespace PatientCareAPI.Controllers.Settings
             return List;
         }
 
-        [Route("GetAllSettings")]
-        [AuthorizeMultiplePolicy(UserAuthory.Department_Screen)]
-        [HttpGet]
-        public IActionResult GetAllSettings()
-        {
-            return Ok(FetchList());
-        }
-
         [Route("GetAll")]
         [AuthorizeMultiplePolicy(UserAuthory.Department_Screen)]
         [HttpGet]
@@ -68,11 +60,11 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("GetSelected")]
-        [AuthorizeMultiplePolicy((UserAuthory.Department_Screen + "," + UserAuthory.Department_Update))]
+        [AuthorizeMultiplePolicy((UserAuthory.Department_Getselected))]
         [HttpGet]
         public IActionResult GetSelectedDepartment(string guid)
         {
-            var Data = unitOfWork.DepartmentRepository.GetSingleRecord<DepartmentModel>(u=>u.ConcurrencyStamp==guid);
+            var Data = unitOfWork.DepartmentRepository.GetRecord<DepartmentModel>(u=>u.ConcurrencyStamp==guid);
             if (Data == null)
             {
                 return NotFound();
@@ -81,8 +73,6 @@ namespace PatientCareAPI.Controllers.Settings
             Data.Stations = unitOfWork.StationsRepository.GetStationsbyGuids(stationguids);
             return Ok(Data);
         }
-
-       
 
         [Route("Add")]
         [AuthorizeMultiplePolicy(UserAuthory.Department_Add)]
@@ -106,7 +96,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("Update")]
-        [AuthorizeMultiplePolicy(UserAuthory.Department_Update)]
+        [AuthorizeMultiplePolicy(UserAuthory.Department_Edit)]
         [HttpPost]
         public IActionResult Update(DepartmentModel model)
         {

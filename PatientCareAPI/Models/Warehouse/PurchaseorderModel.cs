@@ -9,6 +9,10 @@ namespace PatientCareAPI.Models.Warehouse
 {
     public class PurchaseorderModel : BaseModel
     {
+        public PurchaseorderModel()
+        {
+            Stocks = new List<PurchaseorderstocksModel>();
+        }
         [NotMapped]
         public List<PurchaseorderstocksModel> Stocks { get; set; }
         public string Info { get; set; }

@@ -33,11 +33,12 @@ namespace PatientCareAPI.Controllers.Auth
             unitOfWork = new UnitOfWork(context);
             securityutils = new CryptographyProcessor();
         }
+        private string GetSessionUser()
+        {
+            return (this.User.Identity as ClaimsIdentity).FindFirst(ClaimTypes.Name)?.Value;
+        }
 
-        [AuthorizeMultiplePolicy(UserAuthory.User_Screen + "," + UserAuthory.Admin)]
-        [Route("GetAll")]
-        [HttpGet]
-        public IActionResult GetAll()
+        private List<UsersModel> FetchList()
         {
             var Users = unitOfWork.UsersRepository.GetAll().Where(u => u.IsActive).ToList();
             foreach (var user in Users)
@@ -50,16 +51,27 @@ namespace PatientCareAPI.Controllers.Auth
 
                 List<string> roles = unitOfWork.UsertoRoleRepository.GetRecords<UsertoRoleModel>(u => u.UserID == user.ConcurrencyStamp).Select(u => u.RoleID).ToList();
                 user.Roles.AddRange(unitOfWork.RoleRepository.GetRolesbyGuids(roles));
+
+                user.Files = unitOfWork.FileRepository.GetRecords<FileModel>(u => u.Parentid == user.ConcurrencyStamp);
             }
-            return Ok(Users);
+            return Users;
         }
 
         [AuthorizeMultiplePolicy(UserAuthory.User_Screen)]
+        [Route("GetAll")]
+        [HttpGet]
+        public IActionResult GetAll()
+        {
+           
+            return Ok(FetchList());
+        }
+
+        [AuthorizeMultiplePolicy(UserAuthory.User_Getselected)]
         [Route("Getselected")]
         [HttpGet]
         public IActionResult GetSelectedUser(string guid)
         {
-            var user = unitOfWork.UsersRepository.GetSingleRecord<UsersModel>(u => u.ConcurrencyStamp == guid);
+            var user = unitOfWork.UsersRepository.GetRecord<UsersModel>(u => u.ConcurrencyStamp == guid);
             List<string> stations = unitOfWork.UsertoStationRepository.GetAll().Where(u => u.UserID == user.ConcurrencyStamp).Select(u => u.StationID).ToList();
             user.Stations.AddRange(unitOfWork.StationsRepository.GetStationsbyGuids(stations));
 
@@ -68,6 +80,7 @@ namespace PatientCareAPI.Controllers.Auth
 
             List<string> roles = unitOfWork.UsertoRoleRepository.GetAll().Where(u => u.UserID == user.ConcurrencyStamp).Select(u => u.RoleID).ToList();
             user.Roles.AddRange(unitOfWork.RoleRepository.GetRolesbyGuids(roles));
+            user.Files = unitOfWork.FileRepository.GetRecords<FileModel>(u => u.Parentid == user.ConcurrencyStamp);
             return Ok(user);
         }
 
@@ -76,8 +89,7 @@ namespace PatientCareAPI.Controllers.Auth
         [HttpPost]
         public IActionResult Add(UsersModel model)
         {
-            var claimsIdentity = this.User.Identity as ClaimsIdentity;
-            var username = claimsIdentity.FindFirst(ClaimTypes.Name)?.Value;
+            var username = GetSessionUser();
             model.CreatedUser = username;
             model.IsActive = true;
             model.CreateTime = DateTime.Now;
@@ -104,16 +116,15 @@ namespace PatientCareAPI.Controllers.Auth
                 unitOfWork.UsertoStationRepository.AddStationtoUser(new Models.Settings.UsertoStationsModel { StationID = station.ConcurrencyStamp, UserID = model.ConcurrencyStamp });
             }
             unitOfWork.Complate();
-            return Ok();
+            return Ok(FetchList());
         }
 
-        [AuthorizeMultiplePolicy(UserAuthory.User_Screen + "," + UserAuthory.User_Update)]
+        [AuthorizeMultiplePolicy(UserAuthory.User_Edit)]
         [Route("Update")]
         [HttpPost]
         public IActionResult Update(UsersModel model)
         {
-            var claimsIdentity = this.User.Identity as ClaimsIdentity;
-            var username = claimsIdentity.FindFirst(ClaimTypes.Name)?.Value;
+            var username = GetSessionUser();
             model.UpdatedUser = username;
             model.UpdateTime = DateTime.Now;
             unitOfWork.UsersRepository.update(unitOfWork.UsersRepository.Getbyid(model.Id), model);
@@ -133,7 +144,7 @@ namespace PatientCareAPI.Controllers.Auth
                 unitOfWork.UsertoStationRepository.AddStationtoUser(new Models.Settings.UsertoStationsModel { StationID = station.ConcurrencyStamp, UserID = model.ConcurrencyStamp });
             }
             unitOfWork.Complate();
-            return Ok();
+            return Ok(FetchList());
         }
 
         [AuthorizeMultiplePolicy(UserAuthory.User_Delete)]
@@ -141,14 +152,13 @@ namespace PatientCareAPI.Controllers.Auth
         [HttpDelete]
         public IActionResult Delete(UsersModel model)
         {
-            var claimsIdentity = this.User.Identity as ClaimsIdentity;
-            var username = claimsIdentity.FindFirst(ClaimTypes.Name)?.Value;
+            var username = GetSessionUser();
             model.DeleteUser = username;
             model.IsActive = false;
             model.DeleteTime = DateTime.Now;
             unitOfWork.UsersRepository.update(unitOfWork.UsersRepository.Getbyid(model.Id), model);
             unitOfWork.Complate();
-            return Ok();
+            return Ok(FetchList());
         }
 
         [AuthorizeMultiplePolicy(UserAuthory.Admin)]

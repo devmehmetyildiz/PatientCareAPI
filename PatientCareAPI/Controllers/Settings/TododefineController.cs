@@ -40,11 +40,16 @@ namespace PatientCareAPI.Controllers.Settings
         private List<TododefineModel> FetchList()
         {
             var List = unitOfWork.TododefineRepository.GetRecords<TododefineModel>(u => u.IsActive);
+            foreach (var item in List)
+            {
+                var perodguids = unitOfWork.TododefinetoPeriodRepository.GetRecords<TododefinetoPeriodModel>(u => u.TododefineID == item.ConcurrencyStamp).Select(u => u.PeriodID).ToList();
+                item.Periods = unitOfWork.PeriodRepository.GetPeriodsbyGuids(perodguids);
+            }
             return List;
         }
 
         [Route("GetAll")]
-        [AuthorizeMultiplePolicy(UserAuthory.Stations_Screen)]
+        [AuthorizeMultiplePolicy(UserAuthory.Tododefine_Screen)]
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -52,11 +57,13 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("GetSelected")]
-        [AuthorizeMultiplePolicy(UserAuthory.Stations_Screen)]
+        [AuthorizeMultiplePolicy(UserAuthory.Tododefine_Getselected)]
         [HttpGet]
         public IActionResult GetSelected(string guid)
         {
-            var Data = unitOfWork.TododefineRepository.GetSingleRecord<TododefineModel>(u => u.ConcurrencyStamp == guid);
+            var Data = unitOfWork.TododefineRepository.GetRecord<TododefineModel>(u => u.ConcurrencyStamp == guid);
+            var perodguids = unitOfWork.TododefinetoPeriodRepository.GetRecords<TododefinetoPeriodModel>(u => u.TododefineID == Data.ConcurrencyStamp).Select(u => u.PeriodID).ToList();
+            Data.Periods = unitOfWork.PeriodRepository.GetPeriodsbyGuids(perodguids);
             if (Data == null)
             {
                 return NotFound();
@@ -65,7 +72,7 @@ namespace PatientCareAPI.Controllers.Settings
         }
 
         [Route("Add")]
-        [AuthorizeMultiplePolicy(UserAuthory.Stations_Add)]
+        [AuthorizeMultiplePolicy(UserAuthory.Tododefine_Add)]
         [HttpPost]
         public IActionResult Add(TododefineModel model)
         {
@@ -75,12 +82,16 @@ namespace PatientCareAPI.Controllers.Settings
             model.CreateTime = DateTime.Now;
             model.ConcurrencyStamp = Guid.NewGuid().ToString();
             unitOfWork.TododefineRepository.Add(model);
+            foreach (var item in model.Periods)
+            {
+                unitOfWork.TododefinetoPeriodRepository.Add(new TododefinetoPeriodModel { PeriodID = item.ConcurrencyStamp, TododefineID = model.ConcurrencyStamp });
+            }
             unitOfWork.Complate();
             return Ok(FetchList());
         }
 
         [Route("Update")]
-        [AuthorizeMultiplePolicy((UserAuthory.Stations_Update + "," + UserAuthory.Stations_Screen))]
+        [AuthorizeMultiplePolicy((UserAuthory.Tododefine_Edit))]
         [HttpPost]
         public IActionResult Update(TododefineModel model)
         {
@@ -88,12 +99,17 @@ namespace PatientCareAPI.Controllers.Settings
             model.UpdatedUser = username;
             model.UpdateTime = DateTime.Now;
             unitOfWork.TododefineRepository.update(unitOfWork.TododefineRepository.Getbyid(model.Id), model);
+            unitOfWork.TododefinetoPeriodRepository.RemovePeriodsfromTododefines(model.ConcurrencyStamp);
+            foreach (var item in model.Periods)
+            {
+                unitOfWork.TododefinetoPeriodRepository.Add(new TododefinetoPeriodModel { PeriodID = item.ConcurrencyStamp, TododefineID = model.ConcurrencyStamp });
+            }
             unitOfWork.Complate();
             return Ok(FetchList());
         }
 
         [Route("Delete")]
-        [AuthorizeMultiplePolicy(UserAuthory.Stations_Delete)]
+        [AuthorizeMultiplePolicy(UserAuthory.Tododefine_Delete)]
         [HttpPost]
         public IActionResult Delete(TododefineModel model)
         {
